@@ -97,4 +97,32 @@ public class Promo {
   public Long getZoneId() {
     return zoneId;
   }
+
+  public Boolean getIsDeleted() {
+    return isDeleted;
+  }
+
+  public Boolean getIsActive() {
+    return isActive;
+  }
+
+  public Date getAvailableFrom() {
+    return availableFrom;
+  }
+
+  public Date getAvailableUntil() {
+    return availableUntil;
+  }
+
+  public String getTnc() {
+    return tnc;
+  }
+  
+  public String getDescription() {
+    return description;
+  }
+
+  public String getUrlPath() {
+    return urlPath;
+  }
 }
