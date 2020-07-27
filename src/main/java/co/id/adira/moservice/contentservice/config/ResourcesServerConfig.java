@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -33,8 +34,10 @@ public class ResourcesServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
-    	http.authorizeRequests()
-				.antMatchers("/api/**").authenticated();
+			http.authorizeRequests()
+			.antMatchers(HttpMethod.GET, "/api/promo").permitAll()
+			.antMatchers(HttpMethod.GET, "/api/promo/**").permitAll()
+			.antMatchers("/api/**").authenticated();
         // @formatter:on                
     }
     
