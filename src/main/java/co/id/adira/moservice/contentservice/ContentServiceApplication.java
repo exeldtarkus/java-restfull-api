@@ -7,7 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan
-@EntityScan("co.id.adira.moservice.model")
+@EntityScan({"co.id.adira.moservice.model",
+"co.id.adira.moservice.contentservice.model"})
 public class ContentServiceApplication {
 
 	public static void main(String[] args) {
