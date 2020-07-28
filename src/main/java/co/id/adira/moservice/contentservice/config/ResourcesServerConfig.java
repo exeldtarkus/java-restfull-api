@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -26,51 +27,53 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableResourceServer
 @Configuration
 public class ResourcesServerConfig extends ResourceServerConfigurerAdapter {
-	
-	@Value("classpath:public-key.txt") private Resource pem;
-	@Value("${oauth2.jwt.resource-id}") private String resourceId;
-    
-    @Override
-    public void configure(final HttpSecurity http) throws Exception {
-        // @formatter:off
-    	http.authorizeRequests()
-				.antMatchers("/api/**").permitAll();
-        // @formatter:on                
-    }
-    
-    @Override
-    public void configure(final ResourceServerSecurityConfigurer security) {
-    	security
-    		.tokenServices(tokenServices())
-    		.resourceId(resourceId);
-    }
-	
+
+	@Value("classpath:public-key.txt")
+	private Resource pem;
+	@Value("${oauth2.jwt.resource-id}")
+	private String resourceId;
+
+	@Override
+	public void configure(final HttpSecurity http) throws Exception {
+		// @formatter:off
+		http.authorizeRequests()
+			.antMatchers(HttpMethod.GET, "/api/promo").permitAll()
+			.antMatchers(HttpMethod.GET, "/api/promo/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/api/promo/**").permitAll()
+			.antMatchers("/api/**").authenticated();
+		// @formatter:on
+	}
+
+	@Override
+	public void configure(final ResourceServerSecurityConfigurer security) {
+		security.tokenServices(tokenServices()).resourceId(resourceId);
+	}
+
 	@Bean
-    public TokenStore tokenStore() {
-        return new JwtTokenStore(jwtAccessTokenConverter());
-    }
-	
+	public TokenStore tokenStore() {
+		return new JwtTokenStore(jwtAccessTokenConverter());
+	}
+
 	@SuppressWarnings("deprecation")
 	@Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter() {
-    	JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-    	String publicKey = null;
+	public JwtAccessTokenConverter jwtAccessTokenConverter() {
+		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+		String publicKey = null;
 		try {
 			publicKey = IOUtils.toString(pem.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	converter.setVerifierKey(publicKey);
-    	return converter;
-    }
-	
+		converter.setVerifierKey(publicKey);
+		return converter;
+	}
+
 	@Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        return defaultTokenServices;
-    }
-	
+	@Primary
+	public DefaultTokenServices tokenServices() {
+		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+		defaultTokenServices.setTokenStore(tokenStore());
+		return defaultTokenServices;
+	}
 
 }
