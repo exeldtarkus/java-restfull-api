@@ -22,7 +22,7 @@ public class PilihanLainController {
 	
 	@GetMapping(path = "/pilihan-lain")
 	public ResponseEntity<Object> getPilihanLain() {
-		List<PilihanLain> pilihanLain = pilihanLainRepository.findTop2ByActiveOrderByIdAsc(true);
+		List<PilihanLain> pilihanLain = pilihanLainRepository.findTop4ByActiveOrderByIdAsc(true);
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), pilihanLain);
 	}
 	
