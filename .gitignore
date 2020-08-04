@@ -28,6 +28,7 @@ target
 .classpath
 .project
 application.properties
+bootstrap.properties
 #authservice.pfx
 
 .vscode
