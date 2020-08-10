@@ -1,11 +1,19 @@
 package co.id.adira.moservice.contentservice.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "m_promo")
@@ -73,6 +81,21 @@ public class Promo {
 
 	@Column(name = "target_id")
 	private Long targetId;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
+	@JoinColumn(name="promo_id", insertable = false, updatable = false)
+  @JsonManagedReference
+	private List<PromoBengkelMapping> bengkels;
+	
+	public List<Long> getBengkels() {
+    List<Long> bengkelIds;
+    try{
+      bengkelIds = bengkels.stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
+    }catch(Exception e){
+      bengkelIds = null;
+    }
+    return bengkelIds;
+	}
 
 	public Long getId() {
 		return id;
