@@ -7,6 +7,6 @@ import co.id.adira.moservice.contentservice.model.PilihanLain;
 
 public interface PilihanLainRepository extends CrudRepository<PilihanLain, Long> {
 	
-	@Cacheable(cacheNames = "PilihanLainCache", key = "#root.targetClass.simpleName+'.'+#root.methodName")
+	//@Cacheable(cacheNames = "PilihanLainCache", key = "#root.targetClass.simpleName+'.'+#root.methodName")
 	List<PilihanLain> findTop4ByActiveOrderByIdAsc(boolean active);
 }
