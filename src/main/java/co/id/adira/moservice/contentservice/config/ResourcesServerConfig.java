@@ -40,6 +40,7 @@ public class ResourcesServerConfig extends ResourceServerConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/api/promo").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/promo/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/pilihan-lain").permitAll()
+			.antMatchers(HttpMethod.GET, "/api/vouchers").permitAll()
 			.anyRequest().authenticated();
 		// @formatter:on
 	}

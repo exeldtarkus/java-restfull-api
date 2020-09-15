@@ -16,36 +16,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.id.adira.moservice.contentservice.model.Voucher;
-import co.id.adira.moservice.contentservice.repository.VoucherRepository;
+import co.id.adira.moservice.contentservice.model.content.Voucher;
+import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 
 @RestController
 @RequestMapping("/api")
 public class VoucherController {
 
-  @Autowired
-  private VoucherRepository voucherRepository;
+	@Autowired
+	private VoucherRepository voucherRepository;
 
-  @GetMapping(path="/vouchers")
-  public ResponseEntity<Object> getVouchers(
-    @RequestParam(required = false, defaultValue = "1") final Integer page,
-    @RequestParam(required = false, defaultValue = "10") final Integer size,
-    @RequestParam(name = "user_id", required = false) final Long userId
-    ){
-    Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-    List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, pageable);
+	@GetMapping(path = "/vouchers")
+	public ResponseEntity<Object> getVouchers(
+			@RequestParam(required = false, defaultValue = "1") final Integer page,
+			@RequestParam(required = false, defaultValue = "10") final Integer size,
+			@RequestParam(name = "user_id", required = false) final Long userId) {
 
-    Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
+		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
+		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, pageable);
+
+		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
 		Integer end = Math.min(Math.max(size * page, start), vouchers.size());
-    Page<Voucher> pages = new PageImpl<Voucher>(vouchers.subList(start, end), pageable, vouchers.size());
-    
-    return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), pages);
-  }
+		Page<Voucher> pages = new PageImpl<Voucher>(vouchers.subList(start, end), pageable, vouchers.size());
 
+		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), pages);
+	}
 
-  @GetMapping(path="/vouchers/{id}")
-  public ResponseEntity<Object> getVoucherById(@PathVariable Long id){
-    return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), id);
-  }
+	@GetMapping(path = "/vouchers/{id}")
+	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
+		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), id);
+	}
 }

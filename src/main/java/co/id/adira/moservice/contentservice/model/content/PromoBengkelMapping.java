@@ -1,4 +1,4 @@
-package co.id.adira.moservice.contentservice.model;
+package co.id.adira.moservice.contentservice.model.content;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

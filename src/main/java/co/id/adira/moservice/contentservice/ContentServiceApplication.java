@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableCaching
 @ComponentScan
 @EntityScan({"co.id.adira.moservice.model",
-"co.id.adira.moservice.contentservice.model"})
+"co.id.adira.moservice.contentservice.model.content"})
 public class ContentServiceApplication {
 
 	public static void main(String[] args) {

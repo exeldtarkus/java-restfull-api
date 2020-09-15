@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import co.id.adira.moservice.contentservice.model.PilihanLain;
-import co.id.adira.moservice.contentservice.repository.PilihanLainRepository;
+
+import co.id.adira.moservice.contentservice.model.content.PilihanLain;
+import co.id.adira.moservice.contentservice.repository.content.PilihanLainRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 
 @RestController

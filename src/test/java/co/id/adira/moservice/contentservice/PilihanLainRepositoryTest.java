@@ -7,8 +7,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import co.id.adira.moservice.contentservice.model.PilihanLain;
-import co.id.adira.moservice.contentservice.repository.PilihanLainRepository;
+
+import co.id.adira.moservice.contentservice.model.content.PilihanLain;
+import co.id.adira.moservice.contentservice.repository.content.PilihanLainRepository;
 
 @AutoConfigureTestDatabase(replace=Replace.NONE)
 @RunWith(SpringRunner.class)
