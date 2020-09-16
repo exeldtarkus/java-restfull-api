@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import co.id.adira.moservice.model.User;
 
 @Entity
 @Table(name = "tr_promo_user")
