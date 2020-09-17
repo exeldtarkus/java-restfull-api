@@ -2,13 +2,20 @@ package co.id.adira.moservice.contentservice.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
 import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.repository.bengkel.BengkelRepository;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,12 +30,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@SuppressWarnings("unchecked")
 @RestController
 @RequestMapping("/api")
 public class PromoController {
 
 	@Autowired
 	private PromoRepository promoRepository;
+
+	@Autowired
+	private BengkelRepository bengkelRepository;
 
 	private final Date currentDate = new Date();
 
@@ -118,10 +129,16 @@ public class PromoController {
 	@GetMapping(path = "/promo/{id}")
 	public ResponseEntity<Object> getPromoById(@PathVariable Long id) {
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
-		if (promo == null) {
+		if(promo.isPresent()){
+			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(promo.get().getBengkels());
+			ObjectMapper mapObject = new ObjectMapper();
+			Map<String,Object> promoDetail = (Map<String,Object>) mapObject.convertValue(promo.get(), Map.class);
+			promoDetail.put("availableFrom", new Date((Long) promoDetail.get("availableFrom")));
+			promoDetail.put("availableUntil", new Date((Long) promoDetail.get("availableUntil")));
+			promoDetail.put("bengkels", bengkels);
+			return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), promoDetail);
+		}else{
 			return BaseResponse.jsonResponse(HttpStatus.NOT_FOUND, false, HttpStatus.NOT_FOUND.toString(), null);
 		}
-		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), promo);
 	}
-	
 }

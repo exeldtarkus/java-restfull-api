@@ -9,9 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "map_promo_bengkel")
+@Table(name = "map_promo_bengkel", schema = "db_content")
 public class PromoBengkelMapping {
-	
+
 	@Id
 	private Long id;
 
@@ -21,12 +21,12 @@ public class PromoBengkelMapping {
 	@Column(name = "bengkel_id")
 	private Long bengkelId;
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
+	private Promo promo;
+
 	public Long getBengkelId() {
 		return bengkelId;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
-	private Promo promo;
-	
 }
