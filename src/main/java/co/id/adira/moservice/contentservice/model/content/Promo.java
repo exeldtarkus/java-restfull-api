@@ -84,7 +84,7 @@ public class Promo {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name="promo_id", insertable = false, updatable = false)
-  @JsonManagedReference
+	//@JsonManagedReference
 	private List<PromoBengkelMapping> bengkels;
 	
 	public List<Long> getBengkels() {

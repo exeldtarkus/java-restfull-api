@@ -11,21 +11,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "map_promo_bengkel")
 public class PromoBengkelMapping {
-  @Id
-  private Long id;
+	
+	@Id
+	private Long id;
 
-  @Column(name = "promo_id")
-  private Long promoId;
+	@Column(name = "promo_id")
+	private Long promoId;
 
-  @Column(name = "bengkel_id") 
-  private Long bengkelId;
+	@Column(name = "bengkel_id")
+	private Long bengkelId;
 
+	public Long getBengkelId() {
+		return bengkelId;
+	}
 
-  public Long getBengkelId() {
-    return bengkelId;
-  }
-
-  @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "promo_id", insertable = false, updatable = false)
-  private Promo promo;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
+	private Promo promo;
+	
 }
