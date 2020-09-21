@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "m_promo")
+@Table(name = "mst_promo")
 public class Promo {
 	
 	@Id

@@ -1,4 +1,4 @@
-create table content.m_pilihan_lain (
+create table content.mst_pilihan_lain (
   id bigint not null AUTO_INCREMENT,
   created_at datetime,
   updated_at datetime,

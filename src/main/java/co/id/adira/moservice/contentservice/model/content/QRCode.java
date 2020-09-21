@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "m_qrcode")
+@Table(name = "mst_qrcode")
 public class QRCode implements Serializable {
 	
 	private static final long serialVersionUID = -7577099200761310993L;
