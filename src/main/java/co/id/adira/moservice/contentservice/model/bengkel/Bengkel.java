@@ -25,7 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 @Entity
-@Table(name = "m_bengkel", schema = "db_bengkel")
+@Table(name = "mst_bengkel", schema = "db_bengkel")
 public class Bengkel implements Serializable {
 
   private static final long serialVersionUID = 4L;

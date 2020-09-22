@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import co.id.adira.moservice.model.BaseEntity;
 
 @Entity
-@Table(name="m_pilihan_lain")
+@Table(name="mst_pilihan_lain")
 public class PilihanLain extends BaseEntity {
 
 	private static final long serialVersionUID = 3142969324276815044L;
