@@ -8,6 +8,7 @@ import co.id.adira.moservice.contentservice.repository.bengkel.BengkelRepository
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
@@ -49,23 +50,53 @@ public class PromoController {
 	private Boolean ArrayIncludes(String[] arr, String i) {
 		return Arrays.stream(arr).anyMatch(i::equals);
 	}
-	
+
 	@GetMapping(path = "/promo")
 	public ResponseEntity<Object> getPromos(@RequestParam(required = false, defaultValue = "") final String origin,
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(required = false, defaultValue = "desc") String order,
-			@RequestParam(required = false, defaultValue = "id") String sort) {
+			@RequestParam(required = false, defaultValue = "id") String sort,
+			@RequestParam(required = false, defaultValue = "") String q,
+			@RequestParam(required = false, defaultValue = "0") List<Long> service_type,
+			@RequestParam(required = false) String promo_type) {
 		List<Promo> promos;
+
+		// Get all service type if ?service_type=0
+		if (service_type.get(0) == 0L) {
+			service_type = Arrays
+					.asList(new Long[] { 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 16L });
+		}
+
+		// Get all promo type if promo_type is null
+		List<Integer> promoTypeList = new ArrayList<Integer>();
+		if (promo_type == null) {
+			promoTypeList.add(0);
+			promoTypeList.add(1);
+		} else {
+			switch (promo_type) {
+				case "0":
+					promoTypeList.add(0);
+					break;
+				case "1":
+					promoTypeList.add(1);
+					break;
+				default:
+					promoTypeList.add(0);
+					promoTypeList.add(1);
+					break;
+			}
+		}
+
 		Sort.Direction promoSort = Sort.Direction.DESC;
 		if (this.ArrayIncludes(acceptedOrder, order)) {
 			switch (order) {
-			case "asc":
-				promoSort = Sort.Direction.ASC;
-				break;
-			case "desc":
-				promoSort = Sort.Direction.DESC;
-				break;
+				case "asc":
+					promoSort = Sort.Direction.ASC;
+					break;
+				case "desc":
+					promoSort = Sort.Direction.DESC;
+					break;
 			}
 		}
 		if (!this.ArrayIncludes(acceptedSort, sort))
@@ -74,15 +105,15 @@ public class PromoController {
 		Pageable pageable = PageRequest.of(page, size, new Sort(promoSort, sort));
 
 		switch (origin) {
-		case "home":
-			promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(1L, currentDate, pageable);
-			break;
-		case "promo":
-			promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
-			break;
-		default:
-			promos = (List<Promo>) promoRepository.findAllAndMore(currentDate, pageable);
-			break;
+			case "home":
+				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(1L, currentDate, pageable);
+				break;
+			case "promo":
+				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
+				break;
+			default:
+				promos = (List<Promo>) promoRepository.findAllAndMore(q, service_type, promoTypeList, currentDate, pageable);
+				break;
 		}
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), promos.size());
@@ -91,28 +122,27 @@ public class PromoController {
 
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), pages);
 	}
-	
+
 	@GetMapping(path = "/promo/servis")
 	public ResponseEntity<Object> getPromoByServisId(
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(required = false, defaultValue = "desc") String order,
-			@RequestParam(required = false, defaultValue = "id") String sort,
-			@RequestParam(required = false) Long id) {
-		
+			@RequestParam(required = false, defaultValue = "id") String sort, @RequestParam(required = false) Long id) {
+
 		List<Promo> promos;
 		Sort.Direction promoSort = Sort.Direction.DESC;
 		if (this.ArrayIncludes(acceptedOrder, order)) {
 			switch (order) {
-			case "asc":
-				promoSort = Sort.Direction.ASC;
-				break;
-			case "desc":
-				promoSort = Sort.Direction.DESC;
-				break;
+				case "asc":
+					promoSort = Sort.Direction.ASC;
+					break;
+				case "desc":
+					promoSort = Sort.Direction.DESC;
+					break;
 			}
 		}
-		
+
 		if (!this.ArrayIncludes(acceptedSort, sort))
 			sort = "id";
 
@@ -129,15 +159,15 @@ public class PromoController {
 	@GetMapping(path = "/promo/{id}")
 	public ResponseEntity<Object> getPromoById(@PathVariable Long id) {
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
-		if(promo.isPresent()){
+		if (promo.isPresent()) {
 			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(promo.get().getBengkels());
 			ObjectMapper mapObject = new ObjectMapper();
-			Map<String,Object> promoDetail = (Map<String,Object>) mapObject.convertValue(promo.get(), Map.class);
+			Map<String, Object> promoDetail = (Map<String, Object>) mapObject.convertValue(promo.get(), Map.class);
 			promoDetail.put("availableFrom", new Date((Long) promoDetail.get("availableFrom")));
 			promoDetail.put("availableUntil", new Date((Long) promoDetail.get("availableUntil")));
 			promoDetail.put("bengkels", bengkels);
 			return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), promoDetail);
-		}else{
+		} else {
 			return BaseResponse.jsonResponse(HttpStatus.NOT_FOUND, false, HttpStatus.NOT_FOUND.toString(), null);
 		}
 	}
