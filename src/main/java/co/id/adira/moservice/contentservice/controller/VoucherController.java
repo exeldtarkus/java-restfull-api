@@ -36,7 +36,10 @@ public class VoucherController {
 	@Autowired
 	private VoucherRepository voucherRepository;
 	
-	private final static String URL = "https://assets.adira.one/sp/qrcode/";
+	//private final static String URL = "https://assets.adira.one/sp/qrcode/";
+	
+	@Value("${spring.base.upload.qrcode.url}")
+	private String baseUploadQrcodeUrl;
 	
 	@Value("${spring.path.upload.qrcode}")
 	private String pathUploadQrcode;
@@ -88,7 +91,7 @@ public class VoucherController {
 		qrcode.setData(data.toString());
 		qrcode.setQrcodePath(pathUploadQrcode);
 		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
-		qrcode.setQrcodePath(URL + response[0] + ".png");
+		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrcode.setPromoId(voucher.getPromoId());
