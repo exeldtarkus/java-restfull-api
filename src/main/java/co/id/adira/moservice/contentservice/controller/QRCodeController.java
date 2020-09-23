@@ -29,7 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 public class QRCodeController {
 	
-	private final static String URL = "https://assets.adira.one/sp/qrcode/";
+	@Value("${spring.base.upload.qrcode.url}")
+	private String baseUploadQrcodeUrl;
 	
 	@Value("${spring.path.upload.qrcode}")
 	private String pathUploadQrcode;
@@ -60,7 +61,7 @@ public class QRCodeController {
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody QRCode qrcode) {
 		qrcode.setQrcodePath(pathUploadQrcode);
 		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
-		qrcode.setQrcodePath(URL + response[0] + ".png");
+		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrCodeRepository.save(qrcode);

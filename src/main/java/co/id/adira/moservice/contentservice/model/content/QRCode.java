@@ -44,7 +44,7 @@ public class QRCode implements Serializable {
 	private String data;
 	
 	@Column(name = "booking_id")
-	private Long booking_id;
+	private Long bookingId;
 	
 	@Column(name = "promo_id")
 	private Long promoId;
@@ -116,12 +116,12 @@ public class QRCode implements Serializable {
 		base64QRCode = base64qrCode;
 	}
 
-	public Long getBooking_id() {
-		return booking_id;
+	public Long getBookingId() {
+		return bookingId;
 	}
 
-	public void setBooking_id(Long booking_id) {
-		this.booking_id = booking_id;
+	public void setBookingId(Long bookingId) {
+		this.bookingId = bookingId;
 	}
 
 	public Long getPromoId() {

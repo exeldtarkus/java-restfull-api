@@ -64,7 +64,6 @@ public class QRCodeUtil {
 		try {
 		    // Create a qr code with the url as content and a size of 250x250 px
 		    bitMatrix = writer.encode(qrcode.getData(), BarcodeFormat.QR_CODE, 300, 300, hints);
-			log.info("Successfully generated QRCode in path.");
 
 		    MatrixToImageConfig config = new MatrixToImageConfig(MatrixToImageConfig.BLACK, MatrixToImageConfig.WHITE);
 
@@ -104,6 +103,8 @@ public class QRCodeUtil {
 		    
 		    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 		    BufferedImage bufferedImage  = ImageIO.read(bais);
+		    
+		    log.info("Generated QRCode in path :: " + path);
 		    ImageIO.write(bufferedImage, "png", new File(path));
 		    
 		    log.info(base64);

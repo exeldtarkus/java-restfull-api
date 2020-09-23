@@ -36,7 +36,10 @@ public class VoucherController {
 	@Autowired
 	private VoucherRepository voucherRepository;
 	
-	private final static String URL = "https://assets.adira.one/sp/qrcode/";
+	//private final static String URL = "https://assets.adira.one/sp/qrcode/";
+	
+	@Value("${spring.base.upload.qrcode.url}")
+	private String baseUploadQrcodeUrl;
 	
 	@Value("${spring.path.upload.qrcode}")
 	private String pathUploadQrcode;
@@ -71,12 +74,11 @@ public class VoucherController {
 	@PostMapping(path = "/voucher/redeem")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
 		
-		log.info("SAVE VOUCHER");
+		log.info("=== SAVE VOUCHER ===");
 		voucher.setCreated(new Date());
 		voucher.setRedeemDate(new Date());
 		voucherRepository.save(voucher);
 		
-		log.info("SAVE QRCODE");
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
 		data.append("promo_id=").append(voucher.getPromoId());
@@ -89,11 +91,13 @@ public class VoucherController {
 		qrcode.setData(data.toString());
 		qrcode.setQrcodePath(pathUploadQrcode);
 		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
-		qrcode.setQrcodePath(URL + response[0] + ".png");
+		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrcode.setPromoId(voucher.getPromoId());
 		qrcode.setUserId(voucher.getUserId());
+		
+		log.info("=== SAVE QRCODE ===");
 		qrCodeRepository.save(qrcode);
 		
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
