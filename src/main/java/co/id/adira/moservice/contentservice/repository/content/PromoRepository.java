@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PromoRepository extends JpaRepository<Promo, Long> {
-	@Query(value = "SELECT *, GROUP_CONCAT(e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p WHERE p.zone_id = :zoneId "
+	@Query(value = "SELECT *, GROUP_CONCAT(e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN db_content.map_promo_area d ON p.id = d.promo_id "
-			+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id " + "AND p.is_active = true AND p.is_deleted = false "
+			+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id " + "WHERE p.zone_id = :zoneId AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until > :currentDate " + "AND p.available_from < :currentDate "
 			+ "ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("zoneId") Long zoneId, @Param("currentDate") Date currentDate,
