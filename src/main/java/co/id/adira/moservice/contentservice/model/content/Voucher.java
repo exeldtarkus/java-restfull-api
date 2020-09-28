@@ -8,9 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import co.id.adira.moservice.model.User;
 
 
 @Entity
@@ -24,8 +28,12 @@ public class Voucher implements Serializable {
 	@Column(unique = true, nullable = false)
 	private Long id;
 
-	@Column(name = "promo_id")
-	private Long promoId;
+//	@Column(name = "promo_id")
+//	private Long promoId;
+	
+	@ManyToOne
+	@JoinColumn(name = "promo_id")
+	private Promo promo;
 	
 	@Column(name = "user_id")
 	private Long userId;
@@ -127,12 +135,20 @@ public class Voucher implements Serializable {
 		this.bengkelId = bengkelId;
 	}
 
-	public Long getPromoId() {
-		return promoId;
+	public Promo getPromo() {
+		return promo;
 	}
 
-	public void setPromoId(Long promoId) {
-		this.promoId = promoId;
+	public void setPromo(Promo promo) {
+		this.promo = promo;
 	}
+
+//	public Long getPromoId() {
+//		return promoId;
+//	}
+//
+//	public void setPromoId(Long promoId) {
+//		this.promoId = promoId;
+//	}
 	
 }

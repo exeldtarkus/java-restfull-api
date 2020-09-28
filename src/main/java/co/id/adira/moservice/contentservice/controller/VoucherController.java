@@ -81,7 +81,7 @@ public class VoucherController {
 		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
-		data.append("promo_id=").append(voucher.getPromoId());
+		data.append("promo_id=").append(voucher.getPromo().getId());
 		data.append("&car_id=").append(voucher.getCarId());
 		data.append("&user_id=").append(voucher.getUserId());
 		data.append("&bengkel_id=").append(voucher.getBengkelId());
@@ -94,7 +94,7 @@ public class VoucherController {
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
-		qrcode.setPromoId(voucher.getPromoId());
+		qrcode.setPromoId(voucher.getPromo().getId());
 		qrcode.setUserId(voucher.getUserId());
 		
 		log.info("=== SAVE QRCODE ===");
