@@ -82,6 +82,21 @@ public class Promo {
 	@Column(name = "target_id")
 	private Long targetId;
 
+
+	@Column(name= "cities")
+	private String cities;
+
+	public String getCities() {
+		return cities;
+	}
+
+	@Column(name= "bengkelNames")
+	private String bengkelNames;
+
+	public String getBengkelNames() {
+		return bengkelNames;
+	}
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name="promo_id", insertable = false, updatable = false)
 	//@JsonManagedReference
