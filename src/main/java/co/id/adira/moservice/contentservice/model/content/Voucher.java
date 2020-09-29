@@ -23,9 +23,6 @@ public class Voucher implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Long id;
-
-//	@Column(name = "promo_id")
-//	private Long promoId;
 	
 	@ManyToOne
 	@JoinColumn(name = "promo_id")
@@ -62,6 +59,12 @@ public class Voucher implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "qrcode_id")
 	private QRCode qr;
+	
+	@Column
+	private String bengkel_name;
+	
+	@Column
+	private String bengkel_address;
 
 	public Long getId() {
 		return id;
@@ -150,13 +153,22 @@ public class Voucher implements Serializable {
 	public void setQr(QRCode qr) {
 		this.qr = qr;
 	}
-	
-//	public Long getPromoId() {
-//		return promoId;
-//	}
-//
-//	public void setPromoId(Long promoId) {
-//		this.promoId = promoId;
-//	}
+
+	public String getBengkel_name() {
+		return bengkel_name;
+	}
+
+	public void setBengkel_name(String bengkel_name) {
+		this.bengkel_name = bengkel_name;
+	}
+
+	public String getBengkel_address() {
+		return bengkel_address;
+	}
+
+	public void setBengkel_address(String bengkel_address) {
+		this.bengkel_address = bengkel_address;
+	}
+
 	
 }
