@@ -74,11 +74,6 @@ public class VoucherController {
 	@PostMapping(path = "/voucher/redeem")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
 		
-		log.info("=== SAVE VOUCHER ===");
-		voucher.setCreated(new Date());
-		voucher.setRedeemDate(new Date());
-		voucherRepository.save(voucher);
-		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
 		data.append("promo_id=").append(voucher.getPromo().getId());
@@ -97,9 +92,15 @@ public class VoucherController {
 		qrcode.setPromoId(voucher.getPromo().getId());
 		qrcode.setUserId(voucher.getUserId());
 		
-		log.info("=== SAVE QRCODE ===");
+		log.info("=== GENERATE QRCODE ===");
 		qrCodeRepository.save(qrcode);
 		
+		log.info("=== SAVE VOUCHER ===");
+		voucher.setCreated(new Date());
+		voucher.setRedeemDate(new Date());
+		voucher.setQr(qrcode);
+		voucherRepository.save(voucher);
+
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
 	}
 	

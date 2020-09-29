@@ -2,7 +2,6 @@ package co.id.adira.moservice.contentservice.model.content;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,9 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import co.id.adira.moservice.model.User;
-
 
 @Entity
 @Table(name = "tr_promo_user")
@@ -62,6 +58,10 @@ public class Voucher implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updated")
 	private Date updated;
+	
+	@ManyToOne
+	@JoinColumn(name = "qrcode_id")
+	private QRCode qr;
 
 	public Long getId() {
 		return id;
@@ -143,6 +143,14 @@ public class Voucher implements Serializable {
 		this.promo = promo;
 	}
 
+	public QRCode getQr() {
+		return qr;
+	}
+
+	public void setQr(QRCode qr) {
+		this.qr = qr;
+	}
+	
 //	public Long getPromoId() {
 //		return promoId;
 //	}
