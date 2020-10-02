@@ -20,7 +20,7 @@ public class BaseResponse {
         try {
             map.put("timestamp", new Date());
             map.put("status", status.value());
-            map.put("isSuccess", !error);
+            map.put("isSuccess", error);
             map.put("message", message);
             map.put("data", obj);
             return new ResponseEntity<Object>(map,status);

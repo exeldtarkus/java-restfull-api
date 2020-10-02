@@ -24,6 +24,7 @@ import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.repository.content.QRCodeRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
+import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 import co.id.adira.moservice.contentservice.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -36,19 +37,8 @@ public class VoucherController {
 	@Autowired
 	private VoucherRepository voucherRepository;
 	
-	//private final static String URL = "https://assets.adira.one/sp/qrcode/";
-	
-	@Value("${spring.base.upload.qrcode.url}")
-	private String baseUploadQrcodeUrl;
-	
-	@Value("${spring.path.upload.qrcode}")
-	private String pathUploadQrcode;
-	
-	@Value("${moservice.base.url.apps}")
-	private String moserviceBaseUrlMoserviceApps;
-
 	@Autowired
-	private QRCodeRepository qrCodeRepository;
+	private RedeemService redeemService;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -71,37 +61,10 @@ public class VoucherController {
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), id);
 	}
 	
-	@PostMapping(path = "/voucher/redeem")
+	@PostMapping(path = "/vouchers/redeem")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
-		
-		StringBuilder data = new StringBuilder();
-		data.append(moserviceBaseUrlMoserviceApps);
-		data.append("promo_id=").append(voucher.getPromo().getId());
-		data.append("&car_id=").append(voucher.getCarId());
-		data.append("&user_id=").append(voucher.getUserId());
-		data.append("&bengkel_id=").append(voucher.getBengkelId());
-		data.append("&redeem_date=").append(new Date());
-		
-		QRCode qrcode = new QRCode();
-		qrcode.setData(data.toString());
-		qrcode.setQrcodePath(pathUploadQrcode);
-		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
-		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
-		qrcode.setBase64QRCode(response[1]);
-		qrcode.setCreatedAt(new Date());
-		qrcode.setPromoId(voucher.getPromo().getId());
-		qrcode.setUserId(voucher.getUserId());
-		
-		log.info("=== GENERATE QRCODE ===");
-		qrCodeRepository.save(qrcode);
-		
-		log.info("=== SAVE VOUCHER ===");
-		voucher.setCreated(new Date());
-		voucher.setRedeemDate(new Date());
-		voucher.setQr(qrcode);
-		voucherRepository.save(voucher);
-
-		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
+		redeemService.generateQRCodeAndSaveVoucher(voucher);
+		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), "Redeem Successfully!!!");
 	}
 	
 }
