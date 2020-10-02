@@ -107,7 +107,6 @@ public class QRCodeUtil {
 		    log.info("Generated QRCode in path :: " + path);
 		    ImageIO.write(bufferedImage, "png", new File(path));
 		    
-		    log.info(base64);
 		    return new String[] { uuid, base64 };
 		} catch (WriterException e) {
 		    log.error("WriterException occured", e);

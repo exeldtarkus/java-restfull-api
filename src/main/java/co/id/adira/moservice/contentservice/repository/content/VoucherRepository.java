@@ -33,7 +33,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     		+ "redeem_date, "
     		+ "updated, "
     		+ "use_date, "
-    		+ "user_id, bengkel_name) "
+    		+ "user_id) "
     		+ "values "
     		+ "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) "  
     		, nativeQuery = true)

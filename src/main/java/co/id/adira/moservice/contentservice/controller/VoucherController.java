@@ -1,10 +1,7 @@
 package co.id.adira.moservice.contentservice.controller;
 
-import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,14 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
-import co.id.adira.moservice.contentservice.repository.content.QRCodeRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
-import co.id.adira.moservice.contentservice.util.QRCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -63,8 +57,8 @@ public class VoucherController {
 	
 	@PostMapping(path = "/vouchers/redeem")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
-		redeemService.generateQRCodeAndSaveVoucher(voucher);
-		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), "Redeem Successfully!!!");
+		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
+		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
 	}
 	
 }

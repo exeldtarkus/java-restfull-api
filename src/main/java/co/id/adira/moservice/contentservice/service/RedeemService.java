@@ -39,7 +39,7 @@ public class RedeemService {
 	private QRCodeRepository qrCodeRepository;
 	
 	@Transactional(readOnly = false)
-	public void generateQRCodeAndSaveVoucher(Voucher voucher) {
+	public QRCode generateQRCodeAndSaveVoucher(Voucher voucher) {
 		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
@@ -54,7 +54,7 @@ public class RedeemService {
 		qrcode.setQrcodePath(pathUploadQrcode);
 		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
-		qrcode.setBase64QRCode(response[1]);
+		//qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrcode.setPromoId(voucher.getPromo().getId());
 		qrcode.setUserId(voucher.getUserId());
@@ -63,6 +63,7 @@ public class RedeemService {
 		voucherRepository.insertVoucher(voucher.getBengkelId(), voucher.getBookingId(), voucher.getCarId(), 
 				new Date(), voucher.getPromo(), qrcode, new Date(), null, null, voucher.getUserId());
 		
+		return qrcode;
 	}
 
 }
