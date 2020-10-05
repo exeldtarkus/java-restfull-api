@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface PromoRepository extends JpaRepository<Promo, Long> {
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN db_content.map_promo_area d ON p.id = d.promo_id "
-			+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id " + "WHERE p.zone_id = :zoneId AND p.is_active = true AND p.is_deleted = false "
+			+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id "
+			+ "WHERE p.zone_id = :zoneId AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until > :currentDate " + "AND p.available_from < :currentDate "
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("zoneId") Long zoneId, @Param("currentDate") Date currentDate,
@@ -24,15 +25,14 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN db_content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN db_servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
 			+ "JOIN db_content.map_promo_area d ON a.id = d.promo_id "
-			+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id " 
+			+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "JOIN db_content.map_promo_bengkel f ON a.id = f.promo_id "
-			+ "JOIN db_bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id "
-			+ "WHERE a.name LIKE %:q% "
+			+ "JOIN db_bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE a.name LIKE %:q% "
 			+ "AND c.tipe_servis_id IN :serviceIdsList " + "AND a.special IN :promoTypeList " + "AND a.is_active = true "
 			+ "AND a.is_deleted = false " + "AND a.available_until > :currentDate "
 			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(@Param("q") String q, @Param("serviceIdsList") List<Long> serviceIdsList,
-			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate,
+			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate, 
 			@Param("pageable") Pageable pageable);
 
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null as bengkelNames FROM db_content.mst_promo a "
@@ -53,4 +53,16 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findByServisIdAndMore(@Param("servisId") Long servisId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
+
+	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, GROUP_CONCAT(g.bengkel_name) as bengkelNames FROM db_content.mst_promo a "
+	+ "JOIN db_content.map_promo_service b on a.id = b.promo_id "
+	+ "JOIN db_servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
+	+ "JOIN db_content.map_promo_area d ON a.id = d.promo_id "
+	+ "JOIN db_bengkel.ref_city e ON d.city_id = e.city_id " 
+	+ "JOIN db_content.map_promo_bengkel f ON a.id = f.promo_id "
+	+ "JOIN db_bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id "
+	+ "WHERE g.bengkel_id = :bengkelId "
+	+ "AND a.available_until > :currentDate "
+	+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
+	List<Promo> findByBengkelIdAndMore(@Param("bengkelId") Long bengkelId, @Param("currentDate") Date currentDate, @Param("pageable") Pageable pageable);
 }
