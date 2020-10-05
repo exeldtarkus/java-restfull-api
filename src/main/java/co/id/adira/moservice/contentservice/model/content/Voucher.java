@@ -170,5 +170,12 @@ public class Voucher implements Serializable {
 		this.bengkel_address = bengkel_address;
 	}
 
+	@Override
+	public String toString() {
+		return "Voucher [id=" + id + ", promo=" + promo + ", userId=" + userId + ", bengkelId=" + bengkelId
+				+ ", bookingId=" + bookingId + ", carId=" + carId + ", redeemDate=" + redeemDate + ", useDate="
+				+ useDate + ", created=" + created + ", updated=" + updated + ", qr=" + qr + ", bengkel_name="
+				+ bengkel_name + ", bengkel_address=" + bengkel_address + "]";
+	}
 	
 }

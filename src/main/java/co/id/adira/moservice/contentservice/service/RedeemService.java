@@ -3,11 +3,10 @@
  */
 package co.id.adira.moservice.contentservice.service;
 
-
 import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
@@ -15,6 +14,7 @@ import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.repository.content.QRCodeRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.util.QRCodeUtil;
+import co.id.adira.moservice.event.dto.EmailEventDto;
 
 /**
  * @author fatchurrachman
@@ -37,6 +37,9 @@ public class RedeemService {
 	
 	@Autowired
 	private QRCodeRepository qrCodeRepository;
+	
+	@Autowired
+	private KafkaTemplate<String, EmailEventDto> kafkaTemplate;
 	
 	@Transactional(readOnly = false)
 	public QRCode generateQRCodeAndSaveVoucher(Voucher voucher) {
@@ -64,6 +67,14 @@ public class RedeemService {
 				new Date(), voucher.getPromo(), qrcode, new Date(), null, null, voucher.getUserId());
 		
 		return qrcode;
+	}
+	
+	public void sendEmailNotifRedeem(EmailEventDto emailEventDto) {
+		try {
+			kafkaTemplate.send("email-event-topic", emailEventDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

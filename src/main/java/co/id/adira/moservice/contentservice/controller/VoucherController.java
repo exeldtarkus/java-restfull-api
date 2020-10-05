@@ -1,6 +1,8 @@
 package co.id.adira.moservice.contentservice.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -9,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +25,15 @@ import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
+import co.id.adira.moservice.event.dto.EmailEventDto;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
 @RequestMapping("/api")
 public class VoucherController {
+	
+	private static final String REDEEM_HBS = "redeem.hbs";
 
 	@Autowired
 	private VoucherRepository voucherRepository;
@@ -57,7 +64,27 @@ public class VoucherController {
 	
 	@PostMapping(path = "/vouchers/redeem")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
+		
+		log.info("::: GENERATE QRCODE :::");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		System.out.println(voucher.getPromo().getAvailableUntil().toString());
+		
+		EmailEventDto emailEventDto = new EmailEventDto(); 
+		emailEventDto.setEventId(UUID.randomUUID().toString());
+		emailEventDto.setEventTimestamp(System.currentTimeMillis());
+		emailEventDto.setSubject("Moservice - Redeem Promo");
+		emailEventDto.setTemplate(REDEEM_HBS);
+		emailEventDto.setBengkelName(voucher.getBengkel_name());
+		emailEventDto.setAvailableUntil(voucher.getPromo().getAvailableUntil().toString());
+		emailEventDto.setTo(authentication.getPrincipal().toString());
+		
+		redeemService.sendEmailNotifRedeem(emailEventDto);
+		
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
 	}
 	
