@@ -3,6 +3,9 @@
  */
 package co.id.adira.moservice.contentservice.service;
 
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,13 +47,17 @@ public class RedeemService {
 	@Transactional(readOnly = false)
 	public QRCode generateQRCodeAndSaveVoucher(Voucher voucher) {
 		
+		OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+		Date date = Date.from(utc.toInstant());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
 		data.append("promo_id=").append(voucher.getPromo().getId());
 		data.append("&car_id=").append(voucher.getCarId());
 		data.append("&user_id=").append(voucher.getUserId());
 		data.append("&bengkel_id=").append(voucher.getBengkelId());
-		data.append("&redeem_date=").append(new Date());
+		data.append("&redeem_date=").append(sdf.format(date));
 		
 		QRCode qrcode = new QRCode();
 		qrcode.setData(data.toString());

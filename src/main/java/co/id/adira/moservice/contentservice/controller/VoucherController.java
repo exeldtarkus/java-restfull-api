@@ -1,6 +1,5 @@
 package co.id.adira.moservice.contentservice.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +65,6 @@ public class VoucherController {
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
 		
 		log.info("::: GENERATE QRCODE :::");
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
