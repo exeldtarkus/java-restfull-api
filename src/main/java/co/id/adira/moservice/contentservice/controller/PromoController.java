@@ -59,7 +59,8 @@ public class PromoController {
 			@RequestParam(required = false, defaultValue = "id") String sort,
 			@RequestParam(required = false, defaultValue = "") String q,
 			@RequestParam(required = false, defaultValue = "0") List<Long> service_type,
-			@RequestParam(required = false) String promo_type) {
+			@RequestParam(required = false) String promo_type,
+			@RequestParam(required = false) Long bengkel_id) {
 		List<Promo> promos;
 
 		// Get all service type if ?service_type=0
@@ -112,7 +113,7 @@ public class PromoController {
 				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
 				break;
 			default:
-				promos = (List<Promo>) promoRepository.findAllAndMore(q, service_type, promoTypeList, currentDate, pageable);
+				promos = (bengkel_id != null) ? (List<Promo>) promoRepository.findByBengkelIdAndMore(bengkel_id, currentDate, pageable) : (List<Promo>) promoRepository.findAllAndMore(q, service_type, promoTypeList, currentDate, pageable);
 				break;
 		}
 
