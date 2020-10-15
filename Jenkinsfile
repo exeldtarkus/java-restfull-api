@@ -8,7 +8,7 @@ pipeline {
     }
         
     stages {    
-        stage('build ms-moservice-content-service') {
+        stage('build ms-moservice-content-service.') {
             steps {
                 build job: 'ms-moservice-content-service', wait: true
             }
