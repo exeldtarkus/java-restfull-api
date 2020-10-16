@@ -25,13 +25,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 @Entity
-@Table(name = "mst_bengkel", schema = "bengkel")
+@Table(name = "mst_bengkel")
 public class Bengkel implements Serializable {
 
 	private static final long serialVersionUID = 4L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "bengkel_id", unique = true, nullable = false)
 	private Long id;
 

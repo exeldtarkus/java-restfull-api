@@ -1,5 +1,7 @@
 package co.id.adira.moservice.contentservice.model.content;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,7 +9,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "map_promo_bengkel")
-public class PromoBengkelMapping {
+public class PromoBengkelMapping implements Serializable {
+
+	private static final long serialVersionUID = -201326472718839669L;
 
 	@Id
 	private Long id;

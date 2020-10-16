@@ -20,7 +20,7 @@ public class QRCode implements Serializable {
 	private static final long serialVersionUID = -7577099200761310993L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "qrcode_path")

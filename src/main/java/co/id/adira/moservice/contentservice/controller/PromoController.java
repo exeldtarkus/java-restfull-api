@@ -54,7 +54,8 @@ public class PromoController {
 	}
 
 	@GetMapping(path = "/promo")
-	public ResponseEntity<Object> getPromos(@RequestParam(required = false, defaultValue = "") final String origin,
+	public ResponseEntity<Object> getPromos(
+			@RequestParam(required = false, defaultValue = "") final String origin,
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(required = false, defaultValue = "desc") String order,

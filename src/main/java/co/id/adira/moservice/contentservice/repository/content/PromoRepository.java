@@ -28,11 +28,11 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "JOIN content.map_promo_bengkel f ON a.id = f.promo_id "
 			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE a.name LIKE %:q% "
-			+ "AND c.tipe_servis_id IN :serviceIdsList " + "AND a.special IN :promoTypeList " + "AND a.is_active = true "
-			+ "AND a.is_deleted = false " + "AND a.available_until > :currentDate "
+			+ "AND c.tipe_servis_id IN :serviceIdsList " + "AND a.special IN :promoTypeList "
+			+ "AND a.is_active = true " + "AND a.is_deleted = false " + "AND a.available_until > :currentDate "
 			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(@Param("q") String q, @Param("serviceIdsList") List<Long> serviceIdsList,
-			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate, 
+			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
 
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null as bengkelNames FROM content.mst_promo a "
@@ -55,14 +55,14 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("pageable") Pageable pageable);
 
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, GROUP_CONCAT(g.bengkel_name) as bengkelNames FROM content.mst_promo a "
-	+ "JOIN content.map_promo_service b on a.id = b.promo_id "
-	+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
-	+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
-	+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id " 
-	+ "JOIN content.map_promo_bengkel f ON a.id = f.promo_id "
-	+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id "
-	+ "WHERE g.bengkel_id = :bengkelId "
-	+ "AND a.available_until > :currentDate "
-	+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
-	List<Promo> findByBengkelIdAndMore(@Param("bengkelId") Long bengkelId, @Param("currentDate") Date currentDate, @Param("pageable") Pageable pageable);
+			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
+			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
+			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
+			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
+			+ "JOIN content.map_promo_bengkel f ON a.id = f.promo_id "
+			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE g.bengkel_id = :bengkelId "
+			+ "AND a.available_until > :currentDate "
+			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
+	List<Promo> findByBengkelIdAndMore(@Param("bengkelId") Long bengkelId, @Param("currentDate") Date currentDate,
+			@Param("pageable") Pageable pageable);
 }

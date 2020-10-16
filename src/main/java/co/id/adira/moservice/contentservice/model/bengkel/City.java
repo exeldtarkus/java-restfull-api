@@ -1,5 +1,7 @@
 package co.id.adira.moservice.contentservice.model.bengkel;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,28 +14,56 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name="ref_city", schema = "bengkel")
-public class City {
-  @Id
-  @Column(name="city_id")
-  private Long id;
+@Table(name = "ref_city")
+public class City implements Serializable {
 
-  @Column(name="city_name")
-  private String name;
+	private static final long serialVersionUID = -9111671699559398531L;
 
-  @Column(name="sort_1")
-  private String sort;
-  
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinColumn(name = "provinsi_id", referencedColumnName = "provinsi_id", insertable = false, updatable = false)
-  @JsonManagedReference
-  private Province province;
+	@Id
+	@Column(name = "city_id")
+	private Long id;
 
-  public Long getId() {
-    return id;
-  }
+	@Column(name = "city_name")
+	private String name;
 
-  public String getName() {
-    return name;
-  }
+	@Column(name = "sort_1")
+	private String sort;
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "provinsi_id", referencedColumnName = "provinsi_id", insertable = false, updatable = false)
+	@JsonManagedReference
+	private Province province;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public Province getProvince() {
+		return province;
+	}
+
+	public void setProvince(Province province) {
+		this.province = province;
+	}
+
 }
