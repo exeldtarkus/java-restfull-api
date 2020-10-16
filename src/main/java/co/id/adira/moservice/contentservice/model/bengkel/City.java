@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name="ref_city", schema = "db_bengkel")
+@Table(name="ref_city", schema = "bengkel")
 public class City {
   @Id
   @Column(name="city_id")

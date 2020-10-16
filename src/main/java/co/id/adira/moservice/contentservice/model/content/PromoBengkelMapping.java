@@ -1,15 +1,12 @@
 package co.id.adira.moservice.contentservice.model.content;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "map_promo_bengkel", schema = "db_content")
+@Table(name = "map_promo_bengkel")
 public class PromoBengkelMapping {
 
 	@Id
@@ -20,13 +17,40 @@ public class PromoBengkelMapping {
 
 	@Column(name = "bengkel_id")
 	private Long bengkelId;
+	
+	@Column(name = "group_bengkel_id")
+	private Long groupBengkelId;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
-	private Promo promo;
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getPromoId() {
+		return promoId;
+	}
+
+	public void setPromoId(Long promoId) {
+		this.promoId = promoId;
+	}
 
 	public Long getBengkelId() {
 		return bengkelId;
 	}
 
+	public void setBengkelId(Long bengkelId) {
+		this.bengkelId = bengkelId;
+	}
+
+	public Long getGroupBengkelId() {
+		return groupBengkelId;
+	}
+
+	public void setGroupBengkelId(Long groupBengkelId) {
+		this.groupBengkelId = groupBengkelId;
+	}
+	
 }

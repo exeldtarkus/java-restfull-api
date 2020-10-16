@@ -1,9 +1,8 @@
 package co.id.adira.moservice.contentservice.model.content;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,12 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 @Table(name = "mst_promo")
-public class Promo {
-	
+public class Promo implements Serializable {
+
+	private static final long serialVersionUID = 5529823839874339202L;
+
 	@Id
 	private Long id;
 
@@ -82,85 +81,207 @@ public class Promo {
 	@Column(name = "target_id")
 	private Long targetId;
 
-
-	@Column(name= "cities")
+	@Column(name = "cities")
 	private String cities;
 
-	public String getCities() {
-		return cities;
-	}
-
-	@Column(name= "bengkelNames")
+	@Column(name = "bengkelNames")
 	private String bengkelNames;
 
-	public String getBengkelNames() {
-		return bengkelNames;
-	}
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
-	@JoinColumn(name="promo_id", insertable = false, updatable = false)
-	//@JsonManagedReference
+	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
+	// @JsonManagedReference
 	private List<PromoBengkelMapping> bengkels;
-	
-	public List<Long> getBengkels() {
-    List<Long> bengkelIds;
-    try{
-      bengkelIds = bengkels.stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
-    }catch(Exception e){
-      bengkelIds = null;
-    }
-    return bengkelIds;
-	}
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getTitle() {
 		return title;
 	}
 
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public String getImagePathMobile() {
-		return imagePathMobile;
-	}
-
-	public Long getZoneId() {
-		return zoneId;
-	}
-
-	public Boolean getIsDeleted() {
-		return isDeleted;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public Date getAvailableFrom() {
-		return availableFrom;
-	}
-
-	public Date getAvailableUntil() {
-		return availableUntil;
-	}
-
-	public String getTnc() {
-		return tnc;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getTnc() {
+		return tnc;
+	}
+
+	public void setTnc(String tnc) {
+		this.tnc = tnc;
+	}
+
 	public String getUrlPath() {
 		return urlPath;
 	}
+
+	public void setUrlPath(String urlPath) {
+		this.urlPath = urlPath;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getImagePathMobile() {
+		return imagePathMobile;
+	}
+
+	public void setImagePathMobile(String imagePathMobile) {
+		this.imagePathMobile = imagePathMobile;
+	}
+
+	public Date getAvailableUntil() {
+		return availableUntil;
+	}
+
+	public void setAvailableUntil(Date availableUntil) {
+		this.availableUntil = availableUntil;
+	}
+
+	public Date getAvailableFrom() {
+		return availableFrom;
+	}
+
+	public void setAvailableFrom(Date availableFrom) {
+		this.availableFrom = availableFrom;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
+	public Integer getCounterRedeemed() {
+		return counterRedeemed;
+	}
+
+	public void setCounterRedeemed(Integer counterRedeemed) {
+		this.counterRedeemed = counterRedeemed;
+	}
+
+	public Integer getCounterUsed() {
+		return counterUsed;
+	}
+
+	public void setCounterUsed(Integer counterUsed) {
+		this.counterUsed = counterUsed;
+	}
+
+	public Integer getTotal() {
+		return total;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
+	public Boolean getIsNational() {
+		return isNational;
+	}
+
+	public void setIsNational(Boolean isNational) {
+		this.isNational = isNational;
+	}
+
+	public Long getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(Long zoneId) {
+		this.zoneId = zoneId;
+	}
+
+	public Long getTargetId() {
+		return targetId;
+	}
+
+	public void setTargetId(Long targetId) {
+		this.targetId = targetId;
+	}
+
+	public String getCities() {
+		return cities;
+	}
+
+	public void setCities(String cities) {
+		this.cities = cities;
+	}
+
+	public String getBengkelNames() {
+		return bengkelNames;
+	}
+
+	public void setBengkelNames(String bengkelNames) {
+		this.bengkelNames = bengkelNames;
+	}
+
+	public List<PromoBengkelMapping> getBengkels() {
+		return bengkels;
+	}
+
+	public void setBengkels(List<PromoBengkelMapping> bengkels) {
+		this.bengkels = bengkels;
+	}
+
 }

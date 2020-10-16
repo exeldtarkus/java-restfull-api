@@ -25,71 +25,71 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 @Entity
-@Table(name = "mst_bengkel", schema = "db_bengkel")
+@Table(name = "mst_bengkel", schema = "bengkel")
 public class Bengkel implements Serializable {
 
-  private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 4L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "bengkel_id", unique = true, nullable = false)
-  private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "bengkel_id", unique = true, nullable = false)
+	private Long id;
 
-  @Column(name = "bengkel_name")
-  private String name;
-  
-  @Column(name = "bengkel_address")
-  private String address;
+	@Column(name = "bengkel_name")
+	private String name;
 
-  @Column(name = "bengkel_location")
-  @JsonSerialize(using = GeometrySerializer.class)
-  @JsonDeserialize(contentUsing = GeometryDeserializer.class)
-  private Point location;
+	@Column(name = "bengkel_address")
+	private String address;
 
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinColumn(name = "city_id", referencedColumnName = "city_id", insertable = false, updatable = false)
-  @JsonManagedReference
-  private City city;
+	@Column(name = "bengkel_location")
+	@JsonSerialize(using = GeometrySerializer.class)
+	@JsonDeserialize(contentUsing = GeometryDeserializer.class)
+	private Point location;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "created")
-  private Date created;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "city_id", referencedColumnName = "city_id", insertable = false, updatable = false)
+	@JsonManagedReference
+	private City city;
 
-  @Column(name = "created_by")
-  private Integer createdBy;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created")
+	private Date created;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "updated")
-  private Date updated;
+	@Column(name = "created_by")
+	private Integer createdBy;
 
-  @Column(name = "updated_by")
-  private Integer updatedBy;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated")
+	private Date updated;
 
-  @Column(name = "is_deleted")
-  private Boolean isDeleted;
+	@Column(name = "updated_by")
+	private Integer updatedBy;
 
-  public Long getId() {
-    return id;
-  }
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
 
-  public String getName() {
-    return name;
-  }
+	public Long getId() {
+		return id;
+	}
 
-  public String getAddress() {
-    return address;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public Boolean getIsDeleted() {
-    return isDeleted;
-  }
+	public String getAddress() {
+		return address;
+	}
 
-  public Point getLocation() {
-    return location;
-  }
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
 
-  public City getCity() {
-    return city;
-  }
+	public Point getLocation() {
+		return location;
+	}
+
+	public City getCity() {
+		return city;
+	}
 
 }

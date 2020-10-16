@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
 import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.model.content.PromoBengkelMapping;
 import co.id.adira.moservice.contentservice.repository.bengkel.BengkelRepository;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -161,13 +163,14 @@ public class PromoController {
 	public ResponseEntity<Object> getPromoById(@PathVariable Long id) {
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 		if (promo.isPresent()) {
-			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(promo.get().getBengkels());
+			List<Long> bengkelIds = promo.get().getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
+			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(bengkelIds);
 			ObjectMapper mapObject = new ObjectMapper();
 			Map<String, Object> promoDetail = (Map<String, Object>) mapObject.convertValue(promo.get(), Map.class);
 			promoDetail.put("availableFrom", new Date((Long) promoDetail.get("availableFrom")));
 			promoDetail.put("availableUntil", new Date((Long) promoDetail.get("availableUntil")));
 			promoDetail.put("bengkels", bengkels);
-			return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), promoDetail);
+			return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), promoDetail);
 		} else {
 			return BaseResponse.jsonResponse(HttpStatus.NOT_FOUND, false, HttpStatus.NOT_FOUND.toString(), null);
 		}
