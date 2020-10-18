@@ -1,5 +1,6 @@
 package co.id.adira.moservice.contentservice.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +66,8 @@ public class VoucherController {
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
 		
 		log.info("::: GENERATE QRCODE :::");
-		
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		System.out.println(voucher.getPromo().getAvailableUntil().toString());
 		
 		EmailEventDto emailEventDto = new EmailEventDto(); 
 		emailEventDto.setEventId(UUID.randomUUID().toString());
@@ -77,11 +75,11 @@ public class VoucherController {
 		emailEventDto.setSubject("Moservice - Redeem Promo");
 		emailEventDto.setTemplate(REDEEM_HBS);
 		emailEventDto.setBengkelName(voucher.getBengkel_name());
-		emailEventDto.setAvailableUntil(voucher.getPromo().getAvailableUntil().toString());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		emailEventDto.setAvailableUntil(sdf.format(voucher.getPromo().getAvailableUntil()));
 		emailEventDto.setTo(authentication.getPrincipal().toString());
 		
 		redeemService.sendEmailNotifRedeem(emailEventDto);
-		
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
 	}
 	
