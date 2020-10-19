@@ -2,25 +2,21 @@ package co.id.adira.moservice.contentservice.model.bengkel;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import com.bedatadriven.jackson.datatype.jts.serialization.GeometryDeserializer;
 import com.bedatadriven.jackson.datatype.jts.serialization.GeometrySerializer;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Point;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
@@ -46,7 +42,7 @@ public class Bengkel implements Serializable {
 	@JsonDeserialize(contentUsing = GeometryDeserializer.class)
 	private Point location;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "city_id", referencedColumnName = "city_id", insertable = false, updatable = false)
 	@JsonManagedReference
 	private City city;
