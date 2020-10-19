@@ -27,6 +27,7 @@ import co.id.adira.moservice.contentservice.repository.content.VoucherRepository
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 import co.id.adira.moservice.event.dto.EmailEventDto;
+import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -79,6 +80,10 @@ public class VoucherController {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		emailEventDto.setAvailableUntil(sdf.format(voucher.getPromo().getAvailableUntil()));
 		emailEventDto.setTo(authentication.getPrincipal().toString());
+		
+		User user = new User();
+		user.setId(voucher.getUserId());
+		emailEventDto.setUser(user);
 		
 		redeemService.sendEmailNotifRedeem(emailEventDto);
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
