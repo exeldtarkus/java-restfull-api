@@ -29,7 +29,7 @@ public class City implements Serializable {
 	@Column(name = "sort_1")
 	private String sort;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "provinsi_id", referencedColumnName = "provinsi_id", insertable = false, updatable = false)
 	@JsonManagedReference
 	private Province province;

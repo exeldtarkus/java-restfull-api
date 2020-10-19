@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
 
 @Entity
 @Table(name = "mst_promo")
@@ -85,6 +87,9 @@ public class Promo implements Serializable {
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
 	// @JsonManagedReference
 	private List<PromoBengkelMapping> bengkels;
+	
+	@Transient
+	List<Bengkel> lstBengkel;
 
 	public Long getId() {
 		return id;
@@ -262,4 +267,12 @@ public class Promo implements Serializable {
 		this.bengkels = bengkels;
 	}
 
+	public List<Bengkel> getLstBengkel() {
+		return lstBengkel;
+	}
+
+	public void setLstBengkel(List<Bengkel> lstBengkel) {
+		this.lstBengkel = lstBengkel;
+	}
+	
 }

@@ -46,7 +46,7 @@ public class Bengkel implements Serializable {
 	@JsonDeserialize(contentUsing = GeometryDeserializer.class)
 	private Point location;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "city_id", referencedColumnName = "city_id", insertable = false, updatable = false)
 	@JsonManagedReference
 	private City city;

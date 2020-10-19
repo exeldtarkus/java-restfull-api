@@ -1,17 +1,25 @@
 package co.id.adira.moservice.contentservice.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -65,8 +73,25 @@ public class QRCodeController {
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrCodeRepository.save(qrcode);
-		
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
+	}
+	
+	@GetMapping("/qrcode/download")
+	public ResponseEntity<Resource> downloadQRCode(
+			@RequestParam(name = "url", required = false) String url) {
+		
+		Path path = Paths.get(url);
+		Resource resource = null;
+		try {
+			resource = new UrlResource(url);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+		return ResponseEntity.ok()
+				.contentType(MediaType.IMAGE_PNG)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
 	}
 	
 }

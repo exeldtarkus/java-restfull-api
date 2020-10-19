@@ -152,6 +152,11 @@ public class PromoController {
 
 		Pageable pageable = PageRequest.of(page, size, new Sort(promoSort, sort));
 		promos = (List<Promo>) promoRepository.findByServisIdAndMore(id, currentDate, pageable);
+		
+		if (promos.size() != 0) {
+			List<Long> bengkelIds = promos.parallelStream().map(Promo::getId).collect(Collectors.toList());
+			//List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(bengkelIds);
+		}
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), promos.size());
 		Integer end = Math.min(Math.max(size * page, start), promos.size());
