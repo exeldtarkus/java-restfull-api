@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "ref_provinsi")
@@ -25,7 +26,7 @@ public class Province implements Serializable {
 
 	@OneToMany(targetEntity = City.class)
 	@JoinColumn(name = "provinsi_id", referencedColumnName = "provinsi_id", insertable = false, updatable = false)
-	@JsonBackReference
+	@JsonManagedReference
 	private List<City> cities;
 
 	public Long getId() {
