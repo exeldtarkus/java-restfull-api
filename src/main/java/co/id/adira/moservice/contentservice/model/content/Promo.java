@@ -81,12 +81,6 @@ public class Promo implements Serializable {
 	@Column(name = "target_id")
 	private Long targetId;
 
-	@Column(name = "cities")
-	private String cities;
-
-	@Column(name = "bengkelNames")
-	private String bengkelNames;
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
 	// @JsonManagedReference
@@ -258,22 +252,6 @@ public class Promo implements Serializable {
 
 	public void setTargetId(Long targetId) {
 		this.targetId = targetId;
-	}
-
-	public String getCities() {
-		return cities;
-	}
-
-	public void setCities(String cities) {
-		this.cities = cities;
-	}
-
-	public String getBengkelNames() {
-		return bengkelNames;
-	}
-
-	public void setBengkelNames(String bengkelNames) {
-		this.bengkelNames = bengkelNames;
 	}
 
 	public List<PromoBengkelMapping> getBengkels() {

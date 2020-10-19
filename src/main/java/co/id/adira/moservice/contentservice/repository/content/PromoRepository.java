@@ -21,7 +21,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 	List<Promo> findAllByZoneIdAndMore(@Param("zoneId") Long zoneId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
 
-	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, GROUP_CONCAT(g.bengkel_name) as bengkelNames FROM content.mst_promo a "
+	@Query(value = "SELECT * FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
@@ -35,7 +35,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
 
-	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null as bengkelNames FROM content.mst_promo a "
+	@Query(value = "SELECT * FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
@@ -44,7 +44,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.available_from < :currentDate GROUP BY a.id", nativeQuery = true)
 	Optional<Promo> findByIdAndMore(@Param("id") Long id, @Param("currentDate") Date currentDate);
 
-	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null as bengkelNames  FROM content.mst_promo a "
+	@Query(value = "SELECT * FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
@@ -54,7 +54,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 	List<Promo> findByServisIdAndMore(@Param("servisId") Long servisId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
 
-	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, GROUP_CONCAT(g.bengkel_name) as bengkelNames FROM content.mst_promo a "
+	@Query(value = "SELECT * FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
