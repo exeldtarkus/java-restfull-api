@@ -28,6 +28,9 @@ public class PilihanLain extends BaseEntity {
 	
 	@Column(name = "is_active")
 	private boolean active;
+	
+	@Column(name = "url")
+	private String url;
 
 	public String getName() {
 		return name;
@@ -76,5 +79,14 @@ public class PilihanLain extends BaseEntity {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
 	
 }
