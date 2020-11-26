@@ -14,11 +14,15 @@ import co.id.adira.moservice.contentservice.model.content.Voucher;
 
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	
-	@Query(value = "SELECT *, b.bengkel_name, b.bengkel_address FROM content.tr_promo_user v, bengkel.mst_bengkel b "
+	@Query(value = "SELECT *, b.bengkel_name, b.bengkel_address FROM content.tr_promo_user v, "
+			+ "bengkel.mst_bengkel b, content.mst_promo c "
 			+ "WHERE v.user_id = :userId AND v.use_date IS NULL "
 			+ "AND v.bengkel_id = b.bengkel_id "
+			+ "AND v.promo_id = c.id "
+			+ "AND c.available_until > :currentDate AND c.available_from < :currentDate "
 			+ "ORDER BY :#{#pageable}", nativeQuery = true)
-	List<Voucher> findAllUnusedVoucherAndMore(@Param("userId") Long userId, @Param("pageable") Pageable pageable);
+	List<Voucher> findAllUnusedVoucherAndMore(@Param("userId") Long userId, @Param("currentDate") Date currentDate, 
+			@Param("pageable") Pageable pageable);
 	
 	@Modifying
     @Query(value = 
@@ -40,4 +44,5 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	void insertVoucher(Long bengkelId, 
 			Long bookingId, Long carId, Date created, Promo promo, 
 			QRCode qr, Date redeemDate, Date updated, Date useDate, Long userId);
+	
 }
