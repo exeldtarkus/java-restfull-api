@@ -46,10 +46,11 @@ public class RedeemService {
 	
 	@Transactional(readOnly = false)
 	public QRCode generateQRCodeAndSaveVoucher(Voucher voucher) {
-		
-		OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-		Date date = Date.from(utc.toInstant());
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		// OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+		// Date date = Date.from(utc.toInstant());
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+    Date redeemDate = new Date(now.toInstant().toEpochMilli());
 		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
@@ -57,7 +58,8 @@ public class RedeemService {
 		data.append("&car_id=").append(voucher.getCarId());
 		data.append("&user_id=").append(voucher.getUserId());
 		data.append("&bengkel_id=").append(voucher.getBengkelId());
-		data.append("&redeem_date=").append(sdf.format(date));
+		// data.append("&redeem_date=").append(sdf.format(date));
+		data.append("&redeem_date=").append(now);
 		
 		QRCode qrcode = new QRCode();
 		qrcode.setData(data.toString());
@@ -71,7 +73,7 @@ public class RedeemService {
 		
 		qrCodeRepository.save(qrcode);
 		voucherRepository.insertVoucher(voucher.getBengkelId(), voucher.getBookingId(), voucher.getCarId(), 
-				new Date(), voucher.getPromo(), qrcode, new Date(), null, null, voucher.getUserId());
+				new Date(), voucher.getPromo(), qrcode, redeemDate, null, null, voucher.getUserId());
 		
 		return qrcode;
 	}
