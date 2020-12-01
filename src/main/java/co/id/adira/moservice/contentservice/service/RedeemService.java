@@ -50,7 +50,7 @@ public class RedeemService {
 		// Date date = Date.from(utc.toInstant());
 		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
-    Date redeemDate = new Date(now.toInstant().toEpochMilli());
+		Date redeemDate = new Date(now.toInstant().toEpochMilli());
 		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);

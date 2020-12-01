@@ -132,7 +132,8 @@ public class PromoController {
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(required = false, defaultValue = "desc") String order,
-			@RequestParam(required = false, defaultValue = "id") String sort, @RequestParam(required = false) Long id) {
+			@RequestParam(required = false, defaultValue = "id") String sort, 
+			@RequestParam(required = false) Long id) {
 
 		List<Promo> promos;
 		Sort.Direction promoSort = Sort.Direction.DESC;
