@@ -110,7 +110,7 @@ public class PromoController {
 
 		switch (origin) {
 			case "home":
-				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(1L, currentDate, pageable);
+				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(0L, currentDate, pageable);
 				break;
 			case "promo":
 				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
