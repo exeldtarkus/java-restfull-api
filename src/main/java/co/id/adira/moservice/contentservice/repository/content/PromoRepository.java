@@ -22,7 +22,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "WHERE p.zone_id IN (0,1) AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until > :currentDate " + "AND p.available_from < :currentDate "
 			+ "GROUP BY p.id ORDER BY p.id desc "
-			+ "limit 5", nativeQuery = true)
+			+ "limit 8", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("currentDate") Date currentDate);
 	
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
