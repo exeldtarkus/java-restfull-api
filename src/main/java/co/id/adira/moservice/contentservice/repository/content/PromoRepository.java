@@ -40,8 +40,8 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "JOIN content.map_promo_bengkel f ON a.id = f.promo_id "
-			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE (a.name LIKE %:q% OR e.city_name LIKE %:q%)  "
-			+ "AND c.tipe_servis_id IN :serviceIdsList " + "AND a.special IN :promoTypeList "
+			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE (a.title LIKE %:q% OR e.city_name LIKE %:q%)  "
+			+ "AND (0 IN :serviceIdsList OR (c.tipe_servis_id IN :serviceIdsList))" + "AND a.special IN :promoTypeList "
 			+ "AND a.is_active = TRUE " + "AND a.is_deleted = FALSE " + "AND a.available_until > :currentDate "
 			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(@Param("q") String q, @Param("serviceIdsList") List<Long> serviceIdsList,

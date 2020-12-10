@@ -66,11 +66,6 @@ public class PromoController {
 			@RequestParam(required = false) Long bengkel_id) {
 		List<Promo> promos;
 
-		// Get all service type if ?service_type=0
-		if (service_type.get(0) == 0L) {
-			service_type = Arrays
-					.asList(new Long[] { 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 16L });
-		}
 
 		// Get all promo type if promo_type is null
 		List<Integer> promoTypeList = new ArrayList<Integer>();
