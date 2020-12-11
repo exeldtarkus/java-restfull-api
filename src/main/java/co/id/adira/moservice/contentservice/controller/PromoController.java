@@ -108,7 +108,7 @@ public class PromoController {
 			sort = "id";
 
 		Pageable pageable = PageRequest.of(page, size, new Sort(promoSort, sort));
-
+		
 		List<Promo> promos;
 		switch (origin) {
 			case "home":

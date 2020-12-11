@@ -44,8 +44,8 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.special IN :promoTypeList "
 			+ "AND a.is_active = TRUE " 
 			+ "AND a.is_deleted = FALSE " 
-			+ "AND a.available_until > :currentDate "
-			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
+			+ "AND a.available_until >= :currentDate "
+			+ "AND a.available_from <= :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(@Param("q") String q, @Param("service_type") List<Long> service_type,
 			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate,
 			@Param("serviceIdsList") String serviceIdsList, @Param("pageable") Pageable pageable);
