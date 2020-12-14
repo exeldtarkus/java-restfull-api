@@ -30,8 +30,7 @@ public class KategoriController {
 			@RequestParam(required = false) String email,
 			@RequestParam(required = false) Long uid) {
 
-		List<EligibilityDTO> isEligible = kategoriRepository.checkifEligible(promoId, email);;	
-		//  a = (List<EligibilityDTO>) 
+		EligibilityDTO isEligible = kategoriRepository.checkifEligible(promoId, email);;
 
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), isEligible);
 	}

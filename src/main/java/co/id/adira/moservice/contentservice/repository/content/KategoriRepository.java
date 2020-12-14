@@ -30,5 +30,5 @@ public interface KategoriRepository extends JpaRepository<Kategori, Long> {
 			+ "AND a.is_deleted = 0 "
 			+ "AND a.is_active = 1 "
 			+ "LIMIT 1;", nativeQuery = true)
-	  List<EligibilityDTO> checkifEligible(@Param("promoId") Long promoId, @Param("email") String email);
+	  EligibilityDTO checkifEligible(@Param("promoId") Long promoId, @Param("email") String email);
 }
