@@ -1,13 +1,10 @@
 package co.id.adira.moservice.contentservice.repository.content;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import co.id.adira.moservice.contentservice.model.content.Kategori;
 import co.id.adira.moservice.contentservice.dto.content.EligibilityDTO;
-
-import java.util.List;
 
 public interface KategoriRepository extends JpaRepository<Kategori, Long> {
 
