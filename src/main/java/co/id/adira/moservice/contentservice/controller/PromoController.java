@@ -107,7 +107,7 @@ public class PromoController {
 		if (!this.ArrayIncludes(acceptedSort, sort))
 			sort = "id";
 
-		Pageable pageable = PageRequest.of(page, size, new Sort(promoSort, sort));
+		Pageable pageable = PageRequest.of((page-1), size, new Sort(promoSort, sort));
 		
 		List<Promo> promos;
 		switch (origin) {
@@ -126,7 +126,7 @@ public class PromoController {
 		Integer start = Math.min(Math.max(size * (page - 1), 0), promos.size());
 		Integer end = Math.min(Math.max(size * page, start), promos.size());
 		Page<Promo> pages = new PageImpl<Promo>(promos.subList(start, end), pageable, promos.size());
-
+		System.out.println(promos.size());
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), pages);
 	}
 
@@ -154,7 +154,7 @@ public class PromoController {
 		if (!this.ArrayIncludes(acceptedSort, sort))
 			sort = "id";
 
-		Pageable pageable = PageRequest.of(page, size, new Sort(promoSort, sort));
+		Pageable pageable = PageRequest.of((page-1), size, new Sort(promoSort, sort));
 		promos = (List<Promo>) promoRepository.findByServisIdAndMore(id, currentDate, pageable);
 		
 		if (promos.size() != 0) {
