@@ -3,7 +3,6 @@
  */
 package co.id.adira.moservice.contentservice.service;
 
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;

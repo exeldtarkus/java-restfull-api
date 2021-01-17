@@ -71,6 +71,10 @@ public class QRCodeUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", new Locale("id", "ID"));
 		String dateUntil = sdf.format(voucher.getPromo().getAvailableUntil());
 		String bengkelName = voucher.getBengkel_name();
+		int fontSizeBengkel = 20;
+		if (bengkelName.length() > 25) {
+			fontSizeBengkel = 15;
+		}
 
 		try {
 			// Create a qr code with the url as content and a size of 250x250 px
@@ -105,7 +109,7 @@ public class QRCodeUtil {
 			// calculate height of QR code and the texts.
 			int qrY = (int) Math.round(canvasHeight * 0.17);
 			int bottomTextY = (int) Math.round(canvasHeight * 0.88); // 8/9 of 450 = 400
-			int centerXTitle = 15;
+			//int centerXTitle = 15;
 			int titleY = (int) Math.round(canvasHeight * 0.11); // 1/9 of 450 = 50
 			int dateUntilY = (int) Math.round(canvasHeight * 0.17); // 1/6 of 450 = 75
 
@@ -115,7 +119,7 @@ public class QRCodeUtil {
 
 			// Set font
 			Font font1 = new Font("DM Sans", Font.PLAIN, 20);
-			Font font3 = new Font("Poppins", Font.BOLD, 20);
+			Font font3 = new Font("Poppins", Font.BOLD, fontSizeBengkel);
 			g.setFont(font1);
 
 			// RenderingHints to make text smoother.
@@ -146,10 +150,13 @@ public class QRCodeUtil {
 			// Check String
 
 			// Load String
-			g.drawString("Gunakan sebelum", centerXTitle, titleY);
-			g.drawString(dateUntil, centerXTitle, dateUntilY);
+			g.drawString("Gunakan sebelum", 60, titleY);
+			g.drawString(dateUntil, 82, dateUntilY);
+			
 			g.setFont(font3);
-			drawString(g, bengkelName, centerXTitle, bottomTextY, canvasWidth - centerXTitle);
+			FontMetrics fm = g.getFontMetrics();
+			int x = (canvasWidth - fm.stringWidth(bengkelName)) / 2;
+			g.drawString(bengkelName, x, bottomTextY);
 
 			// Write combined image as PNG to OutputStream
 			ImageIO.write(combined, "png", baos);
@@ -164,7 +171,6 @@ public class QRCodeUtil {
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 			BufferedImage bufferedImage = ImageIO.read(bais);
 
-			log.info("Generated QRCode in path :: " + path);
 			ImageIO.write(bufferedImage, "png", new File(path));
 
 			return new String[] { uuid, base64 };
@@ -186,38 +192,6 @@ public class QRCodeUtil {
 		g.drawImage(image, 0, 0, size.getWidth(), size.getHeight(), null);
 		g.dispose();
 		return resized;
-	}
-
-	// method to split string if longer than width
-	// source:
-	// https://stackoverflow.com/questions/18800717/convert-text-content-to-image/18800845#18800845
-	public static void drawString(Graphics2D g, String s, int x, int y, int width) {
-		// FontMetrics gives us information about the width,
-		// height, etc. of the current Graphics object's Font.
-		FontMetrics fm = g.getFontMetrics();
-
-		int lineHeight = fm.getHeight();
-
-		int curX = x;
-		int curY = y;
-
-		String[] words = s.split(" ");
-
-		for (String word : words) {
-			// Find out thw width of the word.
-			int wordWidth = fm.stringWidth(word + " ");
-
-			// If text exceeds the width, then move to next line.
-			if (curX + wordWidth >= x + width) {
-				curY += lineHeight;
-				curX = x;
-			}
-
-			g.drawString(word, curX, curY);
-
-			// Move over to the right for next word.
-			curX += wordWidth;
-		}
 	}
 
 }
