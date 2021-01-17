@@ -44,7 +44,7 @@ public class PromoController {
 	@Autowired
 	private ServiceTypeRepository serviceTypeRepository;
 
-	private final Date currentDate = new Date();
+	private Date currentDate = new Date();
 
 	private final String[] acceptedOrder = { "desc", "asc" };
 	private final String[] acceptedSort = { "id", "name" };

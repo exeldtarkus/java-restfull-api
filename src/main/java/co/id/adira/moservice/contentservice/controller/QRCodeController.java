@@ -66,7 +66,7 @@ public class QRCodeController {
 	@PostMapping(path = "/qrcode/generate")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody QRCode qrcode) {
 		qrcode.setQrcodePath(pathUploadQrcode);
-		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
+		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode, null);
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());

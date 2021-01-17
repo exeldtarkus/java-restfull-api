@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import co.id.adira.moservice.contentservice.interceptor.UserIdInterceptor;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
@@ -43,6 +45,9 @@ public class VoucherController {
 	
 	@Autowired
 	private RedeemService redeemService;
+	
+	@Autowired
+	private UserIdInterceptor userIdInterceptor;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -50,6 +55,12 @@ public class VoucherController {
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
 
+		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
+		if (!isValidUser) {
+			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false, 
+					"unknown user", null);
+		}
+		
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
 		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, pageable);
