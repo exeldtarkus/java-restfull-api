@@ -150,7 +150,7 @@ public class QRCodeUtil {
 			// Check String
 
 			// Load String
-			g.drawString("Gunakan sebelum", 60, titleY);
+			g.drawString("Gunakan Sebelum", 60, titleY);
 			g.drawString(dateUntil, 80, dateUntilY);
 			
 			g.setFont(font3);
