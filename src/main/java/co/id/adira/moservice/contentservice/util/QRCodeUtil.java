@@ -119,7 +119,7 @@ public class QRCodeUtil {
 
 			// Set font
 			Font font1 = new Font("DM Sans", Font.PLAIN, 20);
-			Font font3 = new Font("Poppins", Font.BOLD, fontSizeBengkel);
+			Font font3 = new Font("DM Sans", Font.BOLD, fontSizeBengkel);
 			g.setFont(font1);
 
 			// RenderingHints to make text smoother.
@@ -151,7 +151,7 @@ public class QRCodeUtil {
 
 			// Load String
 			g.drawString("Gunakan sebelum", 60, titleY);
-			g.drawString(dateUntil, 82, dateUntilY);
+			g.drawString(dateUntil, 80, dateUntilY);
 			
 			g.setFont(font3);
 			FontMetrics fm = g.getFontMetrics();
