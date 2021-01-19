@@ -4,9 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import co.id.adira.moservice.contentservice.model.content.Promo;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,13 +38,17 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "JOIN content.map_promo_bengkel f ON a.id = f.promo_id "
-			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE (a.title LIKE %:q% OR e.city_name LIKE %:q%)  "
-			+ "AND (0 IN :serviceIdsList OR (c.tipe_servis_id IN :serviceIdsList))" + "AND a.special IN :promoTypeList "
-			+ "AND a.is_active = TRUE " + "AND a.is_deleted = FALSE " + "AND a.available_until > :currentDate "
-			+ "AND a.available_from < :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
-	List<Promo> findAllAndMore(@Param("q") String q, @Param("serviceIdsList") List<Long> serviceIdsList,
+			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " 
+			+ "WHERE (a.title LIKE %:q% OR e.city_name LIKE %:q%) "
+			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
+			+ "AND a.special IN :promoTypeList "
+			+ "AND a.is_active = TRUE " 
+			+ "AND a.is_deleted = FALSE " 
+			+ "AND a.available_until >= :currentDate "
+			+ "AND a.available_from <= :currentDate GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
+	List<Promo> findAllAndMore(@Param("q") String q, @Param("service_type") List<Long> service_type,
 			@Param("promoTypeList") List<Integer> promoTypeList, @Param("currentDate") Date currentDate,
-			@Param("pageable") Pageable pageable);
+			@Param("serviceIdsList") String serviceIdsList, @Param("pageable") Pageable pageable);
 
 	@Query(value = "SELECT * FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
