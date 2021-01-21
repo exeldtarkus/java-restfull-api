@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,7 +120,7 @@ public class QRCodeUtil {
 
 			// Set font
 			Font font1 = new Font("DM Sans", Font.PLAIN, 20);
-			Font font3 = new Font("DM Sans", Font.BOLD, fontSizeBengkel);
+			Font font3 = new Font("DM Sans", Font.BOLD, 20);
 			g.setFont(font1);
 
 			// RenderingHints to make text smoother.
@@ -156,7 +157,8 @@ public class QRCodeUtil {
 			g.setFont(font3);
 			FontMetrics fm = g.getFontMetrics();
 			int x = (canvasWidth - fm.stringWidth(bengkelName)) / 2;
-			g.drawString(bengkelName, x, bottomTextY);
+			// g.drawString(bengkelName, x, bottomTextY);
+			drawStringLines(g, bengkelName, x, bottomTextY, canvasWidth);
 
 			// Write combined image as PNG to OutputStream
 			ImageIO.write(combined, "png", baos);
@@ -192,6 +194,59 @@ public class QRCodeUtil {
 		g.drawImage(image, 0, 0, size.getWidth(), size.getHeight(), null);
 		g.dispose();
 		return resized;
+	}
+
+	//method to split string if longer than width
+	//source: https://stackoverflow.com/questions/400566/full-justification-with-a-java-graphics-drawstring-replacement
+	public static void drawStringLines(Graphics2D g, String s, int x, int y, int width)
+	{
+		// FontMetrics gives us information about the width,
+		// height, etc. of the current Graphics object's Font.
+		FontMetrics fm = g.getFontMetrics();
+
+		int lineHeight = fm.getHeight();
+
+		int curX = x < 10 ? 10 : x;
+		int curY = y;
+
+		String[] words = s.split(" ");
+		String oneLine = "";
+		ArrayList<String> sentences = new ArrayList<String>();
+
+		// System.out.println("" + x + " "+ y + " " + width);
+		for (int i = 0; i< words.length; i++)
+		{
+			// Find out thw width of the word.
+			int wordWidth = fm.stringWidth(words[i] + " ");
+			// If text exceeds the width, then move to next line.
+			// System.out.println("c" + curX +  " " + wordWidth + " " + x + " " + width + " "+ curY);
+			// System.out.println("b " + oneLine + " " + words[i]);
+			if (curX + wordWidth >=  width)
+			{
+				curX = x < 10 ? 10 : x;
+				sentences.add(oneLine);
+				oneLine = "";
+				// System.out.println("a " + oneLine + " " + words[i]);
+
+			}
+			oneLine+= " " + words[i];
+			if(i == words.length-1){
+				sentences.add(oneLine);
+			}
+
+			// Move over to the right for next words[i].
+			curX += wordWidth;
+		}
+
+		//drawString after get sentences
+
+		for(int i = 0; i< sentences.size(); i++){
+			int sentenceWidth = fm.stringWidth(sentences.get(i) + " ");
+			int xFix = (width - sentenceWidth) / 2;
+			// System.out.println("d " + sentences.get(i) + " " + curX +  " " + sentenceWidth + " " + x + " " + width + " "+ curY + " " + xFix);
+			g.drawString(sentences.get(i), xFix, curY);
+			curY+=lineHeight;
+		}
 	}
 
 }
