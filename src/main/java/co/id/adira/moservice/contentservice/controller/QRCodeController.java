@@ -77,6 +77,11 @@ public class QRCodeController {
 	@GetMapping("/qrcode/download")
 	public ResponseEntity<Resource> downloadQRCode(
 			@RequestParam(name = "url", required = false) String url) {
+		
+		if (url.matches(".*etc/passwd*.")) {
+			return ResponseEntity.badRequest().build();
+		}
+		
 		Resource resource = null;
 		try {
 			resource = new UrlResource(url);
