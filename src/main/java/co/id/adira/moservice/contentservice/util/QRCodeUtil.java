@@ -110,7 +110,7 @@ public class QRCodeUtil {
 			// calculate height of QR code and the texts.
 			int qrY = (int) Math.round(canvasHeight * 0.17);
 			int bottomTextY = (int) Math.round(canvasHeight * 0.88); // 8/9 of 450 = 400
-			//int centerXTitle = 15;
+			// int centerXTitle = 15;
 			int titleY = (int) Math.round(canvasHeight * 0.11); // 1/9 of 450 = 50
 			int dateUntilY = (int) Math.round(canvasHeight * 0.17); // 1/6 of 450 = 75
 
@@ -124,8 +124,7 @@ public class QRCodeUtil {
 			g.setFont(font1);
 
 			// RenderingHints to make text smoother.
-			g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-			RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+			g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 			g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
@@ -153,7 +152,7 @@ public class QRCodeUtil {
 			// Load String
 			g.drawString("Gunakan Sebelum", 60, titleY);
 			g.drawString(dateUntil, 80, dateUntilY);
-			
+
 			g.setFont(font3);
 			FontMetrics fm = g.getFontMetrics();
 			int x = (canvasWidth - fm.stringWidth(bengkelName)) / 2;
@@ -196,10 +195,10 @@ public class QRCodeUtil {
 		return resized;
 	}
 
-	//method to split string if longer than width
-	//source: https://stackoverflow.com/questions/400566/full-justification-with-a-java-graphics-drawstring-replacement
-	public static void drawStringLines(Graphics2D g, String s, int x, int y, int width)
-	{
+	// method to split string if longer than width
+	// source:
+	// https://stackoverflow.com/questions/400566/full-justification-with-a-java-graphics-drawstring-replacement
+	public static void drawStringLines(Graphics2D g, String s, int x, int y, int width) {
 		// FontMetrics gives us information about the width,
 		// height, etc. of the current Graphics object's Font.
 		FontMetrics fm = g.getFontMetrics();
@@ -214,23 +213,22 @@ public class QRCodeUtil {
 		ArrayList<String> sentences = new ArrayList<String>();
 
 		// System.out.println("" + x + " "+ y + " " + width);
-		for (int i = 0; i< words.length; i++)
-		{
+		for (int i = 0; i < words.length; i++) {
 			// Find out thw width of the word.
 			int wordWidth = fm.stringWidth(words[i] + " ");
 			// If text exceeds the width, then move to next line.
-			// System.out.println("c" + curX +  " " + wordWidth + " " + x + " " + width + " "+ curY);
+			// System.out.println("c" + curX + " " + wordWidth + " " + x + " " + width + "
+			// "+ curY);
 			// System.out.println("b " + oneLine + " " + words[i]);
-			if (curX + wordWidth >=  width)
-			{
+			if (curX + wordWidth >= width) {
 				curX = x < 10 ? 10 : x;
 				sentences.add(oneLine);
 				oneLine = "";
 				// System.out.println("a " + oneLine + " " + words[i]);
 
 			}
-			oneLine+= " " + words[i];
-			if(i == words.length-1){
+			oneLine += " " + words[i];
+			if (i == words.length - 1) {
 				sentences.add(oneLine);
 			}
 
@@ -238,14 +236,15 @@ public class QRCodeUtil {
 			curX += wordWidth;
 		}
 
-		//drawString after get sentences
+		// drawString after get sentences
 
-		for(int i = 0; i< sentences.size(); i++){
+		for (int i = 0; i < sentences.size(); i++) {
 			int sentenceWidth = fm.stringWidth(sentences.get(i) + " ");
 			int xFix = (width - sentenceWidth) / 2;
-			// System.out.println("d " + sentences.get(i) + " " + curX +  " " + sentenceWidth + " " + x + " " + width + " "+ curY + " " + xFix);
+			// System.out.println("d " + sentences.get(i) + " " + curX + " " + sentenceWidth
+			// + " " + x + " " + width + " "+ curY + " " + xFix);
 			g.drawString(sentences.get(i), xFix, curY);
-			curY+=lineHeight;
+			curY += lineHeight;
 		}
 	}
 
