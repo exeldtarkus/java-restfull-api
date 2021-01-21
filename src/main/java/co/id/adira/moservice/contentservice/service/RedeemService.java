@@ -3,7 +3,6 @@
  */
 package co.id.adira.moservice.contentservice.service;
 
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -64,7 +63,7 @@ public class RedeemService {
 		QRCode qrcode = new QRCode();
 		qrcode.setData(data.toString());
 		qrcode.setQrcodePath(pathUploadQrcode);
-		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode);
+		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode, voucher);
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
 		//qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
