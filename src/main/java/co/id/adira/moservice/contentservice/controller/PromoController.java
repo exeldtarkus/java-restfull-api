@@ -44,8 +44,6 @@ public class PromoController {
 	@Autowired
 	private ServiceTypeRepository serviceTypeRepository;
 
-	private Date currentDate = new Date();
-
 	private final String[] acceptedOrder = { "desc", "asc" };
 	private final String[] acceptedSort = { "id", "name" };
 
@@ -65,6 +63,7 @@ public class PromoController {
 			@RequestParam(required = false) String promo_type,
 			@RequestParam(required = false) Long bengkel_id) {
 		
+		Date currentDate = new Date();
 		String serviceIdsList = null;
 		if (null == service_type) {
 			List<ServiceType> serviceType = serviceTypeRepository.findAll();
@@ -138,6 +137,7 @@ public class PromoController {
 			@RequestParam(required = false, defaultValue = "id") String sort, 
 			@RequestParam(required = false) Long id) {
 
+		Date currentDate = new Date();
 		List<Promo> promos;
 		Sort.Direction promoSort = Sort.Direction.DESC;
 		if (this.ArrayIncludes(acceptedOrder, order)) {
@@ -171,6 +171,7 @@ public class PromoController {
 
 	@GetMapping(path = "/promo/{id}")
 	public ResponseEntity<Object> getPromoById(@PathVariable Long id) {
+		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 		if (promo.isPresent()) {
 			List<Long> bengkelIds = promo.get().getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
