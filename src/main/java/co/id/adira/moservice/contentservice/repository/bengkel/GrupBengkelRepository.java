@@ -11,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 public interface GrupBengkelRepository extends JpaRepository <GrupBengkel, Long> {
     
     @Query(value= "SELECT " 
-            + "DISTINCT * " 
-            + "FROM mst_group_bengkel mst " 
-            + "JOIN map_group_bengkel map ON map.group_bengkel_id = mst.id " 
-            + "WHERE map.bengkel_id IN (:bengkel_ids) "
-            + "GROUP BY mst.id;", nativeQuery = true)
+            + "DISTINCT c.*"
+            + "FROM mst_bengkel a " 
+            + "LEFT JOIN map_group_bengkel b ON b.bengkel_id = a.bengkel_id " 
+            + "LEFT JOIN mst_group_bengkel c ON c.id = b.group_bengkel_id " 
+            + "WHERE a.bengkel_id IN (:bengkel_ids);", nativeQuery = true)
     List<GrupBengkel> findAllByBengkelIds(@Param("bengkel_ids") List<Long> bengkel_ids);
 }
