@@ -15,6 +15,8 @@ public interface GrupBengkelRepository extends JpaRepository <GrupBengkel, Long>
             + "FROM mst_bengkel a " 
             + "LEFT JOIN map_group_bengkel b ON b.bengkel_id = a.bengkel_id " 
             + "LEFT JOIN mst_group_bengkel c ON c.id = b.group_bengkel_id " 
-            + "WHERE a.bengkel_id IN (:bengkel_ids);", nativeQuery = true)
+            + "WHERE a.bengkel_id IN (:bengkel_ids) "
+            + "AND c.is_active = 1 AND c.is_deleted = 0; "
+            , nativeQuery = true)
     List<GrupBengkel> findAllByBengkelIds(@Param("bengkel_ids") List<Long> bengkel_ids);
 }
