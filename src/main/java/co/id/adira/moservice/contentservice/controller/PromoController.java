@@ -1,12 +1,16 @@
 package co.id.adira.moservice.contentservice.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
+import co.id.adira.moservice.contentservice.model.bengkel.City;
 import co.id.adira.moservice.contentservice.model.bengkel.GrupBengkel;
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.PromoBengkelMapping;
 import co.id.adira.moservice.contentservice.model.servis.ServiceType;
 import co.id.adira.moservice.contentservice.repository.bengkel.BengkelRepository;
+import co.id.adira.moservice.contentservice.repository.bengkel.CityRepository;
 import co.id.adira.moservice.contentservice.repository.bengkel.GrupBengkelRepository;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.repository.servis.ServiceTypeRepository;
@@ -48,6 +52,9 @@ public class PromoController {
 
 	@Autowired
 	private GrupBengkelRepository grupBengkelRepository;
+
+	@Autowired
+	private CityRepository cityRepository;
 
 	private final String[] acceptedOrder = { "desc", "asc" };
 	private final String[] acceptedSort = { "id", "name" };
@@ -125,6 +132,11 @@ public class PromoController {
 				promos = (bengkel_id != null) ? (List<Promo>) promoRepository.findByBengkelIdAndMore(bengkel_id, currentDate, pageable) 
 						: (List<Promo>) promoRepository.findAllAndMore(q, service_type, promoTypeList, currentDate, serviceIdsList, pageable);
 				break;
+		}
+		// = new ArrayList<ProvinceCityDTO>();
+		for (Promo promo : promos) {
+			List<ProvinceCityDTO> cities   = cityRepository.findAllCitiesByPromoId(promo.getId());
+			promo.setProvinceCities(cities);
 		}
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), promos.size());
