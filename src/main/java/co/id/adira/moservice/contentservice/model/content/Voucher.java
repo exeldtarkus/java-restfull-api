@@ -66,6 +66,17 @@ public class Voucher implements Serializable {
 	@Column
 	private String bengkel_address;
 
+	@Column(name = "utm")
+	private String utm;
+
+	public String getUtm() {
+		return utm;
+	}
+
+	public void setUtm(String utm) {
+		this.utm = utm;
+	}
+
 	public Long getId() {
 		return id;
 	}
