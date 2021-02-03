@@ -12,7 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
+import co.id.adira.moservice.contentservice.model.bengkel.City;
 
 @Entity
 @Table(name = "mst_promo")
@@ -90,6 +93,9 @@ public class Promo implements Serializable {
 	
 	@Transient
 	List<Bengkel> lstBengkel;
+
+	@Transient
+	List<ProvinceCityDTO> provinceCities;
 
 	public Long getId() {
 		return id;
@@ -273,6 +279,14 @@ public class Promo implements Serializable {
 
 	public void setLstBengkel(List<Bengkel> lstBengkel) {
 		this.lstBengkel = lstBengkel;
+	}
+
+	public List<ProvinceCityDTO> getProvinceCities() {
+		return provinceCities;
+	}
+
+	public void setProvinceCities(List<ProvinceCityDTO> provinceCities) {
+		this.provinceCities = provinceCities;
 	}
 	
 }
