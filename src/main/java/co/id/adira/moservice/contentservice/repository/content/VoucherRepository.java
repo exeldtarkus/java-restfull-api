@@ -37,12 +37,13 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     		+ "redeem_date, "
     		+ "updated, "
     		+ "use_date, "
-    		+ "user_id) "
+				+ "user_id, "
+				+ "utm) "
     		+ "values "
-    		+ "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) "  
+    		+ "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11) "  
     		, nativeQuery = true)
 	void insertVoucher(Long bengkelId, 
 			Long bookingId, Long carId, Date created, Promo promo, 
-			QRCode qr, Date redeemDate, Date updated, Date useDate, Long userId);
+			QRCode qr, Date redeemDate, Date updated, Date useDate, Long userId, String Utm);
 	
 }

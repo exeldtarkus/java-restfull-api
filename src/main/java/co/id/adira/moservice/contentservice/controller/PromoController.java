@@ -1,11 +1,17 @@
 package co.id.adira.moservice.contentservice.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
+import co.id.adira.moservice.contentservice.model.bengkel.City;
+import co.id.adira.moservice.contentservice.model.bengkel.GrupBengkel;
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.PromoBengkelMapping;
 import co.id.adira.moservice.contentservice.model.servis.ServiceType;
 import co.id.adira.moservice.contentservice.repository.bengkel.BengkelRepository;
+import co.id.adira.moservice.contentservice.repository.bengkel.CityRepository;
+import co.id.adira.moservice.contentservice.repository.bengkel.GrupBengkelRepository;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.repository.servis.ServiceTypeRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
@@ -43,6 +49,12 @@ public class PromoController {
 	
 	@Autowired
 	private ServiceTypeRepository serviceTypeRepository;
+
+	@Autowired
+	private GrupBengkelRepository grupBengkelRepository;
+
+	@Autowired
+	private CityRepository cityRepository;
 
 	private final String[] acceptedOrder = { "desc", "asc" };
 	private final String[] acceptedSort = { "id", "name" };
@@ -121,6 +133,11 @@ public class PromoController {
 						: (List<Promo>) promoRepository.findAllAndMore(q, service_type, promoTypeList, currentDate, serviceIdsList, pageable);
 				break;
 		}
+		// = new ArrayList<ProvinceCityDTO>();
+		for (Promo promo : promos) {
+			List<ProvinceCityDTO> cities   = cityRepository.findAllCitiesByPromoId(promo.getId());
+			promo.setProvinceCities(cities);
+		}
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), promos.size());
 		Integer end = Math.min(Math.max(size * page, start), promos.size());
@@ -178,9 +195,11 @@ public class PromoController {
 			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(bengkelIds);
 			ObjectMapper mapObject = new ObjectMapper();
 			Map<String, Object> promoDetail = (Map<String, Object>) mapObject.convertValue(promo.get(), Map.class);
+			List<GrupBengkel> grupBengkels = (List<GrupBengkel>) grupBengkelRepository.findAllByBengkelIds(bengkelIds);
 			promoDetail.put("availableFrom", new Date((Long) promoDetail.get("availableFrom")));
 			promoDetail.put("availableUntil", new Date((Long) promoDetail.get("availableUntil")));
 			promoDetail.put("bengkels", bengkels);
+			promoDetail.put("grupBengkels", grupBengkels);
 			return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), promoDetail);
 		} else {
 			return BaseResponse.jsonResponse(HttpStatus.NOT_FOUND, false, HttpStatus.NOT_FOUND.toString(), null);
