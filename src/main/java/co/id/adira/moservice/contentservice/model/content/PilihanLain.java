@@ -32,6 +32,9 @@ public class PilihanLain extends BaseEntity {
 	@Column(name = "url")
 	private String url;
 
+	@Column(name = "position")
+	private Long position;
+	
 	public String getName() {
 		return name;
 	}
@@ -87,6 +90,13 @@ public class PilihanLain extends BaseEntity {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
+	public Long getPosition() {
+		return position;
+	}
+
+	public void setPosition(Long position) {
+		this.position = position;
+	}
 	
 }
