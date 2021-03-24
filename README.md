@@ -1,29 +1,8 @@
-# README #
+# content-service #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+* This repository handle the backend functionality of the promo and its transaction in moservice.id, the backend functionality also includes the backend functionality to get the list of the promo, detail and the redeem transaction
 
-### What is this repository for? ###
+### Run & Build Application ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* mvn clean install
+* mvn spring-boot:run
