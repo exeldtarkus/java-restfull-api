@@ -65,7 +65,7 @@ public class RedeemService {
 		qrcode.setQrcodePath(pathUploadQrcode);
 		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode, voucher);
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
-		//qrcode.setBase64QRCode(response[1]);
+		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrcode.setPromoId(voucher.getPromo().getId());
 		qrcode.setUserId(voucher.getUserId());

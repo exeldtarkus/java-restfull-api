@@ -93,6 +93,7 @@ public class VoucherController {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		emailEventDto.setAvailableUntil(sdf.format(voucher.getPromo().getAvailableUntil()));
 		emailEventDto.setTo(authentication.getPrincipal().toString());
+		emailEventDto.setQrCodePath(qrcode.getQrcodePath());
 		
 		User user = new User();
 		user.setId(voucher.getUserId());
