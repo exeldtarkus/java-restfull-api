@@ -129,8 +129,34 @@ public class PromoController {
 				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
 				break;
 			default:
-				promos = (bengkel_id != null) ? (List<Promo>) promoRepository.findByBengkelIdAndMore(bengkel_id, currentDate, pageable) 
-						: (List<Promo>) promoRepository.findAllAndMore(q, service_type, promoTypeList, currentDate, serviceIdsList, pageable);
+				if (bengkel_id != null) {
+					promos = (List<Promo>) promoRepository.findByBengkelIdAndMore(bengkel_id, currentDate, pageable);
+				} else {
+
+					List<ServiceType> serviceTypesSearch;
+					List<Long> searchServiceTypeIds = null;
+
+					if ((q != null) && (!q.isEmpty())) {
+						serviceTypesSearch = serviceTypeRepository.getServiceTypeByQuery(q);
+						if (!serviceTypesSearch.isEmpty()) {
+							searchServiceTypeIds = serviceTypesSearch
+									.stream()
+									.map(ServiceType::getId)
+									.collect(Collectors.toList());
+						}
+
+					}
+
+					promos = (List<Promo>) promoRepository.findAllAndMore(
+							q,
+							service_type,
+							promoTypeList,
+							currentDate,
+							serviceIdsList,
+							searchServiceTypeIds,
+							pageable
+					);
+				}
 				break;
 		}
 		// = new ArrayList<ProvinceCityDTO>();
