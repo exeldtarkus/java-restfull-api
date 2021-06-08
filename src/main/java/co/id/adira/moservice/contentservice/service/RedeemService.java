@@ -50,6 +50,7 @@ public class RedeemService {
 		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
 		Date redeemDate = new Date(now.toInstant().toEpochMilli());
+		Long transactionStatusId = new Long(2);
 		
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
@@ -72,7 +73,7 @@ public class RedeemService {
 		
 		qrCodeRepository.save(qrcode);
 		voucherRepository.insertVoucher(voucher.getBengkelId(), voucher.getBookingId(), voucher.getCarId(),
-				new Date(), voucher.getPromo(), qrcode, redeemDate, null, null, voucher.getUserId(), voucher.getUtm());
+				new Date(), voucher.getPromo(), qrcode, redeemDate, null, null, voucher.getUserId(), voucher.getUtm(), transactionStatusId);
 		
 		return qrcode;
 	}

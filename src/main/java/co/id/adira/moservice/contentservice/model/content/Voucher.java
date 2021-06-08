@@ -69,6 +69,9 @@ public class Voucher implements Serializable {
 	@Column(name = "utm")
 	private String utm;
 
+	@Column(name = "transaction_status_id")
+	private Long transactionStatusId;
+
 	public String getUtm() {
 		return utm;
 	}
@@ -179,6 +182,14 @@ public class Voucher implements Serializable {
 
 	public void setBengkel_address(String bengkel_address) {
 		this.bengkel_address = bengkel_address;
+	}
+
+	public Long getTransactionStatusId(){
+		return transactionStatusId;
+	}
+
+	public void setTransactionStatusId(Long transactionStatusId){
+		this.transactionStatusId = transactionStatusId;
 	}
 
 	@Override
