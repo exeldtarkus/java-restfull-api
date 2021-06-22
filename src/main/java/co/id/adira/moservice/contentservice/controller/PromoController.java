@@ -89,6 +89,7 @@ public class PromoController {
 		if (promo_type == null) {
 			promoTypeList.add(0);
 			promoTypeList.add(1);
+			promoTypeList.add(2);
 		} else {
 			switch (promo_type) {
 				case "0":
@@ -97,9 +98,13 @@ public class PromoController {
 				case "1":
 					promoTypeList.add(1);
 					break;
+				case "2":
+					promoTypeList.add(2);
+					break;
 				default:
 					promoTypeList.add(0);
 					promoTypeList.add(1);
+					promoTypeList.add(2);
 					break;
 			}
 		}
