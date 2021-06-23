@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +49,9 @@ public class VoucherController {
 	
 	@Autowired
 	private UserIdInterceptor userIdInterceptor;
+
+	@Autowired
+	private KafkaTemplate<String, Long> kafkaTemplateNotif;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -100,7 +104,20 @@ public class VoucherController {
 		emailEventDto.setUser(user);
 		
 		redeemService.sendEmailNotifRedeem(emailEventDto);
+		this.sendNotifRedeem(qrcode.getId());
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
+	}
+
+	public void sendNotifRedeem(Long qrId){
+		try {
+			System.out.println(":::::::::::::::::::::::::::::::::::::::::::: ");
+			System.out.println(":::: SEND REDEEM PROMO APPS NOTIF TO KAFKA BROKER :::: ");
+			System.out.println(qrId);
+			System.out.println(":::::::::::::::::::::::::::::::::::::::::::: ");
+			kafkaTemplateNotif.send("notify-redeem-topic", qrId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
