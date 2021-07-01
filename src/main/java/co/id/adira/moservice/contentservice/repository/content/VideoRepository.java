@@ -8,5 +8,5 @@ import co.id.adira.moservice.contentservice.model.content.PilihanLain;
 import co.id.adira.moservice.contentservice.model.content.Video;
 
 public interface VideoRepository extends JpaRepository<Video, Long> {
-	List<Video> findTop8ByActiveOrderByIdDesc(boolean active);
+	List<Video> findTop8ByActiveOrderByPositionAsc(boolean active);
 }
