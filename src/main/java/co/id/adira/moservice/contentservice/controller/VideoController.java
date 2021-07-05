@@ -22,7 +22,7 @@ public class VideoController {
 	
 	@GetMapping(path = "/videos")
 	public ResponseEntity<Object> getVideos(){
-		List<Video> videos =  videoRepository.findTop8ByActiveOrderByIdDesc(true);
+		List<Video> videos =  videoRepository.findTop8ByActiveOrderByPositionAsc(true);
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), videos);
 	}
 }
