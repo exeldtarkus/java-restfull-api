@@ -41,6 +41,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ ") "
 			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
 			+ "AND a.special IN :promoTypeList "
+			+ "AND (:cid is null or g.city_id = :cid) "
 			+ "AND a.is_active = TRUE " 
 			+ "AND a.is_deleted = FALSE " 
 			+ "AND a.available_until >= DATE(:currentDate) "
@@ -52,6 +53,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("currentDate") Date currentDate,
 			@Param("serviceIdsList") String serviceIdsList,
 			@Param("searchServiceTypeIds") List<Long> searchServiceTypeIds,
+			@Param("cid") Long cid,
 			@Param("pageable") Pageable pageable
 	);
 

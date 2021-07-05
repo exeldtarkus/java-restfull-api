@@ -73,7 +73,9 @@ public class PromoController {
 			@RequestParam(required = false, defaultValue = "") String q,
 			@RequestParam(required = false) List<Long> service_type,
 			@RequestParam(required = false) String promo_type,
-			@RequestParam(required = false) Long bengkel_id) {
+			@RequestParam(required = false) Long bengkel_id,
+			@RequestParam(required = false, name = "cid") Long cityId
+	) {
 		
 		Date currentDate = new Date();
 		String serviceIdsList = null;
@@ -159,6 +161,7 @@ public class PromoController {
 							currentDate,
 							serviceIdsList,
 							searchServiceTypeIds,
+							cityId,
 							pageable
 					);
 				}
