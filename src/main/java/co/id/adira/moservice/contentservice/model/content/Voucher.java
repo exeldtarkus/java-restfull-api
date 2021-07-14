@@ -65,7 +65,10 @@ public class Voucher implements Serializable {
 	
 	@Column
 	private String bengkel_address;
-
+	
+	@Column(name ="bengkel_phone")
+	private String bengkel_phone;
+	
 	@Column(name = "utm")
 	private String utm;
 
@@ -190,6 +193,14 @@ public class Voucher implements Serializable {
 
 	public void setTransactionStatusId(Long transactionStatusId){
 		this.transactionStatusId = transactionStatusId;
+	}
+	
+	public String getBengkel_phone() {
+		return bengkel_phone;
+	}
+
+	public void setBengkel_phone(String bengkel_phone) {
+		this.bengkel_phone = bengkel_phone;
 	}
 
 	@Override
