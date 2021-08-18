@@ -97,6 +97,8 @@ public class Promo implements Serializable {
 	@Transient
 	List<ProvinceCityDTO> provinceCities;
 
+	private Double km;
+
 	public Long getId() {
 		return id;
 	}
@@ -287,6 +289,14 @@ public class Promo implements Serializable {
 
 	public void setProvinceCities(List<ProvinceCityDTO> provinceCities) {
 		this.provinceCities = provinceCities;
+	}
+
+	public Double getKm() {
+		return km;
+	}
+
+	public void setKm(Double km) {
+		this.km = km;
 	}
 	
 }
