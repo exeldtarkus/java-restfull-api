@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="aji"  id="sprint60-add-new-banner" dbms="mysql" >
+      <sql dbms="mysql">
+        INSERT INTO content.mst_pilihan_lain (created_at, is_active, image_path, name, title, url, position)
+        VALUES (now(), 1, https://assets.adira.one/media/wysiwyg/home_page/Moservice_Desktop_AVE.jpg , AVE, AVE, https://virtualexpo.adiraku.co.id/, 1 );
+      </sql>
+
+      <sql dbms="mysql">
+        UPDATE content.mst_pilihan_lain
+        SET position = 2
+        WHERE id = 11;
+      </sql>
+      
+        <!-- <createTable
+            remarks="Reference table for is_special"
+            schemaName="content"  
+            tableName="ref_special"  
+            tablespace="A String"> 
+            <column name="id" type="bigint(20)">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="varchar(255)" />
+        </createTable>   -->
+    </changeSet>
+</databaseChangeLog>
