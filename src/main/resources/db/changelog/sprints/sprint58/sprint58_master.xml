@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include  file="classpath:db/changelog/sprints/sprint58/sprint58_create_ref_special.xml"/>
+    <include  file="classpath:db/changelog/sprints/sprint58/sprint58_insert_ref_special.xml"/>
+</databaseChangeLog>
