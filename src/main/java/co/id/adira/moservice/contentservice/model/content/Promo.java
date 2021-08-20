@@ -86,6 +86,9 @@ public class Promo implements Serializable {
 	@Column(name = "target_id")
 	private Long targetId;
 
+	@Column(name= "tag_promo")
+	private String tagPromo;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
 	// @JsonManagedReference
@@ -287,6 +290,14 @@ public class Promo implements Serializable {
 
 	public void setProvinceCities(List<ProvinceCityDTO> provinceCities) {
 		this.provinceCities = provinceCities;
+	}
+
+	public String getTagPromo() {
+		return tagPromo;
+	}
+
+	public void setTagPromo(String tagPromo) {
+		this.tagPromo = tagPromo;
 	}
 	
 }
