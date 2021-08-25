@@ -57,7 +57,7 @@ public class PromoController {
 	private CityRepository cityRepository;
 
 	private final String[] acceptedOrder = { "desc", "asc" };
-	private final String[] acceptedSort = { "id", "name" };
+	private final String[] acceptedSort = { "g.km", "id", "name" };
 
 	private Boolean ArrayIncludes(String[] arr, String i) {
 		return Arrays.stream(arr).anyMatch(i::equals);
@@ -69,12 +69,14 @@ public class PromoController {
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(required = false, defaultValue = "desc") String order,
-			@RequestParam(required = false, defaultValue = "id") String sort,
+			@RequestParam(required = false, defaultValue = "g.km") String sort,
 			@RequestParam(required = false, defaultValue = "") String q,
 			@RequestParam(required = false) List<Long> service_type,
 			@RequestParam(required = false) String promo_type,
 			@RequestParam(required = false) Long bengkel_id,
-			@RequestParam(required = false, name = "cid") Long cityId
+			@RequestParam(required = false, name = "cid") Long cityId,
+			@RequestParam(required = false, name = "lat") Double latitude,
+			@RequestParam(required = false, name = "lng") Double longitude
 	) {
 		
 		Date currentDate = new Date();
@@ -122,11 +124,11 @@ public class PromoController {
 					break;
 			}
 		}
-		if (!this.ArrayIncludes(acceptedSort, sort))
-			sort = "id";
+		if (!this.ArrayIncludes(acceptedSort, sort)){
+			sort = (latitude != null && longitude != null) ? "g.km" : "id";
+		}
 
 		Pageable pageable = PageRequest.of((page-1), size, new Sort(promoSort, sort));
-		
 		List<Promo> promos;
 		switch (origin) {
 			case "home":
@@ -162,7 +164,9 @@ public class PromoController {
 							serviceIdsList,
 							searchServiceTypeIds,
 							cityId,
-							pageable
+							pageable,
+							latitude,
+							longitude
 					);
 				}
 				break;
