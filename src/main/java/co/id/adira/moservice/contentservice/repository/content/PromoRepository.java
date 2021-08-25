@@ -17,6 +17,13 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "GROUP BY p.id ORDER BY p.id desc "
 			+ "limit 8", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("currentDate") Date currentDate);
+
+	@Query(value = "SELECT * FROM mst_promo p "
+			+ "WHERE p.zone_id IN (3,4,5,6) AND p.is_active = true AND p.is_deleted = false "
+			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
+			+ "GROUP BY p.id ORDER BY p.id desc "
+			+ "limit 8", nativeQuery = true)
+	List<Promo> findAllAdiraku(@Param("currentDate") Date currentDate);
 	
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
@@ -55,6 +62,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "a.disc_percentage, "
 			+ "a.service_fee, "
 			+ "a.disc_amount, "
+			+ "a.tag_promo, "
 			+ "f.id, "
 			+ "f.promo_id, "
 			+ "f.bengkel_id, "
