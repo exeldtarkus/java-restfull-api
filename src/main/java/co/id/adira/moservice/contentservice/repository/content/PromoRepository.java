@@ -11,14 +11,14 @@ import java.util.Optional;
 
 public interface PromoRepository extends JpaRepository<Promo, Long> {
 	
-	@Query(value = "SELECT *, null as km FROM mst_promo p "
+	@Query(value = "SELECT * FROM mst_promo p "
 			+ "WHERE p.zone_id IN (0,1) AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
 			+ "GROUP BY p.id ORDER BY p.id desc "
 			+ "limit 8", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("currentDate") Date currentDate);
 	
-	@Query(value = "SELECT *, NULL as km, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
+	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "WHERE p.zone_id = :zoneId AND p.is_active = true AND p.is_deleted = false "
@@ -59,7 +59,6 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "f.promo_id, "
 			+ "f.bengkel_id, "
 			+ "f.group_bengkel_id, "
-			+ "g.km, "
 			+ "g.city_id "
 			+ "FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
@@ -108,7 +107,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("longitude") Double longitude
 	);
 
-	@Query(value = "SELECT *, NULL as km "
+	@Query(value = "SELECT * "
 			+ "FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
@@ -118,7 +117,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id", nativeQuery = true)
 	Optional<Promo> findByIdAndMore(@Param("id") Long id, @Param("currentDate") Date currentDate);
 
-	@Query(value = "SELECT *, NULL as km "
+	@Query(value = "SELECT * "
 			+ "FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
@@ -129,7 +128,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 	List<Promo> findByServisIdAndMore(@Param("servisId") Long servisId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
 
-	@Query(value = "SELECT *, NULL as km "
+	@Query(value = "SELECT * "
 			+ "FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "

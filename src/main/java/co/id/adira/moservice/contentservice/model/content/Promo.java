@@ -97,6 +97,7 @@ public class Promo implements Serializable {
 	@Transient
 	List<ProvinceCityDTO> provinceCities;
 
+	@Transient
 	private Double km;
 
 	public Long getId() {
