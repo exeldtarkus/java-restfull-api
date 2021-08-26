@@ -1,6 +1,7 @@
 package co.id.adira.moservice.contentservice.model.content;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -12,10 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
-import co.id.adira.moservice.contentservice.model.bengkel.City;
 
 @Entity
 @Table(name = "mst_promo")
@@ -96,6 +95,21 @@ public class Promo implements Serializable {
 
 	@Transient
 	List<ProvinceCityDTO> provinceCities;
+
+	@Column(name = "original_price")
+	private BigDecimal originalPrice;
+	
+	@Transient
+	private BigDecimal totalPrice;
+	
+	@Column(name = "disc_percentage")
+	private int discPercentage;
+	
+	@Column(name = "disc_amount")
+	private BigDecimal discAmount;
+	
+	@Column(name = "service_fee")
+	private BigDecimal serviceFee;
 
 	public Long getId() {
 		return id;
@@ -287,6 +301,46 @@ public class Promo implements Serializable {
 
 	public void setProvinceCities(List<ProvinceCityDTO> provinceCities) {
 		this.provinceCities = provinceCities;
+	}
+
+	public BigDecimal getOriginalPrice() {
+		return originalPrice;
+	}
+
+	public void setOriginalPrice(BigDecimal originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+
+	public BigDecimal getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(BigDecimal totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public int getDiscPercentage() {
+		return discPercentage;
+	}
+
+	public void setDiscPercentage(int discPercentage) {
+		this.discPercentage = discPercentage;
+	}
+
+	public BigDecimal getDiscAmount() {
+		return discAmount;
+	}
+
+	public void setDiscAmount(BigDecimal discAmount) {
+		this.discAmount = discAmount;
+	}
+
+	public BigDecimal getServiceFee() {
+		return serviceFee;
+	}
+
+	public void setServiceFee(BigDecimal serviceFee) {
+		this.serviceFee = serviceFee;
 	}
 	
 }
