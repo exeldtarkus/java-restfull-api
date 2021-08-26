@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
-import co.id.adira.moservice.contentservice.model.bengkel.City;
 import co.id.adira.moservice.contentservice.model.bengkel.GrupBengkel;
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.PromoBengkelMapping;
@@ -15,6 +14,8 @@ import co.id.adira.moservice.contentservice.repository.bengkel.GrupBengkelReposi
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.repository.servis.ServiceTypeRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -232,6 +233,24 @@ public class PromoController {
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 		if (promo.isPresent()) {
+
+			// calculate total price
+			BigDecimal discPercentage = BigDecimal.ZERO;
+			try {
+				discPercentage = (promo.get().getDiscAmount().multiply(new BigDecimal(100))).divide(promo.get().getOriginalPrice());
+			} catch (Exception e) {
+				discPercentage = BigDecimal.ZERO;
+			}
+			
+			promo.get().setDiscPercentage(discPercentage.intValue());
+			
+			//BigDecimal discAmount = promo.get().getOriginalPrice().multiply(new BigDecimal(promo.get().getDiscPercentage()/100.0));
+			//promo.get().setDiscAmount(new BigDecimal(discAmount.setScale(0, RoundingMode.HALF_DOWN).intValue()));
+			promo.get().setDiscAmount(promo.get().getDiscAmount());
+			
+			BigDecimal totalPrice = promo.get().getOriginalPrice().subtract(promo.get().getDiscAmount());
+			promo.get().setTotalPrice(new BigDecimal(totalPrice.add(promo.get().getServiceFee()).setScale(0, RoundingMode.HALF_DOWN).intValue()));
+			
 			List<Long> bengkelIds = promo.get().getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
 			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(bengkelIds);
 			ObjectMapper mapObject = new ObjectMapper();
