@@ -21,5 +21,8 @@ public interface CityRepository extends JpaRepository <City, Long> {
             , nativeQuery = true)
     List<ProvinceCityDTO>findAllCitiesByPromoId(@Param("promo_id") Long promo_id);
 
-
+    @Query(value= "SELECT c.city_name as cityName "
+                + "FROM ref_city c JOIN mst_bengkel m ON c.city_id = m.city_id "
+                + "WHERE m.bengkel_id = :bengkelId ", nativeQuery = true)
+    String findCityNameByBengkelId(@Param("bengkelId") Long bengkelId);
 }

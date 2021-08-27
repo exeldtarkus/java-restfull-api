@@ -1,5 +1,6 @@
 package co.id.adira.moservice.contentservice.model.content;
 
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tr_promo_user")
@@ -71,6 +73,9 @@ public class Voucher implements Serializable {
 
 	@Column(name = "transaction_status_id")
 	private Long transactionStatusId;
+
+	@Transient
+	private String cityName;
 
 	public String getUtm() {
 		return utm;
@@ -192,12 +197,20 @@ public class Voucher implements Serializable {
 		this.transactionStatusId = transactionStatusId;
 	}
 
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
 	@Override
 	public String toString() {
 		return "Voucher [id=" + id + ", promo=" + promo + ", userId=" + userId + ", bengkelId=" + bengkelId
 				+ ", bookingId=" + bookingId + ", carId=" + carId + ", redeemDate=" + redeemDate + ", useDate="
 				+ useDate + ", created=" + created + ", updated=" + updated + ", qr=" + qr + ", bengkel_name="
-				+ bengkel_name + ", bengkel_address=" + bengkel_address + "]";
+				+ bengkel_name + ", bengkel_address=" + bengkel_address + ", cityName=" + cityName + "]";
 	}
 	
 }
