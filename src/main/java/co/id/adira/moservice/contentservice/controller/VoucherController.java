@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import co.id.adira.moservice.contentservice.interceptor.UserIdInterceptor;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
+import co.id.adira.moservice.contentservice.repository.bengkel.CityRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
@@ -43,6 +44,9 @@ public class VoucherController {
 
 	@Autowired
 	private VoucherRepository voucherRepository;
+
+	@Autowired
+	private CityRepository cityRepository;
 	
 	@Autowired
 	private RedeemService redeemService;
@@ -68,7 +72,11 @@ public class VoucherController {
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
 		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, pageable);
-
+		
+		for (Voucher voucher : vouchers) {
+			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
+			voucher.setCityName(city);
+		}
 		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
 		Integer end = Math.min(Math.max(size * page, start), vouchers.size());
 		Page<Voucher> pages = new PageImpl<Voucher>(vouchers.subList(start, end), pageable, vouchers.size());
