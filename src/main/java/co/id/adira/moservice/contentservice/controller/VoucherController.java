@@ -57,7 +57,13 @@ public class VoucherController {
 	public ResponseEntity<Object> getVouchers(
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
+			@RequestParam(name = "utm", required = false, defaultValue = "") final String utmParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
+
+		String utm = null;
+		if (!utmParam.equals("")) {
+			utm = utmParam;
+		}
 
 		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
 		if (!isValidUser) {
@@ -67,7 +73,7 @@ public class VoucherController {
 		
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, pageable);
+		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, pageable);
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
 		Integer end = Math.min(Math.max(size * page, start), vouchers.size());
