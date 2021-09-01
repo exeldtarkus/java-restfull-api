@@ -62,11 +62,17 @@ public class VoucherController {
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
 			@RequestParam(name = "utm", required = false, defaultValue = "") final String utmParam,
+			@RequestParam(name = "utm_not_in", required = false) List<String> utmNotInParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
 
 		String utm = null;
 		if (!utmParam.equals("")) {
 			utm = utmParam;
+		}
+
+		List<String> utmNotIn = null;
+		if ((utmNotInParam != null) && (utmNotInParam.size() > 0)) {
+			utmNotIn = utmNotInParam;
 		}
 
 		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
@@ -77,7 +83,7 @@ public class VoucherController {
 		
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, pageable);
+		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmNotIn, pageable);
 
 		for (Voucher voucher : vouchers) {
 			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
