@@ -28,6 +28,9 @@ public class Video implements Serializable {
 	
 	@Column(name= "is_active")
 	private boolean active;
+
+	@Column(name= "upload_date")
+	private Date uploadDate;
 	
 	@Column(name= "created_at")
 	private Date createdAt;
@@ -90,7 +93,13 @@ public class Video implements Serializable {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
-	
 
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+	
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="vinky"  id="sprint61-add_column_mst_video" dbms="mysql" >
+       <addColumn
+        schemaName="content"
+        tableName="mst_video">
+            <column
+                name="upload_date"
+                type="DATETIME"
+                afterColumn="is_active"
+            />
+       </addColumn>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2021-06-12"/>
+            <where>video_id='UmdU4zhfiRY'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2021-06-26"/>
+            <where>video_id='4gKStHN_5-c'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2021-01-23"/>
+            <where>video_id='QgwxWwQnVQo'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2021-05-15"/>
+            <where>video_id='eItTr_C543c'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2021-08-25"/>
+            <where>video_id='NAfGHf4kv4g'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2020-11-18"/>
+            <where>video_id='UCKE-k3lwAs'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2020-09-20"/>
+            <where>video_id='z03xIU9Zqrw'</where>
+       </update>
+
+        <update schemaName="content"
+       tableName="mst_video">
+            <column name="upload_date" value="2020-10-14"/>
+            <where>video_id='X4EECTGlC0M'</where>
+       </update>
+    </changeSet>
+</databaseChangeLog>
