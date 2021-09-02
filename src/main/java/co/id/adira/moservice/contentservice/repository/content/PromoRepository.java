@@ -80,7 +80,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "		   count(mb.bengkel_id) AS count_bengkel "
 			+ "		FROM content.map_promo_bengkel mpb "
 			+ "		JOIN bengkel.mst_bengkel mb ON mb.bengkel_id = mpb.bengkel_id "
-			+ "		GROUP BY mpb.promo_id "
+			+ "		GROUP BY mpb.promo_id, mb.city_id "
 			+ ") AS g ON a.id = g.promo_id " 
 			+ "WHERE ("
 			+ "		a.title LIKE %:q% OR "
