@@ -4,8 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include  file="classpath:db/changelog/sprints/sprint58/sprint58_master.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint60/sprint60_master.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint61/sprint61_master.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint62/sprint62_master.xml"/>
+    <changeSet  author="vinky"  id="sprint62-alter-mst-video-2" dbms="mysql" >
+      <renameColumn 
+        tableName="mst_video"
+        schemaName="content"
+        columnDataType="VARCHAR(255)"
+        oldColumnName="video_id"
+        newColumnName="video_url"/>
+    </changeSet>
 </databaseChangeLog>
