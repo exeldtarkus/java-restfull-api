@@ -34,6 +34,7 @@ import co.id.adira.moservice.contentservice.util.BaseResponse;
 import co.id.adira.moservice.event.dto.EmailEventDto;
 import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
+import java.util.regex.Pattern;
 
 @RestController
 @Slf4j
@@ -100,31 +101,39 @@ public class VoucherController {
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), id);
 	}
-	
+
 	@PostMapping(path = "/vouchers/redeem", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
-		
+
 		log.info("::: GENERATE QRCODE :::");
+
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		EmailEventDto emailEventDto = new EmailEventDto(); 
-		emailEventDto.setEventId(UUID.randomUUID().toString());
-		emailEventDto.setEventTimestamp(System.currentTimeMillis());
-		emailEventDto.setSubject("Moservice - Redeem Promo");
-		emailEventDto.setTemplate(REDEEM_HBS);
-		emailEventDto.setBengkelName(voucher.getBengkel_name());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		emailEventDto.setAvailableUntil(sdf.format(voucher.getPromo().getAvailableUntil()));
-		emailEventDto.setTo(authentication.getPrincipal().toString());
-		emailEventDto.setQrCodePath(qrcode.getQrcodePath());
-		
-		User user = new User();
-		user.setId(voucher.getUserId());
-		emailEventDto.setUser(user);
-		
-		redeemService.sendEmailNotifRedeem(emailEventDto);
+
+		String credential = authentication.getPrincipal().toString();
+		if (isEmail(credential)) {
+			EmailEventDto emailEventDto = new EmailEventDto();
+			emailEventDto.setEventId(UUID.randomUUID().toString());
+			emailEventDto.setEventTimestamp(System.currentTimeMillis());
+			emailEventDto.setSubject("Moservice - Redeem Promo");
+			emailEventDto.setTemplate(REDEEM_HBS);
+			emailEventDto.setBengkelName(voucher.getBengkel_name());
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			emailEventDto.setAvailableUntil(sdf.format(voucher.getPromo().getAvailableUntil()));
+			emailEventDto.setTo(credential);
+			emailEventDto.setQrCodePath(qrcode.getQrcodePath());
+
+			User user = new User();
+			user.setId(voucher.getUserId());
+			emailEventDto.setUser(user);
+
+			redeemService.sendEmailNotifRedeem(emailEventDto);
+		} else {
+			log.info("Redeem using phone number");
+		}
+
 		this.sendNotifRedeem(qrcode.getId());
+
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
 	}
 
@@ -138,6 +147,18 @@ public class VoucherController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean isEmail(String email) {
+		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+				"[a-zA-Z0-9_+&*-]+)*@" +
+				"(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+				"A-Z]{2,7}$";
+
+		Pattern pat = Pattern.compile(emailRegex);
+		if (email == null)
+			return false;
+		return pat.matcher(email).matches();
 	}
 	
 }
