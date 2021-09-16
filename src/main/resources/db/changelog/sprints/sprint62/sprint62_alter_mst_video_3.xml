@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="vinky"  id="sprint62-alter-mst-video-3" dbms="mysql" >
+      <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=UmdU4zhfiRY"/>
+            <where>video_url='UmdU4zhfiRY'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=4gKStHN_5-c"/>
+            <where>video_url='4gKStHN_5-c'</where>
+       </update>
+
+       <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=QgwxWwQnVQo"/>
+            <where>video_url='QgwxWwQnVQo'</where>
+       </update>
+
+      <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=eItTr_C543c"/>
+            <where>video_url='eItTr_C543c'</where>
+       </update>
+
+      <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=NAfGHf4kv4g"/>
+            <where>video_url='NAfGHf4kv4g'</where>
+       </update>
+
+      <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=UCKE-k3lwAs"/>
+            <where>video_url='UCKE-k3lwAs'</where>
+       </update>
+
+      <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=z03xIU9Zqrw"/>
+            <where>video_url='z03xIU9Zqrw'</where>
+       </update>
+
+      <update schemaName="content"
+       tableName="mst_video">
+            <column name="video_url" value="https://www.youtube.com/watch?v=X4EECTGlC0M"/>
+            <where>video_url='X4EECTGlC0M'</where>
+       </update>
+    </changeSet>
+</databaseChangeLog>
