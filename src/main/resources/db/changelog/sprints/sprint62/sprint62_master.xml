@@ -6,4 +6,5 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <include  file="classpath:db/changelog/sprints/sprint62/sprint62_alter_mst_video.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint62/sprint62_alter_mst_video_2.xml"/>
+    <include  file="classpath:db/changelog/sprints/sprint62/sprint62_alter_mst_video_3.xml"/>
 </databaseChangeLog>
