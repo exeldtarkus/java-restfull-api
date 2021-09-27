@@ -17,8 +17,8 @@ public class Video implements Serializable {
 	@Id
 	private long id;
 	
-	@Column(name= "video_id")
-	private String videoId;
+	@Column(name= "video_url")
+	private String videoURL;
 	
 	@Column(name= "title")
 	private String title;
@@ -28,7 +28,10 @@ public class Video implements Serializable {
 	
 	@Column(name= "is_active")
 	private boolean active;
-	
+
+	@Column(name= "upload_date")
+	private Date uploadDate;
+ 
 	@Column(name= "created_at")
 	private Date createdAt;
 	
@@ -43,12 +46,12 @@ public class Video implements Serializable {
 		this.id = id;
 	}
 
-	public String getVideoId() {
-		return videoId;
+	public String getVideoURL() {
+		return videoURL;
 	}
 
-	public void setVideoId(String videoId) {
-		this.videoId = videoId;
+	public void setVideoURL(String videoURL) {
+		this.videoURL = videoURL;
 	}
 
 	public String getTitle() {
@@ -90,7 +93,13 @@ public class Video implements Serializable {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
-	
 
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+	
 }
