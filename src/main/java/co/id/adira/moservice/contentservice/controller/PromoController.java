@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -225,18 +226,41 @@ public class PromoController {
 	}
 
 	@GetMapping(path = "/promo/{id}")
-	public ResponseEntity<Object> getPromoById(@PathVariable Long id) {
+	public ResponseEntity<Object> getPromoById(@PathVariable Long id, 
+		@RequestParam(required = false, defaultValue = "asc") String order,
+		@RequestParam(required = false, defaultValue = "bengkel_id") String sort,
+		@RequestParam(required = false, name = "lat") Double latitude,
+		@RequestParam(required = false, name = "lng") Double longitude
+	) {
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 		if (promo.isPresent()) {
+
+			Sort.Direction promoSort = Sort.Direction.DESC;
+			if (this.ArrayIncludes(acceptedOrder, order)) {
+				switch (order) {
+					case "asc":
+						promoSort = Sort.Direction.ASC;
+						break;
+					case "desc":
+						promoSort = Sort.Direction.DESC;
+						break;
+				}
+			}
+			if (!this.ArrayIncludes(acceptedSort, sort)){
+				sort = (latitude != null && longitude != null) ? "km" : "bengkel_id";
+			}
+
+			Pageable pageable = PageRequest.of(1, 99, new Sort(promoSort, sort));
+						
 			List<Long> bengkelIds = promo.get().getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
-			List<Bengkel> bengkels = (List<Bengkel>) bengkelRepository.findAllById(bengkelIds);
+			List<Bengkel> bengkels2 = (List<Bengkel>) bengkelRepository.findAllBengkelsByBengkelId(bengkelIds, pageable, latitude, longitude);
 			ObjectMapper mapObject = new ObjectMapper();
 			Map<String, Object> promoDetail = (Map<String, Object>) mapObject.convertValue(promo.get(), Map.class);
 			List<GrupBengkel> grupBengkels = (List<GrupBengkel>) grupBengkelRepository.findAllByBengkelIds(bengkelIds);
 			promoDetail.put("availableFrom", new Date((Long) promoDetail.get("availableFrom")));
 			promoDetail.put("availableUntil", new Date((Long) promoDetail.get("availableUntil")));
-			promoDetail.put("bengkels", bengkels);
+			promoDetail.put("bengkels", bengkels2);
 			promoDetail.put("grupBengkels", grupBengkels);
 			return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), promoDetail);
 		} else {
