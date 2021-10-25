@@ -4,6 +4,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include  file="classpath:db/changelog/sprints/sprint60/sprint60_add_new_banner.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint60/sprint60_alter_mst_promo.xml"/>
+    <changeSet  author="resthu"  id="sprint60-alter-mst-promo-01" dbms="mysql" >
+        <addColumn schemaName= "content"
+			tableName="mst_promo" >
+            <column name="tag_promo"  
+                    type="varchar(255)" >  
+                <constraints nullable="true" />  
+            </column>  
+        </addColumn>  
+    </changeSet>
 </databaseChangeLog>
