@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PromoRepository extends JpaRepository<Promo, Long> {
 	
 	@Query(value = "SELECT * FROM mst_promo p "
-			+ "WHERE p.zone_id IN (0,1) AND p.is_active = true AND p.is_deleted = false "
+			+ "WHERE p.zone_id IN (0,1,5,6) AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
 			+ "GROUP BY p.id ORDER BY p.id desc "
 			+ "limit 8", nativeQuery = true)
