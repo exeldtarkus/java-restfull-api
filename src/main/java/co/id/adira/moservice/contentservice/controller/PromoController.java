@@ -137,6 +137,9 @@ public class PromoController {
 			case "promo":
 				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
 				break;
+			case "adiraku": 
+				promos = (List<Promo>) promoRepository.findAllAdiraku(currentDate);
+				break;
 			default:
 				if (bengkel_id != null) {
 					promos = (List<Promo>) promoRepository.findByBengkelIdAndMore(bengkel_id, currentDate, pageable);

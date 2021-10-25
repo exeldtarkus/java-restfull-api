@@ -80,6 +80,9 @@ public class Promo implements Serializable {
 	@Column(name = "is_national")
 	private Boolean isNational;
 
+	@Column(name= "tag_promo")
+	private String tagPromo;
+
 	@Column(name = "zone_id")
 	private Long zoneId;
 
@@ -298,6 +301,13 @@ public class Promo implements Serializable {
 
 	public void setKm(Double km) {
 		this.km = km;
+	}
+	public String getTagPromo() {
+		return tagPromo;
+	}
+
+	public void setTagPromo(String tagPromo) {
+		this.tagPromo = tagPromo;
 	}
 	
 }
