@@ -21,11 +21,13 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			+ "AND v.promo_id = c.id "
 			+ "AND c.available_until > :currentDate AND c.available_from < :currentDate "
 			+ "AND (:utm is null or v.utm = :utm) "
+			+ "AND (:utmNotIn is null or v.utm NOT IN (:utmNotIn) ) "
 			+ "ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Voucher> findAllUnusedVoucherAndMore(
 			@Param("userId") Long userId,
 			@Param("currentDate") Date currentDate,
 			@Param("utm") String utm,
+			@Param("utmNotIn") List<String> utmNotIn,
 			@Param("pageable") Pageable pageable);
 	
 	@Modifying
