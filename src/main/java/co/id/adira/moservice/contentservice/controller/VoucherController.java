@@ -48,7 +48,7 @@ public class VoucherController {
 
 	@Autowired
 	private CityRepository cityRepository;
-	
+
 	@Autowired
 	private RedeemService redeemService;
 	
@@ -62,7 +62,19 @@ public class VoucherController {
 	public ResponseEntity<Object> getVouchers(
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
 			@RequestParam(required = false, defaultValue = "10") final Integer size,
+			@RequestParam(name = "utm", required = false, defaultValue = "") final String utmParam,
+			@RequestParam(name = "utm_not_in", required = false) List<String> utmNotInParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
+
+		String utm = null;
+		if (!utmParam.equals("")) {
+			utm = utmParam;
+		}
+
+		List<String> utmNotIn = null;
+		if ((utmNotInParam != null) && (utmNotInParam.size() > 0)) {
+			utmNotIn = utmNotInParam;
+		}
 
 		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
 		if (!isValidUser) {
@@ -72,8 +84,8 @@ public class VoucherController {
 		
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, pageable);
-		
+		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmNotIn, pageable);
+
 		for (Voucher voucher : vouchers) {
 			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
 			voucher.setCityName(city);
@@ -148,5 +160,5 @@ public class VoucherController {
 			return false;
 		return pat.matcher(email).matches();
 	}
-	
+
 }
