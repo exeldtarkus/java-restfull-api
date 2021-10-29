@@ -19,11 +19,27 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 	List<Promo> findAllByZoneIdAndMore(@Param("currentDate") Date currentDate);
 
 	@Query(value = "SELECT * FROM mst_promo p "
+			+ "JOIN ( "
+			+ "	SELECT mb.bengkel_id bengkel_id, "
+			+ "		   mpb.promo_id promo_id, "
+			+ "		   mb.city_id, "
+			+ "		   MIN( "
+			+ "			   CASE "
+			+ "			   WHEN (mb.bengkel_location IS NULL) THEN 999 "
+			+ "			   WHEN :longitude IS NULL OR :latitude IS NULL THEN 999 "
+			+ "			   ELSE (ROUND((ST_Distance_Sphere(mb.bengkel_location, POINT(:longitude, :latitude))) / 1000, 2)) "
+			+ "			   END "
+			+ "		   ) AS km, "
+			+ "		   count(mb.bengkel_id) AS count_bengkel "
+			+ "		FROM content.map_promo_bengkel mpb "
+			+ "		JOIN bengkel.mst_bengkel mb ON mb.bengkel_id = mpb.bengkel_id "
+			+ "		GROUP BY mpb.promo_id"
+			+ ") AS g ON p.id = g.promo_id " 
 			+ "WHERE p.zone_id IN (3,4,5,6) AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
-			+ "GROUP BY p.id ORDER BY p.id desc "
-			+ "limit 8", nativeQuery = true)
-	List<Promo> findAllAdiraku(@Param("currentDate") Date currentDate);
+			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
+	List<Promo> findAllAdiraku(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
+			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable);
 	
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
@@ -63,6 +79,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "a.disc_percentage, "
 			+ "a.service_fee, "
 			+ "a.disc_amount, "
+			+ "a.tag_promo, "
 			+ "f.id, "
 			+ "f.promo_id, "
 			+ "f.bengkel_id, "
