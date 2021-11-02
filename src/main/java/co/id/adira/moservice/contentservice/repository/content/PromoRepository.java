@@ -117,6 +117,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND (:cid is null or e.city_id = :cid) "
 			+ "AND a.is_active = TRUE " 
 			+ "AND a.is_deleted = FALSE " 
+			+ "AND a.zone_id IN (0,2,4,6) "
 			+ "AND a.available_until >= DATE(:currentDate) "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(
