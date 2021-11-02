@@ -160,5 +160,5 @@ public class VoucherController {
 			return false;
 		return pat.matcher(email).matches();
 	}
-	
+
 }

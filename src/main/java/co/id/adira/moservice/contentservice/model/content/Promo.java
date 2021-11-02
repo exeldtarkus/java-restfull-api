@@ -79,14 +79,14 @@ public class Promo implements Serializable {
 	@Column(name = "is_national")
 	private Boolean isNational;
 
+	@Column(name= "tag_promo")
+	private String tagPromo;
+
 	@Column(name = "zone_id")
 	private Long zoneId;
 
 	@Column(name = "target_id")
 	private Long targetId;
-
-	@Column(name= "tag_promo")
-	private String tagPromo;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
