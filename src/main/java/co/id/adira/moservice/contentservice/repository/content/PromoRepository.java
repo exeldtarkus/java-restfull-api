@@ -145,6 +145,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
           )
   Optional<Promo> findByIdAndMore(@Param("id") Long id);
   
+  
 	@Query(value = "SELECT * "
 			+ "FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
