@@ -231,7 +231,8 @@ public class PromoController {
 	@GetMapping(path = "/promo/{id}")
 	public ResponseEntity<Object> getPromoById(@PathVariable Long id) {
 		Date currentDate = new Date();
-		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
+		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
+		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 		if (promo.isPresent()) {
 
 			// calculate total price
