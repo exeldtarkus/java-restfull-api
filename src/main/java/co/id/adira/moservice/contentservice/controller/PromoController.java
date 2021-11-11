@@ -237,7 +237,8 @@ public class PromoController {
 		@RequestParam(required = false, name = "lng") Double longitude
 	) {
 		Date currentDate = new Date();
-		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
+		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
+		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 		if (promo.isPresent()) {
 
 			// calculate total price
