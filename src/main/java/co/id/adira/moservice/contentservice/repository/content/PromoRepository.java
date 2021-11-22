@@ -132,16 +132,20 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("longitude") Double longitude
 	);
 
-	@Query(value = "SELECT * "
-			+ "FROM content.mst_promo a "
-			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
-			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
-			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
-			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id " + "WHERE a.id = :id " + "AND a.is_active = true "
-			+ "AND a.is_deleted = false " + "AND a.available_until >= DATE(:currentDate) "
-			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id", nativeQuery = true)
-	Optional<Promo> findByIdAndMore(@Param("id") Long id, @Param("currentDate") Date currentDate);
-
+  @Query(value =    " SELECT  *                                                                   "
+                  + " FROM    content.mst_promo a                                                 "
+                  + " JOIN    content.map_promo_service b on a.id = b.promo_id                    "
+                  + " JOIN    servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id    "
+                  + " JOIN    content.map_promo_area d ON a.id = d.promo_id                       "
+                  + " JOIN    bengkel.ref_city e ON d.city_id = e.city_id                         "
+                  + " WHERE   a.id = :id                                                          "
+                  + " AND     a.is_deleted = false                                                "
+                  + " GROUP   BY a.id                                                             "
+                  , nativeQuery = true
+          )
+  Optional<Promo> findByIdAndMore(@Param("id") Long id);
+  
+  
 	@Query(value = "SELECT * "
 			+ "FROM content.mst_promo a "
 			+ "JOIN content.map_promo_service b on a.id = b.promo_id "
