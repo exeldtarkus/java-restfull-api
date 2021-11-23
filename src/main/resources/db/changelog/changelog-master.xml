@@ -8,4 +8,5 @@
     <include  file="classpath:db/changelog/sprints/sprint60/sprint60_master.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint61/sprint61_master.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint62/sprint62_master.xml"/>
+    <include  file="classpath:db/changelog/sprints/sprint67/sprint67_master.xml"/>
 </databaseChangeLog>
