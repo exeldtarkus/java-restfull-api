@@ -63,6 +63,8 @@ public class Bengkel implements Serializable {
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
+	private Double km;
+
 	public Long getId() {
 		return id;
 	}
@@ -86,5 +88,14 @@ public class Bengkel implements Serializable {
 	public City getCity() {
 		return city;
 	}
+
+	public Double getKm() {
+		return km;
+	}
+
+	public void setKm(Double km) {
+		this.km = km;
+	}
+
 
 }

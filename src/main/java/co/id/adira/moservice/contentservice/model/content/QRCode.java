@@ -50,6 +50,9 @@ public class QRCode implements Serializable {
 	private Long promoId;
 	
 	@Transient
+	private Long bengkelId;
+
+	@Transient
 	private String base64QRCode;
 
 	public Long getId() {
@@ -132,5 +135,11 @@ public class QRCode implements Serializable {
 		this.promoId = promoId;
 	}
 
-	
+	public Long getBengkelId() {
+		return bengkelId;
+	}
+
+	public void setBengkelId(Long bengkelId) {
+		this.bengkelId = bengkelId;
+	}
 }

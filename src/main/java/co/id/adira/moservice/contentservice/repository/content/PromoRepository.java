@@ -35,11 +35,16 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "		JOIN bengkel.mst_bengkel mb ON mb.bengkel_id = mpb.bengkel_id "
 			+ "		GROUP BY mpb.promo_id"
 			+ ") AS g ON p.id = g.promo_id " 
+			+ "JOIN content.map_promo_service b on p.id = b.promo_id "
+			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
 			+ "WHERE p.zone_id IN (3,4,5,6) AND p.is_active = true AND p.is_deleted = false "
-			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
+			+ "AND p.available_until >= DATE(:currentDate) " 
+			+ "AND p.available_from <= DATE(:currentDate) "
+			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdiraku(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
-			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable);
+			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
+			@Param("service_type") List<Long> service_type, @Param("serviceIdsList") String serviceIdsList);
 	
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
@@ -117,6 +122,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND (:cid is null or e.city_id = :cid) "
 			+ "AND a.is_active = TRUE " 
 			+ "AND a.is_deleted = FALSE " 
+			+ "AND a.zone_id IN (0,2,4,6) "
 			+ "AND a.available_until >= DATE(:currentDate) "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(
