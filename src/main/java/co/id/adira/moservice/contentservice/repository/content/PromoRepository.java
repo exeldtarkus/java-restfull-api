@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PromoRepository extends JpaRepository<Promo, Long> {
 	
 	@Query(value = "SELECT * FROM mst_promo p "
-			+ "WHERE p.zone_id IN (0,1,5,6) AND p.is_active = true AND p.is_deleted = false "
+			+ "WHERE p.zone_id IN (0,1,5,6,11,12,13,14) AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
 			+ "GROUP BY p.id ORDER BY p.id desc "
 			+ "limit 8", nativeQuery = true)
@@ -37,12 +37,40 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ ") AS g ON p.id = g.promo_id " 
 			+ "JOIN content.map_promo_service b on p.id = b.promo_id "
 			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
-			+ "WHERE p.zone_id IN (3,4,5,6) AND p.is_active = true AND p.is_deleted = false "
+			+ "WHERE p.zone_id IN (3,4,5,6,8,10,12,14) AND p.is_active = true AND p.is_deleted = false "
 			+ "AND p.available_until >= DATE(:currentDate) " 
 			+ "AND p.available_from <= DATE(:currentDate) "
 			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
-	List<Promo> findAllAdiraku(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
+	List<Promo> findAllAdirakuProspect(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
+			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
+			@Param("service_type") List<Long> service_type, @Param("serviceIdsList") String serviceIdsList);
+
+			@Query(value = "SELECT * FROM mst_promo p "
+			+ "JOIN ( "
+			+ "	SELECT mb.bengkel_id bengkel_id, "
+			+ "		   mpb.promo_id promo_id, "
+			+ "		   mb.city_id, "
+			+ "		   MIN( "
+			+ "			   CASE "
+			+ "			   WHEN (mb.bengkel_location IS NULL) THEN 999 "
+			+ "			   WHEN :longitude IS NULL OR :latitude IS NULL THEN 999 "
+			+ "			   ELSE (ROUND((ST_Distance_Sphere(mb.bengkel_location, POINT(:longitude, :latitude))) / 1000, 2)) "
+			+ "			   END "
+			+ "		   ) AS km, "
+			+ "		   count(mb.bengkel_id) AS count_bengkel "
+			+ "		FROM content.map_promo_bengkel mpb "
+			+ "		JOIN bengkel.mst_bengkel mb ON mb.bengkel_id = mpb.bengkel_id "
+			+ "		GROUP BY mpb.promo_id"
+			+ ") AS g ON p.id = g.promo_id " 
+			+ "JOIN content.map_promo_service b on p.id = b.promo_id "
+			+ "JOIN servis.ref_tipe_servis c on b.service_umum_id = c.tipe_servis_id "
+			+ "WHERE p.zone_id IN (7,8,9,10,11,12,13,14) AND p.is_active = true AND p.is_deleted = false "
+			+ "AND p.available_until >= DATE(:currentDate) " 
+			+ "AND p.available_from <= DATE(:currentDate) "
+			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
+			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
+	List<Promo> findAllAdirakuNasabah(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
 			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
 			@Param("service_type") List<Long> service_type, @Param("serviceIdsList") String serviceIdsList);
 	
@@ -122,7 +150,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND (:cid is null or e.city_id = :cid) "
 			+ "AND a.is_active = TRUE " 
 			+ "AND a.is_deleted = FALSE " 
-			+ "AND a.zone_id IN (0,2,4,6) "
+			+ "AND a.zone_id IN (0,2,4,6,9,10,13,14) "
 			+ "AND a.available_until >= DATE(:currentDate) "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(
