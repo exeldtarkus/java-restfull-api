@@ -70,6 +70,7 @@ public class RedeemService {
 		qrcode.setCreatedAt(new Date());
 		qrcode.setPromoId(voucher.getPromo().getId());
 		qrcode.setUserId(voucher.getUserId());
+		qrcode.setBengkelId(voucher.getBengkelId());
 		
 		qrCodeRepository.save(qrcode);
 		voucherRepository.insertVoucher(voucher.getBengkelId(), voucher.getBookingId(), voucher.getCarId(),
