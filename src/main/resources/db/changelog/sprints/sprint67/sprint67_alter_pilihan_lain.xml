@@ -4,6 +4,15 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include  file="classpath:db/changelog/sprints/sprint67/sprint67_alter_ref_content_zone.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint67/sprint67_alter_pilihan_lain.xml"/>
+    <changeSet  author="Exel"  id="sprint67-alter_pilihan_lain" dbms="mysql" >
+      <addColumn 
+        schemaName="content"
+        tableName="mst_pilihan_lain">
+        <column
+          name="cloudinary_path"
+          type="varchar(255)"
+          afterColumn="description" 
+        />
+      </addColumn>
+    </changeSet>
 </databaseChangeLog>
