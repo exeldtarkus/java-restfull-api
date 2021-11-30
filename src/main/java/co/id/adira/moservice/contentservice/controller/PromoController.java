@@ -257,7 +257,7 @@ public class PromoController {
 			
 			BigDecimal totalPrice = promo.get().getOriginalPrice().subtract(promo.get().getDiscAmount());
 			promo.get().setTotalPrice(new BigDecimal(totalPrice.add(promo.get().getServiceFee()).setScale(0, RoundingMode.HALF_DOWN).intValue()));
-			
+
 			Sort.Direction promoSort = Sort.Direction.DESC;
 			if (this.ArrayIncludes(acceptedOrder, order)) {
 				switch (order) {
@@ -274,7 +274,7 @@ public class PromoController {
 			}
 
 			Pageable pageable = PageRequest.of(1, 99, new Sort(promoSort, sort));
-						
+			
 			List<Long> bengkelIds = promo.get().getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
 			List<Bengkel> bengkels2 = (List<Bengkel>) bengkelRepository.findAllBengkelsByBengkelId(bengkelIds, pageable, latitude, longitude);
 			ObjectMapper mapObject = new ObjectMapper();
