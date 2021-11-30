@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="resthu"  id="sprint67-alter_ref_content_zone" dbms="mysql" >
+      <insert tableName="ref_content_zone">
+        <column name="name" value="ADIRAKU NASABAH"/>
+        <column name="id" value="7"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="8"/>
+        <column name="name" value="ADIRAKU PROSPEK AND ADIRAKU NASABAH"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="9"/>
+        <column name="name" value="PROMO PAGE AND ADIRAKU NASABAH"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="10"/>
+        <column name="name" value="PROMO PAGE, ADIRAKU PROSPEK, AND ADIRAKU NASABAH"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="11"/>
+        <column name="name" value="HOME PAGE AND ADIRAKU NASABAH"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="12"/>
+        <column name="name" value="HOME PAGE, ADIRAKU PROSPEK, AND ADIRAKU NASABAH"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="13"/>
+        <column name="name" value="HOME PAGE, PROMO PAGE, AND ADIRAKU NASABAH"/>
+      </insert>
+			<insert tableName="ref_content_zone">
+				<column name="id" value="14"/>
+        <column name="name" value="ALL PAGES"/>
+      </insert>
+			<update tableName="ref_content_zone">
+				<column name="name" value="HOME PAGE, PROMO PAGE, AND ADIRAKU PROSPEK"/>
+				<where>id=6</where>
+      </update>
+			<update tableName="ref_content_zone">
+				<column name="name" value="ADIRAKU PROSPEK AND HOME PAGE"/>
+				<where>id=5</where>
+      </update>
+			<update tableName="ref_content_zone">
+				<column name="name" value="ADIRAKU PROSPEK AND PROMO PAGE"/>
+				<where>id=4</where>
+      </update>
+			<update tableName="ref_content_zone">
+				<column name="name" value="ADIRAKU PROSPEK"/>
+				<where>id=3</where>
+      </update>
+    </changeSet>
+</databaseChangeLog>
