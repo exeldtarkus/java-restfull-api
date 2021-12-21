@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="classpath:db/changelog/sprints/sprint69/sprint69_alter_mst_promo.xml"/>
+    <include file="classpath:db/changelog/sprints/sprint69/sprint69_insert_ref_transaction_status.xml"/>
+    <include file="classpath:db/changelog/sprints/sprint69/sprint69_create_ref_source.xml"/>
+</databaseChangeLog>
