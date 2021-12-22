@@ -91,6 +91,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "a.url_path, "
 			+ "a.image_path, "
 			+ "a.image_path_mobile, "
+			+ "a.image_path_2,"
 			+ "a.available_until, "
 			+ "a.available_from, "
 			+ "a.is_active, "
