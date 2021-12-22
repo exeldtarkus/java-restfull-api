@@ -25,6 +25,9 @@ public class PilihanLain extends BaseEntity {
 	
 	@Column(name = "image_path_mobile")
 	private String imagePathMobile;
+
+	@Column(name = "cloudinary_path")
+	private String cloudinaryPath;
 	
 	@Column(name = "is_active")
 	private boolean active;
@@ -97,6 +100,14 @@ public class PilihanLain extends BaseEntity {
 
 	public void setPosition(Long position) {
 		this.position = position;
+	}
+
+	public String getCloudinaryPath() {
+		return cloudinaryPath;
+	}
+
+	public void setCloudinaryPath(String cloudinaryPath) {
+		this.cloudinaryPath = cloudinaryPath;
 	}
 	
 }
