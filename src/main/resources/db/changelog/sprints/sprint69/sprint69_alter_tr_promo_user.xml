@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="resthu"  id="sprint69-alter_tr_promo_user" dbms="mysql" >
+        <addColumn
+        schemaName="content"
+        tableName="tr_promo_user">
+            <column
+                name="telecaller_confirmation"
+                type="TINYINT(1)"
+                defaultValue="0"
+            />
+       </addColumn>
+    </changeSet>
+</databaseChangeLog>
