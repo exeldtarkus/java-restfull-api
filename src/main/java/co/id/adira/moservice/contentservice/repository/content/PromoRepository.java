@@ -13,7 +13,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 	
 	@Query(value = "SELECT * FROM mst_promo p "
 			+ "WHERE p.zone_id IN (0,1,5,6,11,12,13,14) AND p.is_active = true AND p.is_deleted = false "
-			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
+			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) " + "AND p.is_reviewed = 1 "
 			+ "GROUP BY p.id ORDER BY p.id desc "
 			+ "limit 8", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("currentDate") Date currentDate);
@@ -41,6 +41,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND p.available_until >= DATE(:currentDate) " 
 			+ "AND p.available_from <= DATE(:currentDate) "
 			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
+			+ "AND p.is_reviewed = 1 "
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdirakuProspect(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
 			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
@@ -69,6 +70,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND p.available_until >= DATE(:currentDate) " 
 			+ "AND p.available_from <= DATE(:currentDate) "
 			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
+			+ "AND p.is_reviewed = 1 "
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdirakuNasabah(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
 			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
@@ -78,7 +80,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "WHERE p.zone_id = :zoneId AND p.is_active = true AND p.is_deleted = false "
-			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) "
+			+ "AND p.available_until >= DATE(:currentDate) " + "AND p.available_from <= DATE(:currentDate) " + "AND p.is_reviewed = 1 "
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllByZoneIdAndMore(@Param("zoneId") Long zoneId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
@@ -152,6 +154,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.is_deleted = FALSE " 
 			+ "AND a.zone_id IN (0,2,4,6,9,10,13,14) "
 			+ "AND a.available_until >= DATE(:currentDate) "
+			+ "AND a.is_reviewed = 1 "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(
 			@Param("q") String q,
@@ -174,6 +177,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
                   + " JOIN    bengkel.ref_city e ON d.city_id = e.city_id                         "
                   + " WHERE   a.id = :id                                                          "
                   + " AND     a.is_deleted = false                                                "
+				  + " AND	  a.is_reviewed = 1 												  "
                   + " GROUP   BY a.id                                                             "
                   , nativeQuery = true
           )
@@ -187,6 +191,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN content.map_promo_area d ON a.id = d.promo_id "
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "WHERE c.tipe_servis_id = :servisId AND a.is_active = true AND a.is_deleted = false AND a.available_until >= DATE(:currentDate) "
+			+ "AND a.is_reviewed = 1 "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findByServisIdAndMore(@Param("servisId") Long servisId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
@@ -201,6 +206,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE g.bengkel_id = :bengkelId "
 			+ "AND a.is_active = true "
 			+ "AND a.available_until >= DATE(:currentDate) "
+			+ "AND a.is_reviewed = 1 "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findByBengkelIdAndMore(@Param("bengkelId") Long bengkelId, @Param("currentDate") Date currentDate,
 			@Param("pageable") Pageable pageable);
