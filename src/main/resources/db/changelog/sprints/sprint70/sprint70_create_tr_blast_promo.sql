@@ -21,6 +21,7 @@ create table tr_blast_promo_detail
     id                BIGINT auto_increment,
     customer_name     VARCHAR(255) null,
     phonenumber       VARCHAR(30)  null,
+    mobil_brand       VARCHAR(100) null,
     mobil_model       VARCHAR(100) null,
     mobil_plate_no    VARCHAR(100) null,
     tr_blast_promo_id BIGINT       not null,
