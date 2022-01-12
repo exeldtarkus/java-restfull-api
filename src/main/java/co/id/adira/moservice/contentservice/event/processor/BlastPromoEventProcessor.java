@@ -1,7 +1,7 @@
 package co.id.adira.moservice.contentservice.event.processor;
 
-import co.id.adira.moservice.contentservice.handler.user.ForceRegisterHandler;
-import co.id.adira.moservice.contentservice.handler.user.GetTokenHandler;
+import co.id.adira.moservice.contentservice.handler.user.UserServiceHandler;
+import co.id.adira.moservice.contentservice.handler.auth.AuthServiceHandler;
 import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneNumberResponseJson;
 import co.id.adira.moservice.contentservice.model.content.BlastPromo;
 import co.id.adira.moservice.contentservice.model.content.BlastPromoDetail;
@@ -32,10 +32,10 @@ public class BlastPromoEventProcessor {
     private BlastPromoDetailRepository blastPromoDetailRepository;
 
     @Autowired
-    private ForceRegisterHandler forceRegisterHandler;
+    private UserServiceHandler userServiceHandler;
 
     @Autowired
-    private GetTokenHandler getTokenHandler;
+    private AuthServiceHandler authServiceHandler;
 
     @KafkaListener(topics = {"moservice-blast-promo"})
     public void processs(@Payload String payload) throws Exception {
@@ -60,11 +60,11 @@ public class BlastPromoEventProcessor {
             System.out.println(row.getPhoneNumber());
             System.out.println(row.getCustomerName());
             System.out.println(row.getMobilBrand());
-            Boolean forceRegisterStatus = forceRegisterHandler.exec(row.getCustomerName(), row.getPhoneNumber());
+            Boolean forceRegisterStatus = userServiceHandler.exec(row.getCustomerName(), row.getPhoneNumber());
             if (!forceRegisterStatus) {
                 throw new Exception("forceRegister Fail");
             }
-            GetTokenByPhoneNumberResponseJson getTokenResponse = getTokenHandler.exec(row.getPhoneNumber());
+            GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.exec(row.getPhoneNumber());
             System.out.println("############################################################");
             String token = getTokenResponse.getData().getAccess_token();
             Long userId = getTokenResponse.getData().getUser_id();

@@ -1,4 +1,4 @@
-package co.id.adira.moservice.contentservice.handler.user;
+package co.id.adira.moservice.contentservice.handler.auth;
 
 import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneNumberJson;
 import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneNumberResponseJson;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @Service
 @Slf4j
 @RefreshScope
-public class GetTokenHandler {
+public class AuthServiceHandler {
 
     @Value("${moservice.api.ms-auth.baseurl}")
     private String baseUrl;

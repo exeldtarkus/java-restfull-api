@@ -23,7 +23,7 @@ import java.io.IOException;
 @Service
 @Slf4j
 @RefreshScope
-public class ForceRegisterHandler {
+public class UserServiceHandler {
 
     @Value("${moservice.api.ms-user.baseurl}")
     private String baseUrl;
