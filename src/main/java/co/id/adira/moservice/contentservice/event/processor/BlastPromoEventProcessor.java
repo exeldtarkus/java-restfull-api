@@ -60,11 +60,11 @@ public class BlastPromoEventProcessor {
             System.out.println(row.getPhoneNumber());
             System.out.println(row.getCustomerName());
             System.out.println(row.getMobilBrand());
-            Boolean forceRegisterStatus = userServiceHandler.exec(row.getCustomerName(), row.getPhoneNumber());
+            Boolean forceRegisterStatus = userServiceHandler.forceRegister(row.getCustomerName(), row.getPhoneNumber());
             if (!forceRegisterStatus) {
                 throw new Exception("forceRegister Fail");
             }
-            GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.exec(row.getPhoneNumber());
+            GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.getTokenByPhoneNumber(row.getPhoneNumber());
             System.out.println("############################################################");
             String token = getTokenResponse.getData().getAccess_token();
             Long userId = getTokenResponse.getData().getUser_id();

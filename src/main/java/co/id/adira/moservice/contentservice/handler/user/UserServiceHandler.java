@@ -28,7 +28,7 @@ public class UserServiceHandler {
     @Value("${moservice.api.ms-user.baseurl}")
     private String baseUrl;
 
-    public Boolean exec(String fullname, String phoneNumber) {
+    public Boolean forceRegister(String fullname, String phoneNumber) {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         System.out.println("============== base url ================");

@@ -26,7 +26,7 @@ public class AuthServiceHandler {
     @Value("${moservice.api.ms-auth.token}")
     private String token;
 
-    public GetTokenByPhoneNumberResponseJson exec(String phoneNumber) {
+    public GetTokenByPhoneNumberResponseJson getTokenByPhoneNumber(String phoneNumber) {
         GetTokenByPhoneNumberResponseJson result = null;
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
