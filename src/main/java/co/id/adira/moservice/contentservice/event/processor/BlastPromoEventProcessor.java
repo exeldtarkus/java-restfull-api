@@ -100,13 +100,29 @@ public class BlastPromoEventProcessor {
 
             modelId = mobilServiceHandler.getModelId(token, brandId, row.getMobilModel());
 
-            System.out.println("modelId");
-            System.out.println(modelId);
-
             if (modelId == null) {
                 modelId = mobilServiceHandler.getModelId(token, brandId, null);
             }
 
+            System.out.println("modelId");
+            System.out.println(modelId);
+
+            Long mobilId = userServiceHandler.getMobilId(
+                    token, userId, row.getMobilPlateNo(), brandId, modelId
+            );
+
+            System.out.println("mobilId");
+            System.out.println(mobilId);
+
+            if (mobilId == null) {
+                // create mobil
+                mobilId = userServiceHandler.createUserCar(
+                        token, userId, row.getMobilPlateNo(), brandId, modelId, null, null
+                );
+
+                System.out.println("createUserCar");
+                System.out.println(mobilId);
+            }
 
         }
 
