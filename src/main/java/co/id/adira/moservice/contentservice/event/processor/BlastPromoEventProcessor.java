@@ -1,13 +1,16 @@
 package co.id.adira.moservice.contentservice.event.processor;
 
+import co.id.adira.moservice.contentservice.handler.content.ContentServiceHandler;
 import co.id.adira.moservice.contentservice.handler.mobil.MobilServiceHandler;
 import co.id.adira.moservice.contentservice.handler.user.UserServiceHandler;
 import co.id.adira.moservice.contentservice.handler.auth.AuthServiceHandler;
 import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneNumberResponseJson;
 import co.id.adira.moservice.contentservice.model.content.BlastPromo;
 import co.id.adira.moservice.contentservice.model.content.BlastPromoDetail;
+import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.repository.content.BlastPromoDetailRepository;
 import co.id.adira.moservice.contentservice.repository.content.BlastPromoRepository;
+import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -17,6 +20,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +46,12 @@ public class BlastPromoEventProcessor {
     @Autowired
     private MobilServiceHandler mobilServiceHandler;
 
+    @Autowired
+    private ContentServiceHandler contentServiceHandler;
+
+    @Autowired
+    private PromoRepository promoRepository;
+
     @KafkaListener(topics = {"moservice-blast-promo"})
     public void processs(@Payload String payload) throws Exception {
         System.out.println("############################################################");
@@ -57,6 +68,11 @@ public class BlastPromoEventProcessor {
         List<BlastPromoDetail> blastPromoDetailList = blastPromoDetailRepository.findAllByTrBlastPromoIdOrderByIdAsc(blastPromo.get().getId());
 
         System.out.println("############################################################");
+
+        Optional<Promo> promo = promoRepository.findById(blastPromo.get().getPromoId());
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String availableUntil = formatter.format(promo.get().getAvailableUntil());
 
         Long defaultBrandId = null;
         for (BlastPromoDetail row : blastPromoDetailList) {
@@ -122,6 +138,21 @@ public class BlastPromoEventProcessor {
 
                 System.out.println("createUserCar");
                 System.out.println(mobilId);
+            }
+
+            System.out.println(promo.get().getAvailableUntil().toString());
+
+            Boolean redeemStatus = contentServiceHandler.redeemPromo(
+                    token,
+                    userId,
+                    mobilId,
+                    blastPromo.get().getPromoId(),
+                    blastPromo.get().getBengkelId(),
+                    availableUntil
+            );
+
+            if (!redeemStatus) {
+                throw new Exception("redeem Fail");
             }
 
         }
