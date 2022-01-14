@@ -31,7 +31,6 @@ public class MobilServiceHandler {
         Long result = null;
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        System.out.println(baseUrl);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -49,8 +48,6 @@ public class MobilServiceHandler {
         try {
             Response response = call.execute();
 
-            System.out.println(response.code());
-            System.out.println(response.body().toString());
             if (response.isSuccessful()) {
                 GetBrandResponseJson responseJson = (GetBrandResponseJson) response.body();
                 List<GetBrandDataResponseJson> data = responseJson.getData();
@@ -70,13 +67,13 @@ public class MobilServiceHandler {
         Long result = null;
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        System.out.println(baseUrl);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = httpClient
-                .addInterceptor(interceptor).build();
+                .addInterceptor(interceptor)
+                .build();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .client(client)
@@ -88,8 +85,6 @@ public class MobilServiceHandler {
         try {
             Response response = call.execute();
 
-            System.out.println(response.code());
-            System.out.println(response.body().toString());
             if (response.isSuccessful()) {
                 GetModelResponseJson responseJson = (GetModelResponseJson) response.body();
                 List<GetModelDataResponseJson> data = responseJson.getData();

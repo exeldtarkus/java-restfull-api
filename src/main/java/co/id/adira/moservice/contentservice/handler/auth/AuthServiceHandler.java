@@ -5,6 +5,7 @@ import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneN
 import co.id.adira.moservice.contentservice.service.MoserviceAuthService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
@@ -30,27 +31,28 @@ public class AuthServiceHandler {
         GetTokenByPhoneNumberResponseJson result = null;
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        System.out.println("============== base url ================");
-        System.out.println(baseUrl);
 
-        GetTokenByPhoneNumberJson payload = new GetTokenByPhoneNumberJson();
-        payload.setMobileNo(phoneNumber);
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = httpClient.build();
+        OkHttpClient client = httpClient
+                .addInterceptor(interceptor)
+                .build();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .client(client)
                 .build();
+
+        GetTokenByPhoneNumberJson payload = new GetTokenByPhoneNumberJson();
+        payload.setMobileNo(phoneNumber);
 
         MoserviceAuthService moserviceAuthService = retrofit.create(MoserviceAuthService.class);
         Call<GetTokenByPhoneNumberResponseJson> call = moserviceAuthService.getToken("Bearer " + token, payload);
 
         try {
             Response response = call.execute();
-            System.out.println(response.body().toString());
-            GetTokenByPhoneNumberResponseJson responseJson = (GetTokenByPhoneNumberResponseJson) response.body();
-            System.out.println(responseJson.getData().getAccess_token());
             if (response.isSuccessful()) {
+                GetTokenByPhoneNumberResponseJson responseJson = (GetTokenByPhoneNumberResponseJson) response.body();
                 return responseJson;
             }
         } catch (IOException e) {

@@ -4,11 +4,7 @@
 package co.id.adira.moservice.contentservice.service;
 
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
-import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarJson;
-import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarResponseJson;
-import co.id.adira.moservice.contentservice.json.user.get_user_car.GetUserCarResponseJson;
-import co.id.adira.moservice.contentservice.json.user.register.RegisterJson;
-import co.id.adira.moservice.contentservice.json.user.register.RegisterResponseJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoResponseJson;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -19,7 +15,7 @@ import retrofit2.http.*;
 public interface MoserviceContentService {
 
     @POST("/api/vouchers/redeem")
-    Call<Object> redeemPromo(
+    Call<RedeemPromoResponseJson> redeemPromo(
             @Header("Authorization") String authorization,
             @Body RedeemPromoJson redeemPromoJson
     );

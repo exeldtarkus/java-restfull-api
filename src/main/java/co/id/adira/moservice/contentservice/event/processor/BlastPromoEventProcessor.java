@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -61,49 +60,31 @@ public class BlastPromoEventProcessor {
         JSONObject obj = new JSONObject(payload);
         Long trBlastPromoId = obj.getLong("tr_blast_promo_id");
 
-        Optional<BlastPromo> blastPromo = blastPromoRepository.findById(trBlastPromoId);
-        System.out.println("############################################################");
-        System.out.println(blastPromo.get().getPromoId());
-        System.out.println(blastPromo.get().getId());
-        List<BlastPromoDetail> blastPromoDetailList = blastPromoDetailRepository.findAllByTrBlastPromoIdOrderByIdAsc(blastPromo.get().getId());
+        BlastPromo blastPromo = blastPromoRepository.findById(trBlastPromoId).get();
+        List<BlastPromoDetail> blastPromoDetailList = blastPromoDetailRepository.findAllByTrBlastPromoIdOrderByIdAsc(blastPromo.getId());
 
-        System.out.println("############################################################");
-
-        Optional<Promo> promo = promoRepository.findById(blastPromo.get().getPromoId());
+        Promo promo = promoRepository.findById(blastPromo.getPromoId()).get();
 
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String availableUntil = formatter.format(promo.get().getAvailableUntil());
+        String availableUntil = formatter.format(promo.getAvailableUntil());
 
         Long defaultBrandId = null;
         for (BlastPromoDetail row : blastPromoDetailList) {
-
-            System.out.println("############################################################");
-            System.out.println(row.getId());
-            System.out.println(row.getPhoneNumber());
-            System.out.println(row.getCustomerName());
-            System.out.println(row.getMobilBrand());
 
             Long brandId = null;
             Long modelId = null;
 
             Boolean forceRegisterStatus = userServiceHandler.forceRegister(row.getCustomerName(), row.getPhoneNumber());
             if (!forceRegisterStatus) {
-                throw new Exception("forceRegister Fail");
+                throw new Exception("Force register fail!");
             }
             GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.getTokenByPhoneNumber(row.getPhoneNumber());
-            System.out.println("############################################################");
             String token = getTokenResponse.getData().getAccess_token();
             Long userId = getTokenResponse.getData().getUser_id();
 
-            System.out.println(token);
-            System.out.println(userId);
-
             if (defaultBrandId == null) {
                 defaultBrandId = mobilServiceHandler.getBrandId(token, null);
-                System.out.println(defaultBrandId);
             }
-            System.out.println("defaultBrandId");
-            System.out.println(defaultBrandId);
 
             brandId = mobilServiceHandler.getBrandId(token, row.getMobilBrand());
 
@@ -111,50 +92,39 @@ public class BlastPromoEventProcessor {
                 brandId = defaultBrandId;
             }
 
-            System.out.println("brandId");
-            System.out.println(brandId);
-
             modelId = mobilServiceHandler.getModelId(token, brandId, row.getMobilModel());
 
             if (modelId == null) {
                 modelId = mobilServiceHandler.getModelId(token, brandId, null);
             }
 
-            System.out.println("modelId");
-            System.out.println(modelId);
-
             Long mobilId = userServiceHandler.getMobilId(
                     token, userId, row.getMobilPlateNo(), brandId, modelId
             );
 
-            System.out.println("mobilId");
-            System.out.println(mobilId);
-
             if (mobilId == null) {
-                // create mobil
                 mobilId = userServiceHandler.createUserCar(
                         token, userId, row.getMobilPlateNo(), brandId, modelId, null, null
                 );
-
-                System.out.println("createUserCar");
-                System.out.println(mobilId);
             }
 
-            System.out.println(promo.get().getAvailableUntil().toString());
-
-            Boolean redeemStatus = contentServiceHandler.redeemPromo(
+            Long trPromoUserId = contentServiceHandler.redeemPromo(
                     token,
                     userId,
                     mobilId,
-                    blastPromo.get().getPromoId(),
-                    blastPromo.get().getBengkelId(),
+                    blastPromo.getPromoId(),
+                    blastPromo.getBengkelId(),
                     availableUntil
             );
 
-            if (!redeemStatus) {
-                throw new Exception("redeem Fail");
+            if (trPromoUserId == null) {
+                throw new Exception("Redeem fail!");
             }
 
+            row.setTrPromoUserId(trPromoUserId);
+            blastPromoDetailRepository.save(row);
+
+            System.out.println("Tr promo user id :: " + trPromoUserId);
         }
 
     }

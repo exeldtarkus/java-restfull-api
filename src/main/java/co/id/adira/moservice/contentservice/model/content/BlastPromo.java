@@ -1,14 +1,10 @@
 package co.id.adira.moservice.contentservice.model.content;
 
-import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
-import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity

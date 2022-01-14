@@ -2,6 +2,7 @@ package co.id.adira.moservice.contentservice.handler.content;
 
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoResponseJson;
 import co.id.adira.moservice.contentservice.json.mobil.get_model.GetModelDataResponseJson;
 import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarJson;
 import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarModelBrandJson;
@@ -40,7 +41,7 @@ public class ContentServiceHandler {
     @Value("${moservice.api.ms-content.baseurl}")
     private String baseUrl;
 
-    public Boolean redeemPromo(
+    public Long redeemPromo(
             String token,
             Long userId,
             Long carId,
@@ -75,7 +76,7 @@ public class ContentServiceHandler {
         redeemPromoJson.setBengkel_name("");
 
         MoserviceContentService moserviceContentService = retrofit.create(MoserviceContentService.class);
-        Call<Object> call = moserviceContentService.redeemPromo(
+        Call<RedeemPromoResponseJson> call = moserviceContentService.redeemPromo(
                 "Bearer " + token,
                 redeemPromoJson
         );
@@ -84,14 +85,15 @@ public class ContentServiceHandler {
             Response response = call.execute();
 
             if (response.isSuccessful()) {
-                return true;
+                RedeemPromoResponseJson redeemPromoResponseJson = (RedeemPromoResponseJson) response.body();
+                return redeemPromoResponseJson.getData().getId();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return null;
     }
 
 }

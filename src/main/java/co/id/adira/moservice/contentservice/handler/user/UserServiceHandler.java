@@ -1,6 +1,5 @@
 package co.id.adira.moservice.contentservice.handler.user;
 
-import co.id.adira.moservice.contentservice.json.mobil.get_model.GetModelDataResponseJson;
 import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarJson;
 import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarModelBrandJson;
 import co.id.adira.moservice.contentservice.json.user.create_user_car.CreateUserCarModelJson;
@@ -14,10 +13,7 @@ import co.id.adira.moservice.contentservice.json.user.register.RegisterResponseJ
 import co.id.adira.moservice.contentservice.service.MoserviceUserService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
@@ -40,8 +36,17 @@ public class UserServiceHandler {
     public Boolean forceRegister(String fullname, String phoneNumber) {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        System.out.println("============== base url ================");
-        System.out.println(baseUrl);
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = httpClient
+                .addInterceptor(interceptor)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .client(client)
+                .build();
 
         RegisterCredentialRoleJson registerCredentialRoleJson = new RegisterCredentialRoleJson();
         registerCredentialRoleJson.setId("user");
@@ -59,12 +64,6 @@ public class UserServiceHandler {
         registerJson.setFirstName(fullname);
         registerJson.setProvider("adiraku");
         registerJson.setEmailVerified(1);
-
-        OkHttpClient client = httpClient.build();
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl)
-                .addConverterFactory(JacksonConverterFactory.create())
-                .client(client)
-                .build();
 
         MoserviceUserService moserviceUserService = retrofit.create(MoserviceUserService.class);
         Call<RegisterResponseJson> call = moserviceUserService.register(registerJson);
@@ -91,10 +90,7 @@ public class UserServiceHandler {
             Long brandId,
             Long modelId
     ) {
-
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        System.out.println("============== base url ================");
-        System.out.println(baseUrl);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
