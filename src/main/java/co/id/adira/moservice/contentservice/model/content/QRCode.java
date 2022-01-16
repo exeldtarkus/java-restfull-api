@@ -26,6 +26,9 @@ public class QRCode implements Serializable {
 	@Column(name = "qrcode_path")
 	private String qrcodePath;
 
+	@Column(name = "qrcode_path_2")
+	private String qrcodePath2;
+
 	@Column(name = "cust_acction")
 	private String custAcction; // 0 = promo , 1 = booking
 	
@@ -141,5 +144,13 @@ public class QRCode implements Serializable {
 
 	public void setBengkelId(Long bengkelId) {
 		this.bengkelId = bengkelId;
+	}
+
+	public String getQrcodePath2() {
+		return qrcodePath2;
+	}
+
+	public void setQrcodePath2(String qrcodePath2) {
+		this.qrcodePath2 = qrcodePath2;
 	}
 }
