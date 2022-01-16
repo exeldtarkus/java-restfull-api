@@ -42,6 +42,9 @@ public class RedeemService {
 	
 	@Autowired
 	private KafkaTemplate<String, EmailEventDto> kafkaTemplate;
+
+	@Autowired
+	private QRCodeUtil qrCodeUtil;
 	
 	@Transactional(readOnly = false)
 	public QRCode generateQRCodeAndSaveVoucher(Voucher voucher) {
@@ -64,8 +67,9 @@ public class RedeemService {
 		QRCode qrcode = new QRCode();
 		qrcode.setData(data.toString());
 		qrcode.setQrcodePath(pathUploadQrcode);
-		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode, voucher);
+		String[] response = qrCodeUtil.generateQRCodeWithLogo(qrcode, voucher);
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
+		qrcode.setQrcodePath2("/qr/" + response[0]);
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrcode.setPromoId(voucher.getPromo().getId());
