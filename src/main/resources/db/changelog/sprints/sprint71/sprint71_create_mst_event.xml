@@ -28,7 +28,7 @@
             generationType="ALWAYS"
             incrementBy="1"  
             schemaName="content" 
-            tableName="ref_source"
+            tableName="mst_event"
         /> 
 
         <sql dbms="mysql">
