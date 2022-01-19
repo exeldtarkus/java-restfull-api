@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="resthu"  id="sprint71-create-mst_event" dbms="mysql" >
+        <createTable
+            remarks="master table for event promo"
+            schemaName="content"  
+            tableName="mst_event" > 
+            <column name="id" type="bigint(20)">
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="name" type="varchar(255)" />
+            <column name="start_date" type="DATETIME" />
+            <column name="end_date" type="DATETIME" />
+            <column name="is_active" type="TINYINT(1)" defaultValueBoolean="true" />
+            <column name="is_deleted" type="TINYINT(1)" defaultValueBoolean="false" />
+            <column name="created" type="TIMESTAMP" defaultValueDate="CURRENT_TIMESTAMP" />
+            <column name="updated" type="TIMESTAMP" />
+        </createTable>  
+
+        <addAutoIncrement  
+            columnDataType="bigint(20)"
+            columnName="id" 
+            defaultOnNull="false"
+            generationType="ALWAYS"
+            incrementBy="1"  
+            schemaName="content" 
+            tableName="ref_source"
+        /> 
+
+        <sql dbms="mysql">
+        ALTER TABLE mst_event MODIFY COLUMN updated TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+      </sql>
+    </changeSet>
+</databaseChangeLog>
