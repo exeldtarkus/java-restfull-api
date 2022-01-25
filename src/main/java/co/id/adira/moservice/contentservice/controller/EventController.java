@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,21 +33,30 @@ public class EventController {
         Root<Event> root = cr.from(Event.class);
         cr.select(root);
 
+        List<Predicate> predicates = new ArrayList<Predicate>();
+
+        Predicate isNotDeleted = cb.equal(root.get("isDeleted"), false);
+        predicates.add(isNotDeleted);
+
         if (!active.isEmpty()) {
             if (active.equals("1") || active.equals("0")) {
                 boolean filterIsActive = active.equals("1") ? true : false;
-                cr.where(cb.equal(root.get("isActive"), filterIsActive));
+                Predicate isActivePredicate = cb.equal(root.get("isActive"), filterIsActive);
+                predicates.add(isActivePredicate);
                 if (active.equals("1")) {
-//                    Predicate isActiveDateGte
-//                            = cb.greaterThanOrEqualTo(cb.currentDate(), root.get("startDate"));
-//                    Predicate isActiveDateLte
-//                            = cb.lessThanOrEqualTo(cb.currentDate(), root.get("endDate"));
-//                    Predicate isActiveDate
-//                            = cb.and(isActiveDateGte, isActiveDateLte);
-//                    cr.where(isActiveDate);
+                    Predicate isActiveDateGtePredicate
+                            = cb.greaterThanOrEqualTo(cb.currentDate(), root.get("startDate"));
+                    Predicate isActiveDateLtePredicate
+                            = cb.lessThanOrEqualTo(cb.currentDate(), root.get("endDate"));
+                    Predicate isActiveDatePredicate
+                            = cb.and(isActiveDateGtePredicate, isActiveDateLtePredicate);
+                    predicates.add(isActiveDatePredicate);
                 }
             }
         }
+
+        Predicate[] predicateArray = predicates.toArray(new Predicate[0]);
+        cr.where(predicateArray);
 
         Query<Event> query = session.createQuery(cr);
         List<Event> results = query.getResultList();
