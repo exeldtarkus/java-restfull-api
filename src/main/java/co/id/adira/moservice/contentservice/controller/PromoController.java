@@ -78,7 +78,8 @@ public class PromoController {
 			@RequestParam(required = false) Long bengkel_id,
 			@RequestParam(required = false, name = "cid") Long cityId,
 			@RequestParam(required = false, name = "lat") Double latitude,
-			@RequestParam(required = false, name = "lng") Double longitude
+			@RequestParam(required = false, name = "lng") Double longitude,
+			@RequestParam(required = false, name = "eid") Long eventId
 	) {
 		
 		Date currentDate = new Date();
@@ -164,18 +165,34 @@ public class PromoController {
 
 					}
 
-					promos = (List<Promo>) promoRepository.findAllAndMore(
-							q,
-							service_type,
-							promoTypeList,
-							currentDate,
-							serviceIdsList,
-							searchServiceTypeIds,
-							cityId,
-							pageable,
-							latitude,
-							longitude
-					);
+					if (eventId != null) {
+						promos = (List<Promo>) promoRepository.findAllAndMoreEventId(
+								q,
+								service_type,
+								promoTypeList,
+								currentDate,
+								serviceIdsList,
+								searchServiceTypeIds,
+								cityId,
+								pageable,
+								latitude,
+								longitude,
+								eventId
+						);
+					} else {
+						promos = (List<Promo>) promoRepository.findAllAndMore(
+								q,
+								service_type,
+								promoTypeList,
+								currentDate,
+								serviceIdsList,
+								searchServiceTypeIds,
+								cityId,
+								pageable,
+								latitude,
+								longitude
+						);
+					}
 				}
 				break;
 		}
