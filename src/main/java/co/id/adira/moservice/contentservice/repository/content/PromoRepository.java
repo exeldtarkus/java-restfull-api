@@ -177,6 +177,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "a.tnc, "
 			+ "a.url_path, "
 			+ "a.image_path, "
+			+ "a.image_path_2,"
 			+ "a.image_path_mobile, "
 			+ "a.available_until, "
 			+ "a.available_from, "
