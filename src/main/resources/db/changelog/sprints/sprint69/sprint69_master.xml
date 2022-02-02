@@ -7,5 +7,4 @@
     <include file="classpath:db/changelog/sprints/sprint69/sprint69_alter_mst_promo.xml"/>
     <include file="classpath:db/changelog/sprints/sprint69/sprint69_alter_tr_promo_user.xml"/>
     <include file="classpath:db/changelog/sprints/sprint69/sprint69_insert_ref_transaction_status.xml"/>
-    <include file="classpath:db/changelog/sprints/sprint69/sprint69_create_ref_source.xml"/>
 </databaseChangeLog>
