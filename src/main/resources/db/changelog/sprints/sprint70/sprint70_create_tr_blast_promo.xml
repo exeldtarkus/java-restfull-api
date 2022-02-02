@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include file="classpath:db/changelog/sprints/sprint70/sprint70-insert_ref_content_zone.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint70/sprint70_create_tr_blast_promo.xml"/>
+    <changeSet author="richard" id="sprint70-create-tr_blast_promo">
+        <sqlFile path="classpath:db/changelog/sprints/sprint70/sprint70_create_tr_blast_promo.sql"/>
+    </changeSet>
 </databaseChangeLog>
