@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="resthu"  id="sprint71-create-map_promo_event" dbms="mysql" >
+        <createTable
+            remarks="mapping table for event and promo"
+            schemaName="content"  
+            tableName="map_promo_event" > 
+            <column name="id" type="bigint(20)">
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="promo_id" type="bigint(20)" />
+            <column name="event_id" type="bigint(20)" />
+        </createTable>  
+
+        <addAutoIncrement  
+            columnDataType="bigint(20)"
+            columnName="id" 
+            defaultOnNull="false"
+            generationType="ALWAYS"
+            incrementBy="1"  
+            schemaName="content" 
+            tableName="map_promo_event"
+        /> 
+    </changeSet>
+</databaseChangeLog>
