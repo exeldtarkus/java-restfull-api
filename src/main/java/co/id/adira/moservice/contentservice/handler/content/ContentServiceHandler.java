@@ -47,7 +47,8 @@ public class ContentServiceHandler {
             Long carId,
             Long promoId,
             Long bengkelId,
-            String availableUntil
+            String availableUntil,
+            String type
     ) {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -72,8 +73,11 @@ public class ContentServiceHandler {
         redeemPromoJson.setBengkelId(bengkelId);
         redeemPromoJson.setCarId(carId);
         redeemPromoJson.setUserId(userId);
-        redeemPromoJson.setUtm("adiraku");
+        // redeemPromoJson.setUtm("adiraku");
         redeemPromoJson.setBengkel_name("");
+        if(type.equals("adiraku")){
+            redeemPromoJson.setUtm("adiraku");
+        }
 
         MoserviceContentService moserviceContentService = retrofit.create(MoserviceContentService.class);
         Call<RedeemPromoResponseJson> call = moserviceContentService.redeemPromo(
