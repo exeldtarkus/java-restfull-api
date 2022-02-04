@@ -51,82 +51,82 @@ public class BlastPromoEventProcessor {
     @Autowired
     private PromoRepository promoRepository;
 
-    // @KafkaListener(topics = {"moservice-blast-promo"})
-    // public void processs(@Payload String payload) throws Exception {
-    //     System.out.println("############################################################");
-    //     System.out.println("Receive Payload Blast Promo :: " + payload);
-    //     System.out.println("############################################################");
+    @KafkaListener(topics = {"moservice-blast-promo"})
+    public void processs(@Payload String payload) throws Exception {
+        System.out.println("############################################################");
+        System.out.println("Receive Payload Blast Promo :: " + payload);
+        System.out.println("############################################################");
 
-    //     JSONObject obj = new JSONObject(payload);
-    //     Long trBlastPromoId = obj.getLong("tr_blast_promo_id");
+        JSONObject obj = new JSONObject(payload);
+        Long trBlastPromoId = obj.getLong("tr_blast_promo_id");
 
-    //     BlastPromo blastPromo = blastPromoRepository.findById(trBlastPromoId).get();
-    //     List<BlastPromoDetail> blastPromoDetailList = blastPromoDetailRepository.findAllByTrBlastPromoIdOrderByIdAsc(blastPromo.getId());
+        BlastPromo blastPromo = blastPromoRepository.findById(trBlastPromoId).get();
+        List<BlastPromoDetail> blastPromoDetailList = blastPromoDetailRepository.findAllByTrBlastPromoIdOrderByIdAsc(blastPromo.getId());
 
-    //     Promo promo = promoRepository.findById(blastPromo.getPromoId()).get();
+        Promo promo = promoRepository.findById(blastPromo.getPromoId()).get();
 
-    //     DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    //     String availableUntil = formatter.format(promo.getAvailableUntil());
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String availableUntil = formatter.format(promo.getAvailableUntil());
 
-    //     Long defaultBrandId = null;
-    //     for (BlastPromoDetail row : blastPromoDetailList) {
+        Long defaultBrandId = null;
+        for (BlastPromoDetail row : blastPromoDetailList) {
 
-    //         Long brandId = null;
-    //         Long modelId = null;
+            Long brandId = null;
+            Long modelId = null;
 
-    //         Boolean forceRegisterStatus = userServiceHandler.forceRegister(row.getCustomerName(), row.getPhoneNumber());
-    //         if (!forceRegisterStatus) {
-    //             throw new Exception("Force register fail!");
-    //         }
-    //         GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.getTokenByPhoneNumber(row.getPhoneNumber());
-    //         String token = getTokenResponse.getData().getAccess_token();
-    //         Long userId = getTokenResponse.getData().getUser_id();
+            Boolean forceRegisterStatus = userServiceHandler.forceRegister(row.getCustomerName(), row.getPhoneNumber());
+            if (!forceRegisterStatus) {
+                throw new Exception("Force register fail!");
+            }
+            GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.getTokenByPhoneNumber(row.getPhoneNumber());
+            String token = getTokenResponse.getData().getAccess_token();
+            Long userId = getTokenResponse.getData().getUser_id();
 
-    //         if (defaultBrandId == null) {
-    //             defaultBrandId = mobilServiceHandler.getBrandId(token, null);
-    //         }
+            if (defaultBrandId == null) {
+                defaultBrandId = mobilServiceHandler.getBrandId(token, null);
+            }
 
-    //         brandId = mobilServiceHandler.getBrandId(token, row.getMobilBrand());
+            brandId = mobilServiceHandler.getBrandId(token, row.getMobilBrand());
 
-    //         if (brandId == null) {
-    //             brandId = defaultBrandId;
-    //         }
+            if (brandId == null) {
+                brandId = defaultBrandId;
+            }
 
-    //         modelId = mobilServiceHandler.getModelId(token, brandId, row.getMobilModel());
+            modelId = mobilServiceHandler.getModelId(token, brandId, row.getMobilModel());
 
-    //         if (modelId == null) {
-    //             modelId = mobilServiceHandler.getModelId(token, brandId, null);
-    //         }
+            if (modelId == null) {
+                modelId = mobilServiceHandler.getModelId(token, brandId, null);
+            }
 
-    //         Long mobilId = userServiceHandler.getMobilId(
-    //                 token, userId, row.getMobilPlateNo(), brandId, modelId
-    //         );
+            Long mobilId = userServiceHandler.getMobilId(
+                    token, userId, row.getMobilPlateNo(), brandId, modelId
+            );
 
-    //         if (mobilId == null) {
-    //             mobilId = userServiceHandler.createUserCar(
-    //                     token, userId, row.getMobilPlateNo(), brandId, modelId, null, null
-    //             );
-    //         }
+            if (mobilId == null) {
+                mobilId = userServiceHandler.createUserCar(
+                        token, userId, row.getMobilPlateNo(), brandId, modelId, null, null
+                );
+            }
 
-    //         Long trPromoUserId = contentServiceHandler.redeemPromo(
-    //                 token,
-    //                 userId,
-    //                 mobilId,
-    //                 blastPromo.getPromoId(),
-    //                 blastPromo.getBengkelId(),
-    //                 availableUntil
-    //         );
+            Long trPromoUserId = contentServiceHandler.redeemPromo(
+                    token,
+                    userId,
+                    mobilId,
+                    blastPromo.getPromoId(),
+                    blastPromo.getBengkelId(),
+                    availableUntil
+            );
 
-    //         if (trPromoUserId == null) {
-    //             throw new Exception("Redeem fail!");
-    //         }
+            if (trPromoUserId == null) {
+                throw new Exception("Redeem fail!");
+            }
 
-    //         row.setTrPromoUserId(trPromoUserId);
-    //         blastPromoDetailRepository.save(row);
+            row.setTrPromoUserId(trPromoUserId);
+            blastPromoDetailRepository.save(row);
 
-    //         System.out.println("Tr promo user id :: " + trPromoUserId);
-    //     }
+            System.out.println("Tr promo user id :: " + trPromoUserId);
+        }
 
-    // }
+    }
 
 }
