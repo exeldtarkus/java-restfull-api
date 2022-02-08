@@ -3,7 +3,7 @@ create table mst_service_reminder_config
 (
     id             BIGINT auto_increment,
     tipe_servis_id BIGINT                              null,
-    title          BIGINT                              null,
+    title          VARCHAR(255)                        null,
     day            INT                                 null,
     email_body     TEXT                                null,
     created        timestamp default CURRENT_TIMESTAMP null,
