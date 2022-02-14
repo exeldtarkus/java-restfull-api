@@ -59,7 +59,7 @@ public class BlastPromoEventProcessor {
 
         JSONObject obj = new JSONObject(payload);
         Long trBlastPromoId = obj.getLong("tr_blast_promo_id");
-
+        String type = obj.getString("type");
         BlastPromo blastPromo = blastPromoRepository.findById(trBlastPromoId).get();
         List<BlastPromoDetail> blastPromoDetailList = blastPromoDetailRepository.findAllByTrBlastPromoIdOrderByIdAsc(blastPromo.getId());
 
@@ -114,7 +114,8 @@ public class BlastPromoEventProcessor {
                     mobilId,
                     blastPromo.getPromoId(),
                     blastPromo.getBengkelId(),
-                    availableUntil
+                    availableUntil,
+                    type
             );
 
             if (trPromoUserId == null) {
@@ -125,6 +126,7 @@ public class BlastPromoEventProcessor {
             blastPromoDetailRepository.save(row);
 
             System.out.println("Tr promo user id :: " + trPromoUserId);
+            //ini bukan TR promo user tapi mst_qr_code id
         }
 
     }
