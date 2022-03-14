@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet  author="Exel"  id="sprint74_rename_column_cloudinary_path" dbms="mysql" >
+      <renameColumn 
+        tableName="mst_banner"
+        schemaName="content"
+        columnDataType="VARCHAR(255)"
+        oldColumnName="cloudinary_ path"
+        newColumnName="cloudinary_path"/>
+    </changeSet>
+</databaseChangeLog>
