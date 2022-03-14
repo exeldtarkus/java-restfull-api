@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api")
 public class PromoController {
+
+  @Value("${cloudinary.main-folder}")
+	public String cloudinaryMainPath;
 
 	@Autowired
 	private PromoRepository promoRepository;
@@ -65,6 +69,8 @@ public class PromoController {
 		return Arrays.stream(arr).anyMatch(i::equals);
 	}
 
+  private String setCloudinaryPath = "https://res.cloudinary.com/adiramoservice/fl_attachment/v1/";
+
 	@GetMapping(path = "/promo")
 	public ResponseEntity<Object> getPromos(
 			@RequestParam(required = false, defaultValue = "") final String origin,
@@ -84,6 +90,7 @@ public class PromoController {
 		
 		Date currentDate = new Date();
 		String serviceIdsList = null;
+
 		if (null == service_type) {
 			List<ServiceType> serviceType = serviceTypeRepository.findAll();
 			service_type = serviceType.stream().map(e -> e.getId()).collect(Collectors.toList());
@@ -198,6 +205,10 @@ public class PromoController {
 		}
 		// = new ArrayList<ProvinceCityDTO>();
 		for (Promo promo : promos) {
+      if (origin.equals("adiraku") || origin.equals("adirakunasabah")) {
+        promo.setImagePath(setCloudinaryPath + cloudinaryMainPath + promo.getImagePath2());
+        promo.setImagePathMobile(setCloudinaryPath + cloudinaryMainPath + promo.getImagePath2());
+      }
 			List<ProvinceCityDTO> cities   = cityRepository.findAllCitiesByPromoId(promo.getId());
 			promo.setProvinceCities(cities);
 		}
@@ -259,6 +270,10 @@ public class PromoController {
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
 		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
+
+    promo.get().setImagePath(setCloudinaryPath + cloudinaryMainPath + promo.get().getImagePath2());
+    promo.get().setImagePathMobile(setCloudinaryPath + cloudinaryMainPath + promo.get().getImagePath2());
+
 		if (promo.isPresent()) {
 
 			// calculate total price
