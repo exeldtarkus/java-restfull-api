@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,11 @@ import java.util.regex.Pattern;
 public class VoucherController {
 	
 	private static final String REDEEM_HBS = "redeem.hbs";
+
+  private String setCloudinaryPath = "https://res.cloudinary.com/adiramoservice/fl_attachment/v1/";
+
+  @Value("${cloudinary.main-folder}")
+	public String cloudinaryMainPath;
 
 	@Autowired
 	private VoucherRepository voucherRepository;
@@ -89,7 +95,11 @@ public class VoucherController {
 		for (Voucher voucher : vouchers) {
 			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
 			voucher.setCityName(city);
+      voucher.getQr().setQrcodePath(setCloudinaryPath + cloudinaryMainPath + voucher.getQr().getQrcodePath());
+      voucher.getPromo().setImagePath(setCloudinaryPath + cloudinaryMainPath + voucher.getPromo().getImagePath2());
+      voucher.getPromo().setImagePathMobile(setCloudinaryPath + cloudinaryMainPath + voucher.getPromo().getImagePath2());
 		}
+
 		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
 		Integer end = Math.min(Math.max(size * page, start), vouchers.size());
 		Page<Voucher> pages = new PageImpl<Voucher>(vouchers.subList(start, end), pageable, vouchers.size());
