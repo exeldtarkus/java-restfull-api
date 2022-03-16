@@ -120,6 +120,8 @@ public class VoucherController {
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+    qrcode.setQrcodePath(setCloudinaryPath + cloudinaryMainPath + qrcode.getQrcodePath());
+
 		String credential = authentication.getPrincipal().toString();
 		if (isEmail(credential)) {
 			EmailEventDto emailEventDto = new EmailEventDto();
