@@ -35,4 +35,9 @@ public class CloudinaryUtil {
 		return cloudinaryMainFolder;
 	}
 
+  public String getCloudinaryUrlPath() {
+    String setCloudinaryPath = "https://res.cloudinary.com/adiramoservice/fl_attachment/v1/";
+		return setCloudinaryPath;
+	}
+
 }
