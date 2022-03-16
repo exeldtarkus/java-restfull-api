@@ -14,6 +14,8 @@ import co.id.adira.moservice.contentservice.repository.bengkel.GrupBengkelReposi
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.repository.servis.ServiceTypeRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
+import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -62,6 +64,9 @@ public class PromoController {
 	@Autowired
 	private CityRepository cityRepository;
 
+  @Autowired
+	private CloudinaryUtil cloudinaryUtil;
+
 	private final String[] acceptedOrder = { "desc", "asc" };
 	private final String[] acceptedSort = { "g.km", "id", "name" };
 
@@ -90,6 +95,7 @@ public class PromoController {
 		
 		Date currentDate = new Date();
 		String serviceIdsList = null;
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 
 		if (null == service_type) {
 			List<ServiceType> serviceType = serviceTypeRepository.findAll();
@@ -206,8 +212,8 @@ public class PromoController {
 		// = new ArrayList<ProvinceCityDTO>();
 		for (Promo promo : promos) {
       if (origin.equals("adiraku") || origin.equals("adirakunasabah")) {
-        promo.setImagePath(setCloudinaryPath + cloudinaryMainPath + promo.getImagePath2());
-        promo.setImagePathMobile(setCloudinaryPath + cloudinaryMainPath + promo.getImagePath2());
+        promo.setImagePath(cloudinaryPath + promo.getImagePath2());
+        promo.setImagePathMobile(cloudinaryPath + promo.getImagePath2());
       }
 			List<ProvinceCityDTO> cities   = cityRepository.findAllCitiesByPromoId(promo.getId());
 			promo.setProvinceCities(cities);
@@ -267,12 +273,14 @@ public class PromoController {
 		@RequestParam(required = false, name = "lat") Double latitude,
 		@RequestParam(required = false, name = "lng") Double longitude
 	) {
+
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
 		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 
-    promo.get().setImagePath(setCloudinaryPath + cloudinaryMainPath + promo.get().getImagePath2());
-    promo.get().setImagePathMobile(setCloudinaryPath + cloudinaryMainPath + promo.get().getImagePath2());
+    promo.get().setImagePath(cloudinaryPath + promo.get().getImagePath2());
+    promo.get().setImagePathMobile(cloudinaryPath + promo.get().getImagePath2());
 
 		if (promo.isPresent()) {
 
