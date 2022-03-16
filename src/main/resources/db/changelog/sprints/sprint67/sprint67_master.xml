@@ -7,4 +7,5 @@
     <include  file="classpath:db/changelog/sprints/sprint67/sprint67_alter_ref_content_zone.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint67/sprint67_alter_mst_promo.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint67/sprint67_alter_mst_promo_2.xml"/>
+    <include  file="classpath:db/changelog/sprints/sprint67/sprint67_alter_mst_qrcode.xml"/>
 </databaseChangeLog>
