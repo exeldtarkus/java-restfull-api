@@ -3,6 +3,8 @@
  */
 package co.id.adira.moservice.contentservice.service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -63,6 +65,13 @@ public class RedeemService {
 		data.append("&bengkel_id=").append(voucher.getBengkelId());
 		// data.append("&redeem_date=").append(sdf.format(date));
 		data.append("&redeem_date=").append(now);
+
+    // [LOCAL TESTING PATH]
+    // ----------------------------------------------------------------------- 
+    // Path currentRelativePath = Paths.get("");
+    // pathUploadQrcode = currentRelativePath.toAbsolutePath().toString();
+    // System.out.printf("path qr = [%s]",pathUploadQrcode);
+    // ----------------------------------------------------------------------- 
 		
 		QRCode qrcode = new QRCode();
 		qrcode.setData(data.toString());
