@@ -44,6 +44,9 @@ public class QRCodeController {
 	@Autowired
 	private QRCodeRepository qrCodeRepository;
 
+	@Autowired
+	private QRCodeUtil qrCodeUtil;
+
 	@GetMapping(path = "/qrcode")
 	public void generateQRCode(String data) {
 
@@ -66,8 +69,9 @@ public class QRCodeController {
 	@PostMapping(path = "/qrcode/generate")
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody QRCode qrcode) {
 		qrcode.setQrcodePath(pathUploadQrcode);
-		String[] response = QRCodeUtil.generateQRCodeWithLogo(qrcode, null);
+		String[] response = qrCodeUtil.generateQRCodeWithLogo(qrcode, null);
 		qrcode.setQrcodePath(baseUploadQrcodeUrl + "/sp/qrcode/" + response[0] + ".png");
+		qrcode.setQrcodePath2("/qr/" + response[0]);
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
 		qrCodeRepository.save(qrcode);

@@ -46,6 +46,9 @@ public class Promo implements Serializable {
 	@Column(name = "image_path_mobile")
 	private String imagePathMobile;
 
+	@Column(name = "image_path_2")
+	private String imagePath2;
+
 	@Column(name = "available_until")
 	private Date availableUntil;
 
@@ -362,5 +365,12 @@ public class Promo implements Serializable {
 	public void setServiceFee(BigDecimal serviceFee) {
 		this.serviceFee = serviceFee;
 	}
-	
+
+	public String getImagePath2() {
+		return imagePath2;
+	}
+
+	public void setImagePath2(String imagePath2) {
+		this.imagePath2 = imagePath2;
+	}
 }

@@ -16,6 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.imageio.ImageIO;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Dimension;
@@ -42,6 +46,9 @@ public class QRCodeUtil {
 
 	private final static String MOSERVICE_LOGO = "https://assets.adira.one/sp/default/moservice-logo-qr.png";
 
+	@Autowired
+	private CloudinaryUtil cloudinaryUtil;
+
 	public void generateQRCode(String data) {
 
 		data = "https://mobildev.adira.one/moservice";
@@ -60,7 +67,7 @@ public class QRCodeUtil {
 
 	}
 
-	public static String[] generateQRCodeWithLogo(QRCode qrcode, Voucher voucher) {
+	public String[] generateQRCodeWithLogo(QRCode qrcode, Voucher voucher) {
 
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
@@ -173,6 +180,15 @@ public class QRCodeUtil {
 			BufferedImage bufferedImage = ImageIO.read(bais);
 
 			ImageIO.write(bufferedImage, "png", new File(path));
+
+			Cloudinary cloudinary = cloudinaryUtil.initCloudinary();
+
+			Map params = ObjectUtils.asMap(
+					"public_id", cloudinaryUtil.getCloudinaryMainFolder() + "/qr/" + uuid,
+					"overwrite", true
+			);
+
+			Map uploadResult = cloudinary.uploader().upload(new File(path), params);
 
 			return new String[] { uuid, base64 };
 		} catch (WriterException e) {

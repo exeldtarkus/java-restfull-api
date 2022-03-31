@@ -14,6 +14,8 @@ import co.id.adira.moservice.contentservice.repository.bengkel.GrupBengkelReposi
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.repository.servis.ServiceTypeRepository;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
+import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +46,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api")
 public class PromoController {
 
+  @Value("${cloudinary.main-folder}")
+	public String cloudinaryMainPath;
+
 	@Autowired
 	private PromoRepository promoRepository;
 
@@ -58,12 +64,17 @@ public class PromoController {
 	@Autowired
 	private CityRepository cityRepository;
 
+  @Autowired
+	private CloudinaryUtil cloudinaryUtil;
+
 	private final String[] acceptedOrder = { "desc", "asc" };
 	private final String[] acceptedSort = { "g.km", "id", "name" };
 
 	private Boolean ArrayIncludes(String[] arr, String i) {
 		return Arrays.stream(arr).anyMatch(i::equals);
 	}
+
+  private String setCloudinaryPath = "https://res.cloudinary.com/adiramoservice/fl_attachment/v1/";
 
 	@GetMapping(path = "/promo")
 	public ResponseEntity<Object> getPromos(
@@ -84,6 +95,8 @@ public class PromoController {
 		
 		Date currentDate = new Date();
 		String serviceIdsList = null;
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+
 		if (null == service_type) {
 			List<ServiceType> serviceType = serviceTypeRepository.findAll();
 			service_type = serviceType.stream().map(e -> e.getId()).collect(Collectors.toList());
@@ -198,6 +211,10 @@ public class PromoController {
 		}
 		// = new ArrayList<ProvinceCityDTO>();
 		for (Promo promo : promos) {
+      if (origin.equals("adiraku") || origin.equals("adirakunasabah")) {
+        promo.setImagePath(cloudinaryPath + promo.getImagePath2());
+        promo.setImagePathMobile(cloudinaryPath + promo.getImagePath2());
+      }
 			List<ProvinceCityDTO> cities   = cityRepository.findAllCitiesByPromoId(promo.getId());
 			promo.setProvinceCities(cities);
 		}
@@ -256,9 +273,15 @@ public class PromoController {
 		@RequestParam(required = false, name = "lat") Double latitude,
 		@RequestParam(required = false, name = "lng") Double longitude
 	) {
+
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
 		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
+
+    promo.get().setImagePath(cloudinaryPath + promo.get().getImagePath2());
+    promo.get().setImagePathMobile(cloudinaryPath + promo.get().getImagePath2());
+
 		if (promo.isPresent()) {
 
 			// calculate total price
