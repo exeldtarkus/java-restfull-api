@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,7 @@ import co.id.adira.moservice.contentservice.repository.bengkel.CityRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
+import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
 import co.id.adira.moservice.event.dto.EmailEventDto;
 import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +60,9 @@ public class VoucherController {
 	@Autowired
 	private KafkaTemplate<String, Long> kafkaTemplateNotif;
 
+	@Autowired
+	private CloudinaryUtil cloudinaryUtil;
+
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
@@ -66,6 +71,7 @@ public class VoucherController {
 			@RequestParam(name = "utm_not_in", required = false) List<String> utmNotInParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
 
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		String utm = null;
 		if (!utmParam.equals("")) {
 			utm = utmParam;
@@ -89,7 +95,11 @@ public class VoucherController {
 		for (Voucher voucher : vouchers) {
 			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
 			voucher.setCityName(city);
+      voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
+      voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
+      voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
 		}
+
 		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
 		Integer end = Math.min(Math.max(size * page, start), vouchers.size());
 		Page<Voucher> pages = new PageImpl<Voucher>(vouchers.subList(start, end), pageable, vouchers.size());
@@ -106,9 +116,12 @@ public class VoucherController {
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
 
 		log.info("::: GENERATE QRCODE :::");
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    qrcode.setQrcodePath(cloudinaryPath + qrcode.getQrcodePath2());
 
 		String credential = authentication.getPrincipal().toString();
 		if (isEmail(credential)) {
