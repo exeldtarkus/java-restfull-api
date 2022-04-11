@@ -41,11 +41,15 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND p.available_until >= DATE(:currentDate) " 
 			+ "AND p.available_from <= DATE(:currentDate) "
 			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
+			+ "AND p.vehicle_type_id IN (:vehicleTypes)" 
 			+ "AND p.is_reviewed = 1 "
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdirakuProspect(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
-			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
-			@Param("service_type") List<Long> service_type, @Param("serviceIdsList") String serviceIdsList);
+			@Param("longitude") Double longitude
+      , @Param("pageable") Pageable pageable
+      , @Param("service_type") List<Long> service_type
+      , @Param("serviceIdsList") String serviceIdsList
+      , @Param("vehicleTypes") String vehicleTypes);
 
 			@Query(value = "SELECT * FROM mst_promo p "
 			+ "JOIN ( "
@@ -70,11 +74,15 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND p.available_until >= DATE(:currentDate) " 
 			+ "AND p.available_from <= DATE(:currentDate) "
 			+ "AND (:serviceIdsList is null OR (c.tipe_servis_id IN :service_type)) " 
+			+ "AND p.vehicle_type_id IN (:vehicleTypes)" 
 			+ "AND p.is_reviewed = 1 "
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdirakuNasabah(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
-			@Param("longitude") Double longitude, @Param("pageable") Pageable pageable, 
-			@Param("service_type") List<Long> service_type, @Param("serviceIdsList") String serviceIdsList);
+			@Param("longitude") Double longitude
+      , @Param("pageable") Pageable pageable
+      , @Param("service_type") List<Long> service_type
+      , @Param("serviceIdsList") String serviceIdsList
+      , @Param("vehicleTypes") String vehicleTypes);
 	
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
