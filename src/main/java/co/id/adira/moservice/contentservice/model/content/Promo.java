@@ -120,17 +120,6 @@ public class Promo implements Serializable {
 	@Column(name = "service_fee")
 	private BigDecimal serviceFee;
 
-	@Column(name = "vehicle_type_id")
-	private Long vehicleTypeId;
-
-	public Long getVehicleTypeId() {
-		return vehicleTypeId;
-	}
-
-	public void setVehicleTypeId(Long vehicleTypeId) {
-		this.vehicleTypeId = vehicleTypeId;
-	}
-
 	public Long getId() {
 		return id;
 	}
