@@ -267,20 +267,21 @@ public class PromoController {
 	}
 
 	@GetMapping(path = "/promo/{id}")
-	public ResponseEntity<Object> getPromoById(@PathVariable Long id, 
-		@RequestParam(required = false, defaultValue = "asc") String order,
-		@RequestParam(required = false, defaultValue = "bengkel_id") String sort,
-		@RequestParam(required = false, name = "lat") Double latitude,
-		@RequestParam(required = false, name = "lng") Double longitude
+	public ResponseEntity<Object> getPromoById(
+			@PathVariable Long id,
+			@RequestParam(required = false, defaultValue = "asc") String order,
+			@RequestParam(required = false, defaultValue = "bengkel_id") String sort,
+			@RequestParam(required = false, name = "lat") Double latitude,
+			@RequestParam(required = false, name = "lng") Double longitude
 	) {
 
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
 		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
 
-    promo.get().setImagePath(cloudinaryPath + promo.get().getImagePath2());
-    promo.get().setImagePathMobile(cloudinaryPath + promo.get().getImagePath2());
+		promo.get().setImagePath(cloudinaryPath + promo.get().getImagePath2());
+		promo.get().setImagePathMobile(cloudinaryPath + promo.get().getImagePath2());
 
 		if (promo.isPresent()) {
 
@@ -291,13 +292,13 @@ public class PromoController {
 			} catch (Exception e) {
 				discPercentage = BigDecimal.ZERO;
 			}
-			
+
 			promo.get().setDiscPercentage(discPercentage.intValue());
-			
+
 			//BigDecimal discAmount = promo.get().getOriginalPrice().multiply(new BigDecimal(promo.get().getDiscPercentage()/100.0));
 			//promo.get().setDiscAmount(new BigDecimal(discAmount.setScale(0, RoundingMode.HALF_DOWN).intValue()));
 			promo.get().setDiscAmount(promo.get().getDiscAmount());
-			
+
 			BigDecimal totalPrice = promo.get().getOriginalPrice().subtract(promo.get().getDiscAmount());
 			promo.get().setTotalPrice(new BigDecimal(totalPrice.add(promo.get().getServiceFee()).setScale(0, RoundingMode.HALF_DOWN).intValue()));
 
@@ -312,12 +313,12 @@ public class PromoController {
 						break;
 				}
 			}
-			if (!this.ArrayIncludes(acceptedSort, sort)){
+			if (!this.ArrayIncludes(acceptedSort, sort)) {
 				sort = (latitude != null && longitude != null) ? "km" : "bengkel_id";
 			}
 
 			Pageable pageable = PageRequest.of(1, 99, new Sort(promoSort, sort));
-			
+
 			List<Long> bengkelIds = promo.get().getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
 			List<Bengkel> bengkels2 = (List<Bengkel>) bengkelRepository.findAllBengkelsByBengkelId(bengkelIds, pageable, latitude, longitude);
 			ObjectMapper mapObject = new ObjectMapper();
