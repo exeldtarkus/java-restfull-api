@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include file="classpath:db/changelog/sprints/sprint76/sprint76_image_promo_mobile.xml"/>
-    <include file="classpath:db/changelog/sprints/sprint76/sprint76_alter_mst_promo_add_vehicle_type_id.xml"/>
+    <changeSet  author="Richard"  id="sprint76_alter_mst_promo_add_vehicle_type_id">
+       <sqlFile path="classpath:db/changelog/sprints/sprint76/sprint76_alter_mst_promo_add_vehicle_type_id.sql"/>
+    </changeSet>
 </databaseChangeLog>
