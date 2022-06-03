@@ -90,7 +90,8 @@ public class PromoController {
 			@RequestParam(required = false, name = "cid") Long cityId,
 			@RequestParam(required = false, name = "lat") Double latitude,
 			@RequestParam(required = false, name = "lng") Double longitude,
-			@RequestParam(required = false, name = "eid") Long eventId
+			@RequestParam(required = false, name = "eid") Long eventId,
+      @RequestParam(required = false, name = "vehicleTypes", defaultValue = "1") String vehicleTypes
 	) {
 		
 		Date currentDate = new Date();
@@ -103,8 +104,7 @@ public class PromoController {
 		} else {
 			serviceIdsList = service_type.get(0).toString();
 		}
-		
-		// Get all promo type if promo_type is null
+    // Get all promo type if promo_type is null
 		List<Integer> promoTypeList = new ArrayList<Integer>();
 		if (promo_type == null) {
 			promoTypeList.add(0);
@@ -154,10 +154,10 @@ public class PromoController {
 				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
 				break;
 			case "adiraku": 
-				promos = (List<Promo>) promoRepository.findAllAdirakuProspect(currentDate,latitude,longitude, pageable, service_type, serviceIdsList);
+				promos = (List<Promo>) promoRepository.findAllAdirakuProspect(currentDate,latitude,longitude, pageable, service_type, serviceIdsList, vehicleTypes);
 				break;
 			case "adirakunasabah": 
-				promos = (List<Promo>) promoRepository.findAllAdirakuNasabah(currentDate,latitude,longitude, pageable, service_type, serviceIdsList);
+				promos = (List<Promo>) promoRepository.findAllAdirakuNasabah(currentDate,latitude,longitude, pageable, service_type, serviceIdsList, vehicleTypes);
 				break;
 			default:
 				if (bengkel_id != null) {
