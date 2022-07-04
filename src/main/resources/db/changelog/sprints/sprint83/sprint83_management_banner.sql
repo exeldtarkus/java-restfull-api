@@ -23,3 +23,6 @@ alter table mst_banner
 UPDATE  mst_banner
 SET     using_on = 1
 WHERE   using_on IS NULL;
+
+-- CHANGE POSITION TYPE TO INTERGER
+ALTER TABLE mst_banner modify position int(11)
