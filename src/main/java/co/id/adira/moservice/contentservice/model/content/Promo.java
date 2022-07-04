@@ -120,6 +120,9 @@ public class Promo implements Serializable {
 	@Column(name = "service_fee")
 	private BigDecimal serviceFee;
 
+	@Column(name = "price")
+	private BigDecimal price;
+
 	public Long getId() {
 		return id;
 	}
@@ -372,5 +375,13 @@ public class Promo implements Serializable {
 
 	public void setImagePath2(String imagePath2) {
 		this.imagePath2 = imagePath2;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 }
