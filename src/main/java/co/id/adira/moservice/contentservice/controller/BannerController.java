@@ -23,7 +23,7 @@ public class BannerController {
 	
 	@GetMapping(path = "/banners")
 	public ResponseEntity<Object> getBanners() {
-		List<Banner> banners = bannerRepository.findTop8ByActiveAndPositionNotNullAndDeletedFalseOrderByPositionAsc(true);
+		List<Banner> banners = bannerRepository.findBanner();
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), banners);
 	}
 
