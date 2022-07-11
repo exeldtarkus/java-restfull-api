@@ -1,18 +1,18 @@
 -- CREATE TABLE
-create table ref_banner_bangkel
+create table map_banner_bengkel
 (
     id          BIGINT auto_increment,
     banner_id   BIGINT       null,
     bengkel_id  BIGINT       null,
     created     timestamp  default CURRENT_TIMESTAMP null,
-    constraint ref_banner_bangkel_pk
+    constraint map_banner_bengkel_pk
         primary key (id),
-    constraint ref_banner_bengkel_bengkel_id_fk
+    constraint map_banner_bengkel_bengkel_id_fk
         foreign key (bengkel_id) references bengkel.mst_bengkel (bengkel_id)
 );
 
-create unique index ref_banner_bengkel_id_uindex
-    on ref_banner_bangkel (id);
+create unique index map_banner_bengkel_id_uindex
+    on map_banner_bengkel (id);
 
 -- ALTER TABLE 
 alter table mst_banner
