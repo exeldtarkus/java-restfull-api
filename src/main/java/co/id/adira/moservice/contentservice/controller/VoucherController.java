@@ -102,7 +102,7 @@ public class VoucherController {
 
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utmIn, utmNotIn, pageable);
+		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
 
 		for (Voucher voucher : vouchers) {
 			String city = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
