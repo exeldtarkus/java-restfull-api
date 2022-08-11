@@ -86,7 +86,7 @@ public class VoucherController {
 		if (utm != null) {
 			if (utm.equals("adiraku-utm")) {
 				utmIn.add("adiraku");
-				utmIn.add("adiraku-payement");
+				utmIn.add("adirakupayment");
 			} else {
 				utmIn.add(utm);
 			}
