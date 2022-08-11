@@ -1,6 +1,7 @@
 package co.id.adira.moservice.contentservice.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -84,6 +85,7 @@ public class VoucherController {
 
 		List<String> utmIn = null;
 		if (utm != null) {
+			utmIn = new ArrayList<>();
 			if (utm.equals("adiraku-utm")) {
 				utmIn.add("adiraku");
 				utmIn.add("adirakupayment");
