@@ -71,7 +71,7 @@ public class VoucherController {
 			@RequestParam(name = "utm_not_in", required = false) List<String> utmNotInParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
 
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		String utm = null;
 		if (!utmParam.equals("")) {
 			utm = utmParam;
@@ -82,22 +82,32 @@ public class VoucherController {
 			utmNotIn = utmNotInParam;
 		}
 
+		List<String> utmIn = null;
+		if (utm != null) {
+			if (utm.equals("adiraku-utm")) {
+				utmIn.add("adiraku");
+				utmIn.add("adiraku-payement");
+			} else {
+				utmIn.add(utm);
+			}
+		}
+
 		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
 		if (!isValidUser) {
-			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false, 
+			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false,
 					"unknown user", null);
 		}
-		
+
 		Date currentDate = new Date();
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmNotIn, pageable);
+		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utmIn, utmNotIn, pageable);
 
 		for (Voucher voucher : vouchers) {
-			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
+			String city = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
 			voucher.setCityName(city);
-      voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
-      voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
-      voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
+			voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
+			voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
+			voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
 		}
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
