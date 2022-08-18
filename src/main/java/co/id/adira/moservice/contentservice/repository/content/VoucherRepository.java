@@ -30,28 +30,45 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			@Param("utm") String utm,
 			@Param("utmNotIn") List<String> utmNotIn,
 			@Param("pageable") Pageable pageable);
-	
+
 	@Modifying
-    @Query(value = 
-    		  "insert into "
-    		+ "tr_promo_user "
-    		+ "(bengkel_id, "
-    		+ "booking_id, "
-    		+ "car_id, "
-    		+ "created, "
-    		+ "promo_id, "
-    		+ "qrcode_id, "
-    		+ "redeem_date, "
-    		+ "updated, "
-    		+ "use_date, "
-			+ "user_id, "
-			+ "utm, "
-			+ "transaction_status_id ) "
-    		+ "values "
-    		+ "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12) "  
-    		, nativeQuery = true)
-	void insertVoucher(Long bengkelId, 
-			Long bookingId, Long carId, Date created, Promo promo, 
-			QRCode qr, Date redeemDate, Date updated, Date useDate, Long userId, String Utm, Long transactionStatusId);
+	@Query(value =
+			"insert into "
+					+ "tr_promo_user "
+					+ "(bengkel_id, "
+					+ "booking_id, "
+					+ "car_id, "
+					+ "created, "
+					+ "promo_id, "
+					+ "qrcode_id, "
+					+ "redeem_date, "
+					+ "updated, "
+					+ "use_date, "
+					+ "user_id, "
+					+ "utm, "
+					+ "transaction_status_id, "
+					+ "payment_status, "
+					+ "payment_id, "
+					+ "payment_expired_at) "
+					+ "values "
+					+ "(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15) "
+			, nativeQuery = true)
+	void insertVoucher(
+			Long bengkelId,
+			Long bookingId,
+			Long carId,
+			Date created,
+			Promo promo,
+			QRCode qr,
+			Date redeemDate,
+			Date updated,
+			Date useDate,
+			Long userId,
+			String Utm,
+			Long transactionStatusId,
+			String paymentStatus,
+			String paymentId,
+			Date paymentExpiredAt
+	);
 	
 }

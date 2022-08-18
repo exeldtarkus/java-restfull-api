@@ -9,8 +9,16 @@ public class RedeemPromoDataResponseJson {
 
     private Long id;
     private String qrcodePath;
+    private String qrcodePath2;
+    private String custAcction;
+    private Long userId;
+    private String createdAt;
+    private String updatedAt;
+    private String data;
+    private Long bookingId;
     private Long promoId;
     private Long bengkelId;
+    private String base64QRCode;
     private RedeemPromoPromoJson promo;
 
 }

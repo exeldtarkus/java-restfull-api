@@ -91,6 +91,9 @@ public class Promo implements Serializable {
 	@Column(name = "target_id")
 	private Long targetId;
 
+	@Column(name = "price")
+	private Long price;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
 	// @JsonManagedReference
@@ -372,5 +375,13 @@ public class Promo implements Serializable {
 
 	public void setImagePath2(String imagePath2) {
 		this.imagePath2 = imagePath2;
+	}
+
+	public Long getPrice() {
+		return price;
+	}
+
+	public void setPrice(Long price) {
+		this.price = price;
 	}
 }

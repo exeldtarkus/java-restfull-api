@@ -1,11 +1,19 @@
 package co.id.adira.moservice.contentservice.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
+import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoDataResponseJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
+import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +57,9 @@ public class VoucherController {
 	private VoucherRepository voucherRepository;
 
 	@Autowired
+	private PromoRepository promoRepository;
+
+	@Autowired
 	private CityRepository cityRepository;
 
 	@Autowired
@@ -62,6 +73,9 @@ public class VoucherController {
 
 	@Autowired
 	private CloudinaryUtil cloudinaryUtil;
+
+	@Autowired
+	private PaymentServiceHandler paymentServiceHandler;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -113,15 +127,80 @@ public class VoucherController {
 	}
 
 	@PostMapping(path = "/vouchers/redeem", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody Voucher voucher) {
+	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody RedeemPromoJson redeemPromoJson) throws ParseException {
+
+		Voucher voucher = new Voucher();
+		voucher.setUserId(redeemPromoJson.getUserId());
+		voucher.setBengkelId(redeemPromoJson.getBengkelId());
+		voucher.setCarId(redeemPromoJson.getCarId());
+		voucher.setBengkel_name(redeemPromoJson.getBengkel_name());
+		voucher.setUtm(redeemPromoJson.getUtm());
+		Long promoId = redeemPromoJson.getPromo().getId();
+		Optional<Promo> promoOptional = promoRepository.findById(promoId);
+		Long paymentAmount = redeemPromoJson.getPaymentAmount();
+
+		if (!promoOptional.isPresent()) {
+			return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Promo not found");
+		}
+
+		Promo promo = promoOptional.get();
+
+		voucher.setPromo(promo);
 
 		log.info("::: GENERATE QRCODE :::");
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+    	String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 
-		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher);
+		Long adminFee = 6000L;
+		Long price = promo.getPrice();
+		voucher.setPaymentStatus("FREE");
+		voucher.setPaymentExpiredAt(null);
+		voucher.setPaymentId(null);
+
+		SimpleDateFormat mysqlDatetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		if (price > 0) {
+			Long totalPrice = price + adminFee;
+
+			if (paymentAmount.longValue() != totalPrice.longValue()) {
+				log.info("PaymentAmount: " + paymentAmount);
+				log.info("TotalPrice: " + totalPrice);
+				return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Payment amount mismatch");
+			}
+
+			PaymentSendInvoiceJson paymentSendInvoiceJson = new PaymentSendInvoiceJson();
+
+			paymentSendInvoiceJson.setPayment_method_id(redeemPromoJson.getPayment_method_id());
+			paymentSendInvoiceJson.setAmount(totalPrice);
+			paymentSendInvoiceJson.setBengkel_id(redeemPromoJson.getBengkelId());
+			paymentSendInvoiceJson.setPromo_id(promoId);
+			paymentSendInvoiceJson.setCustomer_id(redeemPromoJson.getUserId());
+
+			PaymentSendInvoiceItemJson paymentSendInvoiceItemJson = new PaymentSendInvoiceItemJson();
+			paymentSendInvoiceItemJson.setAmount(totalPrice);
+			paymentSendInvoiceItemJson.setQty(1L);
+			paymentSendInvoiceItemJson.setTitle(promo.getName());
+			paymentSendInvoiceItemJson.setPrice(price);
+
+			List<PaymentSendInvoiceItemJson> items = new ArrayList<>();
+			items.add(paymentSendInvoiceItemJson);
+			paymentSendInvoiceJson.setItems(items);
+
+			PaymentSendInvoiceDataResponseJson paymentSendInvoiceDataResponseJson = paymentServiceHandler.sendInvoice(paymentSendInvoiceJson);
+
+			if (paymentSendInvoiceDataResponseJson == null) {
+				return BaseResponse.jsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, true, HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Payment fail");
+			}
+
+			voucher.setPaymentStatus("PENDING");
+			Date expiredAt = mysqlDatetimeFormat.parse(paymentSendInvoiceDataResponseJson.getVa_expired_at());
+			voucher.setPaymentExpiredAt(expiredAt);
+			voucher.setPaymentId(paymentSendInvoiceDataResponseJson.getId());
+		}
+
+		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher, promo);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    qrcode.setQrcodePath(cloudinaryPath + qrcode.getQrcodePath2());
+    	qrcode.setQrcodePath(cloudinaryPath + qrcode.getQrcodePath2());
 
 		String credential = authentication.getPrincipal().toString();
 		if (isEmail(credential)) {
@@ -146,8 +225,26 @@ public class VoucherController {
 		}
 
 		this.sendNotifRedeem(qrcode.getId());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
+		RedeemPromoDataResponseJson redeemPromoDataResponseJson = new RedeemPromoDataResponseJson();
+		redeemPromoDataResponseJson.setData(qrcode.getData());
+		RedeemPromoPromoJson redeemPromoPromoJson = new RedeemPromoPromoJson();
+		redeemPromoPromoJson.setAvailableUntil(mysqlDatetimeFormat.format(promo.getAvailableUntil()));
+		redeemPromoPromoJson.setId(qrcode.getId());
+		redeemPromoDataResponseJson.setPromo(redeemPromoPromoJson);
+		redeemPromoDataResponseJson.setPromoId(promo.getId());
+		redeemPromoDataResponseJson.setBase64QRCode(qrcode.getBase64QRCode());
+		redeemPromoDataResponseJson.setBookingId(qrcode.getBookingId());
+		redeemPromoDataResponseJson.setBengkelId(qrcode.getBengkelId());
+		redeemPromoDataResponseJson.setQrcodePath(qrcode.getQrcodePath());
+		redeemPromoDataResponseJson.setQrcodePath2(qrcode.getQrcodePath2());
+		redeemPromoDataResponseJson.setCustAcction(qrcode.getCustAcction());
+		redeemPromoDataResponseJson.setCreatedAt(mysqlDatetimeFormat.format(qrcode.getCreatedAt()));
+		redeemPromoDataResponseJson.setUpdatedAt(null);
+		redeemPromoDataResponseJson.setUserId(qrcode.getUserId());
+
+		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), redeemPromoDataResponseJson);
 	}
 
 	public void sendNotifRedeem(Long qrId){

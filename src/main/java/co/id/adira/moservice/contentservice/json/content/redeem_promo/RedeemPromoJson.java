@@ -9,7 +9,9 @@ public class RedeemPromoJson {
     private String bengkel_name;
     private Long userId;
     private Long carId;
+    private Long paymentAmount;
     private String utm;
+    private String payment_method_id;
     private RedeemPromoPromoJson promo;
 
 }
