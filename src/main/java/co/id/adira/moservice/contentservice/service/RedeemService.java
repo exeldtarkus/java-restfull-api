@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+
+import co.id.adira.moservice.contentservice.model.content.Promo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -47,32 +49,35 @@ public class RedeemService {
 
 	@Autowired
 	private QRCodeUtil qrCodeUtil;
-	
+
 	@Transactional(readOnly = false)
-	public QRCode generateQRCodeAndSaveVoucher(Voucher voucher) {
+	public QRCode generateQRCodeAndSaveVoucher(
+			Voucher voucher,
+			Promo promo
+	) {
 		// OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
 		// Date date = Date.from(utc.toInstant());
 		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
 		Date redeemDate = new Date(now.toInstant().toEpochMilli());
 		Long transactionStatusId = new Long(2);
-		
+
 		StringBuilder data = new StringBuilder();
 		data.append(moserviceBaseUrlMoserviceApps);
-		data.append("promo_id=").append(voucher.getPromo().getId());
+		data.append("promo_id=").append(promo.getId());
 		data.append("&car_id=").append(voucher.getCarId());
 		data.append("&user_id=").append(voucher.getUserId());
 		data.append("&bengkel_id=").append(voucher.getBengkelId());
 		// data.append("&redeem_date=").append(sdf.format(date));
 		data.append("&redeem_date=").append(now);
 
-    // [LOCAL TESTING PATH]
-    // ----------------------------------------------------------------------- 
-    // Path currentRelativePath = Paths.get("");
-    // pathUploadQrcode = currentRelativePath.toAbsolutePath().toString();
-    // System.out.printf("path qr = [%s]",pathUploadQrcode);
-    // ----------------------------------------------------------------------- 
-		
+		// [LOCAL TESTING PATH]
+		// -----------------------------------------------------------------------
+		// Path currentRelativePath = Paths.get("");
+		// pathUploadQrcode = currentRelativePath.toAbsolutePath().toString();
+		// System.out.printf("path qr = [%s]",pathUploadQrcode);
+		// -----------------------------------------------------------------------
+
 		QRCode qrcode = new QRCode();
 		qrcode.setData(data.toString());
 		qrcode.setQrcodePath(pathUploadQrcode);
@@ -81,14 +86,29 @@ public class RedeemService {
 		qrcode.setQrcodePath2("/qr/" + response[0]);
 		qrcode.setBase64QRCode(response[1]);
 		qrcode.setCreatedAt(new Date());
-		qrcode.setPromoId(voucher.getPromo().getId());
+		qrcode.setPromoId(promo.getId());
 		qrcode.setUserId(voucher.getUserId());
 		qrcode.setBengkelId(voucher.getBengkelId());
-		
+
 		qrCodeRepository.save(qrcode);
-		voucherRepository.insertVoucher(voucher.getBengkelId(), voucher.getBookingId(), voucher.getCarId(),
-				new Date(), voucher.getPromo(), qrcode, redeemDate, null, null, voucher.getUserId(), voucher.getUtm(), transactionStatusId);
-		
+		voucherRepository.insertVoucher(
+				voucher.getBengkelId(),
+				voucher.getBookingId(),
+				voucher.getCarId(),
+				new Date(),
+				promo,
+				qrcode,
+				redeemDate,
+				null,
+				null,
+				voucher.getUserId(),
+				voucher.getUtm(),
+				transactionStatusId,
+				voucher.getPaymentStatus(),
+				voucher.getPaymentId(),
+				voucher.getPaymentExpiredAt()
+		);
+
 		return qrcode;
 	}
 	
