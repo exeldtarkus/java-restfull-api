@@ -18,6 +18,7 @@ public class RedeemPromoDataResponseJson {
     private Long bookingId;
     private Long promoId;
     private Long bengkelId;
+    private String paymentId;
     private String base64QRCode;
     private RedeemPromoPromoJson promo;
 

@@ -139,6 +139,7 @@ public class VoucherController {
 		Long promoId = redeemPromoJson.getPromo().getId();
 		Optional<Promo> promoOptional = promoRepository.findById(promoId);
 		Long paymentAmount = redeemPromoJson.getPaymentAmount();
+		String paymentId = null;
 
 		if (!promoOptional.isPresent()) {
 			return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Promo not found");
@@ -196,6 +197,7 @@ public class VoucherController {
 			Date expiredAt = mysqlDatetimeFormat.parse(paymentSendInvoiceDataResponseJson.getVa_expired_at());
 			voucher.setPaymentExpiredAt(expiredAt);
 			voucher.setPaymentId(paymentSendInvoiceDataResponseJson.getId());
+			paymentId = paymentSendInvoiceDataResponseJson.getId();
 		}
 
 		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher, promo);
@@ -243,6 +245,7 @@ public class VoucherController {
 		redeemPromoDataResponseJson.setCustAcction(qrcode.getCustAcction());
 		redeemPromoDataResponseJson.setCreatedAt(mysqlDatetimeFormat.format(qrcode.getCreatedAt()));
 		redeemPromoDataResponseJson.setUpdatedAt(null);
+		redeemPromoDataResponseJson.setPaymentId(paymentId);
 		redeemPromoDataResponseJson.setUserId(qrcode.getUserId());
 
 		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), redeemPromoDataResponseJson);
