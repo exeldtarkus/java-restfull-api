@@ -1,5 +1,6 @@
 package co.id.adira.moservice.contentservice.controller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -150,16 +151,16 @@ public class VoucherController {
 		log.info("::: GENERATE QRCODE :::");
     	String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 
-		Long adminFee = 6000L;
-		Long price = promo.getPrice();
+		BigDecimal adminFee = BigDecimal.valueOf(6000);
+		BigDecimal price = promo.getPrice();
 		voucher.setPaymentStatus("FREE");
 		voucher.setPaymentExpiredAt(null);
 		voucher.setPaymentId(null);
 
 		SimpleDateFormat mysqlDatetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		if (price > 0) {
-			Long totalPrice = price + adminFee;
+		if (price.longValue() > 0) {
+			Long totalPrice = price.longValue() + adminFee.longValue();
 
 			if (paymentAmount.longValue() != totalPrice.longValue()) {
 				log.info("PaymentAmount: " + paymentAmount);
@@ -179,7 +180,7 @@ public class VoucherController {
 			paymentSendInvoiceItemJson.setAmount(totalPrice);
 			paymentSendInvoiceItemJson.setQty(1L);
 			paymentSendInvoiceItemJson.setTitle(promo.getName());
-			paymentSendInvoiceItemJson.setPrice(price);
+			paymentSendInvoiceItemJson.setPrice(price.longValue());
 
 			List<PaymentSendInvoiceItemJson> items = new ArrayList<>();
 			items.add(paymentSendInvoiceItemJson);

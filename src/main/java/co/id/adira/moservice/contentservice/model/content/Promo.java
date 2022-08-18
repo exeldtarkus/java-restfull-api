@@ -92,7 +92,7 @@ public class Promo implements Serializable {
 	private Long targetId;
 
 	@Column(name = "price")
-	private Long price;
+	private BigDecimal price;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
@@ -377,11 +377,11 @@ public class Promo implements Serializable {
 		this.imagePath2 = imagePath2;
 	}
 
-	public Long getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Long price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 }
