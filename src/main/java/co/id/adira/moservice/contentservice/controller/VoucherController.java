@@ -18,6 +18,7 @@ import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSen
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
+import co.id.adira.moservice.contentservice.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -81,6 +82,9 @@ public class VoucherController {
 
 	@Autowired
 	private PaymentServiceHandler paymentServiceHandler;
+
+	@Autowired
+	private DateUtil dateUtil;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -176,6 +180,18 @@ public class VoucherController {
 		SimpleDateFormat mysqlDatetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		if (price.longValue() > 0) {
+			Date promoAvailableUntil = promo.getAvailableUntil();
+			Date now = new Date();
+			long differenceDays = dateUtil.getDifferenceDays(now, promoAvailableUntil);
+
+			if (differenceDays < 0) {
+				return BaseResponse.jsonResponse(
+						HttpStatus.BAD_REQUEST,
+						true,
+						HttpStatus.BAD_REQUEST.toString(),
+						"Promo is unavailable to buy");
+			}
+
 			Long totalPrice = price.longValue() + adminFee.longValue();
 
 			if (paymentAmount.longValue() != totalPrice.longValue()) {
@@ -243,7 +259,6 @@ public class VoucherController {
 		}
 
 		this.sendNotifRedeem(qrcode.getId());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 		RedeemPromoDataResponseJson redeemPromoDataResponseJson = new RedeemPromoDataResponseJson();
 		redeemPromoDataResponseJson.setData(qrcode.getData());
