@@ -134,7 +134,7 @@ public class VoucherController {
 
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
 
-    if (utm == "adiraku-utm") {
+    if (utmParam.equals("adiraku-utm")) {
       fecthVoucher = voucherRepository.findAllAdirakuUnusedVoucherAndMore(userId, utm, utmIn, utmNotIn, pageable);
       for (Voucher voucher : fecthVoucher) {
         try {
