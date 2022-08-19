@@ -133,7 +133,7 @@ public class VoucherController {
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
 
     if (utm == "adiraku-utm") {
-      fecthVoucher = voucherRepository.findAllAdirakuUnusedVoucherAndMore(userId, utmIn, utmNotIn, pageable);
+      fecthVoucher = voucherRepository.findAllAdirakuUnusedVoucherAndMore(userId, utm, utmIn, utmNotIn, pageable);
       for (Voucher voucher : fecthVoucher) {
         try {
           String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
@@ -178,7 +178,7 @@ public class VoucherController {
         voucherData.add(voucher);
       }
     } else {
-      fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utmIn, utmNotIn, pageable);
+      fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
       for (Voucher voucher : fecthVoucher) {
         try {
           String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
