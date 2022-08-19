@@ -202,7 +202,7 @@ public class VoucherController {
 
 			PaymentSendInvoiceJson paymentSendInvoiceJson = new PaymentSendInvoiceJson();
 
-			paymentSendInvoiceJson.setPayment_method_id(redeemPromoJson.getPayment_method_id());
+			paymentSendInvoiceJson.setPayment_method_id(redeemPromoJson.getPaymentMethodId());
 			paymentSendInvoiceJson.setAmount(totalPrice);
 			paymentSendInvoiceJson.setBengkel_id(redeemPromoJson.getBengkelId());
 			paymentSendInvoiceJson.setPromo_id(promoId);
