@@ -172,7 +172,7 @@ public class VoucherController {
     	String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 
 		BigDecimal adminFee = BigDecimal.valueOf(6000);
-		BigDecimal price = promo.getPrice();
+		BigDecimal price = promo.getPrice() != null ? promo.getPrice() : BigDecimal.valueOf(0);
 		voucher.setPaymentStatus("FREE");
 		voucher.setPaymentExpiredAt(null);
 		voucher.setPaymentId(null);
