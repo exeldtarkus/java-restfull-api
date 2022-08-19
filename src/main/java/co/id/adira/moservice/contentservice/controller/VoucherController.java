@@ -3,6 +3,7 @@ package co.id.adira.moservice.contentservice.controller;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.*;
 
 import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
@@ -91,7 +92,7 @@ public class VoucherController {
 			@RequestParam(name = "utm_not_in", required = false) List<String> utmNotInParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
 
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		String utm = null;
 
     List<Voucher> fecthVoucher = new ArrayList<>();
@@ -112,9 +113,20 @@ public class VoucherController {
 			utmNotIn = utmNotInParam;
 		}
 
+		List<String> utmIn = null;
+		if (utm != null) {
+			utmIn = new ArrayList<>();
+			if (utm.equals("adiraku-utm")) {
+				utmIn.add("adiraku");
+				utmIn.add("adirakupayment");
+			} else {
+				utmIn.add(utm);
+			}
+		}
+
 		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
 		if (!isValidUser) {
-			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false, 
+			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false,
 					"unknown user", null);
 		}
 
