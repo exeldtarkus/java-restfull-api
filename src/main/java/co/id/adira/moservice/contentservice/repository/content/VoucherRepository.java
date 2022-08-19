@@ -37,12 +37,12 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			+ "AND v.bengkel_id = b.bengkel_id "
 			+ "AND v.bengkel_id = d.bengkel_id "
 			+ "AND v.promo_id = c.id "
-			+ "AND (:utm is null or v.utm IN ('adiraku', 'adirakupayment')) "
+			+ "AND (:utmIn is null or v.utm IN (:utmIn) ) "
 			+ "AND (:utmNotIn is null or v.utm NOT IN (:utmNotIn) ) "
 			+ "ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Voucher> findAllAdirakuUnusedVoucherAndMore(
 			@Param("userId") Long userId,
-			@Param("utm") String utm,
+			@Param("utmIn") List<String> utmIn,
 			@Param("utmNotIn") List<String> utmNotIn,
 			@Param("pageable") Pageable pageable);
 
