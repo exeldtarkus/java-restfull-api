@@ -77,6 +77,15 @@ public class Voucher implements Serializable {
 	@Column(name = "transaction_status_id")
 	private Long transactionStatusId;
 
+	@Column(name = "payment_status")
+	private String paymentStatus;
+
+	@Column(name = "payment_id")
+	private String paymentId;
+
+	@Column(name = "payment_expired_at")
+	private Date paymentExpiredAt;
+
 	@Transient
 	private String cityName;
 
@@ -223,5 +232,28 @@ public class Voucher implements Serializable {
 				+ useDate + ", created=" + created + ", updated=" + updated + ", qr=" + qr + ", bengkel_name="
 				+ bengkel_name + ", bengkel_address=" + bengkel_address + ", cityName=" + cityName + "]";
 	}
-	
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
+	}
+
+	public Date getPaymentExpiredAt() {
+		return paymentExpiredAt;
+	}
+
+	public void setPaymentExpiredAt(Date paymentExpiredAt) {
+		this.paymentExpiredAt = paymentExpiredAt;
+	}
 }
