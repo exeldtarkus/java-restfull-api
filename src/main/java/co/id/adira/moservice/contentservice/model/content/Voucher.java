@@ -87,6 +87,9 @@ public class Voucher implements Serializable {
 	private Date paymentExpiredAt;
 
 	@Transient
+	private String statusVoucherPayment;
+
+	@Transient
 	private String cityName;
 
 	public String getUtm() {
@@ -255,5 +258,13 @@ public class Voucher implements Serializable {
 
 	public void setPaymentExpiredAt(Date paymentExpiredAt) {
 		this.paymentExpiredAt = paymentExpiredAt;
+	}
+
+	public String getStatusVoucherPayment() {
+		return statusVoucherPayment;
+	}
+
+	public void setStatusVoucherPayment(String statusVoucherPayment) {
+		this.statusVoucherPayment = statusVoucherPayment;
 	}
 }
