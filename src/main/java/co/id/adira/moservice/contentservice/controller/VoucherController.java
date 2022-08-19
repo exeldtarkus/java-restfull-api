@@ -123,8 +123,10 @@ public class VoucherController {
       case "adiraku" :
       case "adirakupayment" :
         index = 0;
-        fecthVoucher = voucherRepository.findAllUnusedVoucherAndMoreAdiraku(userId, utm, utmNotIn, pageable);
+        fecthVoucher = voucherRepository.findAllAdirakuUnusedVoucherAndMore(userId, utm, utmNotIn, pageable);
         for (int i = 0; i < fecthVoucher.size(); i++) {
+          String city   = cityRepository.findCityNameByBengkelId(fecthVoucher.get(i).getBengkelId());
+          fecthVoucher.get(i).setCityName(city);
           fecthVoucher.get(i).getQr().setQrcodePath(cloudinaryPath + fecthVoucher.get(i).getQr().getQrcodePath2());
           fecthVoucher.get(i).getPromo().setImagePath(cloudinaryPath + fecthVoucher.get(i).getPromo().getImagePath2());
           fecthVoucher.get(i).getPromo().setImagePathMobile(cloudinaryPath + fecthVoucher.get(i).getPromo().getImagePath2());

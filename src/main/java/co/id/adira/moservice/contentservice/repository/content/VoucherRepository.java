@@ -40,7 +40,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			+ "AND (:utm is null or v.utm IN ('adiraku', 'adirakupayment')) "
 			+ "AND (:utmNotIn is null or v.utm NOT IN (:utmNotIn) ) "
 			+ "ORDER BY :#{#pageable}", nativeQuery = true)
-	List<Voucher> findAllUnusedVoucherAndMoreAdiraku(
+	List<Voucher> findAllAdirakuUnusedVoucherAndMore(
 			@Param("userId") Long userId,
 			@Param("utm") String utm,
 			@Param("utmNotIn") List<String> utmNotIn,
