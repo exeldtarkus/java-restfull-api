@@ -11,7 +11,7 @@ public class RedeemPromoJson {
     private Long carId;
     private Long paymentAmount;
     private String utm;
-    private String payment_method_id;
+    private String paymentMethodId;
     private RedeemPromoPromoJson promo;
 
 }

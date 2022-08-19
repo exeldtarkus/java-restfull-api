@@ -187,7 +187,7 @@ public class VoucherController {
 
 			PaymentSendInvoiceJson paymentSendInvoiceJson = new PaymentSendInvoiceJson();
 
-			paymentSendInvoiceJson.setPayment_method_id(redeemPromoJson.getPayment_method_id());
+			paymentSendInvoiceJson.setPayment_method_id(redeemPromoJson.getPaymentMethodId());
 			paymentSendInvoiceJson.setAmount(totalPrice);
 			paymentSendInvoiceJson.setBengkel_id(redeemPromoJson.getBengkelId());
 			paymentSendInvoiceJson.setPromo_id(promoId);
@@ -263,7 +263,7 @@ public class VoucherController {
 		redeemPromoDataResponseJson.setPaymentId(paymentId);
 		redeemPromoDataResponseJson.setUserId(qrcode.getUserId());
 
-		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), redeemPromoDataResponseJson);
+		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
 	}
 
 	public void sendNotifRedeem(Long qrId){
