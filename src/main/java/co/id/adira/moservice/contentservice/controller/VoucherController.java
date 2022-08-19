@@ -263,7 +263,7 @@ public class VoucherController {
 		redeemPromoDataResponseJson.setPaymentId(paymentId);
 		redeemPromoDataResponseJson.setUserId(qrcode.getUserId());
 
-		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), qrcode);
+		return BaseResponse.jsonResponse(HttpStatus.OK, true, HttpStatus.OK.toString(), redeemPromoDataResponseJson);
 	}
 
 	public void sendNotifRedeem(Long qrId){
