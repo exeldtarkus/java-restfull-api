@@ -45,6 +45,7 @@ import co.id.adira.moservice.contentservice.repository.content.VoucherRepository
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
+import co.id.adira.moservice.contentservice.util.StatusPaymentUtil;
 import co.id.adira.moservice.event.dto.EmailEventDto;
 import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +84,9 @@ public class VoucherController {
 
 	@Autowired
 	private DateUtil dateUtil;
+
+	@Autowired
+	private StatusPaymentUtil statusPaymentUtil;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -131,68 +135,29 @@ public class VoucherController {
 		}
 
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
+    
+    fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
+    for (Voucher voucher : fecthVoucher) {
+      try {
+        String city = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
+        String voucherStatusPayment = statusPaymentUtil.voucherStatusPayment(voucher);
 
-    if (utmParam.equals("adiraku-utm")) {
-      fecthVoucher = voucherRepository.findAllAdirakuUnusedVoucherAndMore(userId, utm, utmIn, utmNotIn, pageable);
-      for (Voucher voucher : fecthVoucher) {
-        try {
-          String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
-          voucher.setCityName(city);
-
-          voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
-          voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
-          voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
-          
-          if (voucher.getTransactionStatusId() == 2 && voucher.getPaymentStatus().equals("PENDING") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 && voucher.getPaymentExpiredAt().compareTo(currentDate) > 0) {
-            voucher.setStatusVoucherPayment("Menunggu Pembayaran");
-          }
-          if (voucher.getTransactionStatusId() == 2 && voucher.getPaymentStatus().equals("PAID") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 ) {
-            voucher.setStatusVoucherPayment("Belum Digunakan");
-          }
-          if (voucher.getTransactionStatusId() == 3 && voucher.getPaymentStatus().equals("PAID") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 ) {
-            if (voucher.getUpdated() != null && voucher.getUpdated().compareTo(todayPlus7) > 0) {
-              System.out.printf("Voucher [%d] Sudah digunakan dan Sudah Lebih dari 7 Hari Setelah Proses Pembelian\n", voucher.getId());
-              continue;
-            }
-            voucher.setStatusVoucherPayment("Sudah Digunakan");
-          }
-          if (voucher.getPromo().getAvailableUntil().compareTo(currentDate) < 0) {
-            if (voucher.getPromo().getAvailableUntil().compareTo(todayPlus7) > 0) {
-              System.out.printf("Voucher [%d] Sudah kedaluwarsa Lebih dari 7 Hari\n", voucher.getId());
-              continue;
-            }
-            voucher.setStatusVoucherPayment("kedaluwarsa");
-          }
-          if (voucher.getPaymentStatus().equals("FAILED")) {
-            if (voucher.getRedeemDate() != null && voucher.getRedeemDate().compareTo(todayPlus7) > 0) {
-              System.out.printf("Voucher [%d] Gagal Pembayaran dan Sudah Lewat dari 7 Hari\n", voucher.getId());
-              continue;
-            }
-            voucher.setStatusVoucherPayment("Dibatalkan");
-          }
-        } catch (Exception e) {
-          System.out.printf("Error voucher_id : [%d]", voucher.getId());
-          System.out.println(e);
+        if (voucherStatusPayment.equals("VoucherDateCompare>7day")) {
           continue;
         }
-        voucherData.add(voucher);
+        voucher.setCityName(city);
+        voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
+        voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
+        voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
+        voucher.setStatusVoucherPayment(statusPaymentUtil.voucherStatusPayment(voucher));
+        
+      } catch (Exception e) {
+        System.out.printf("Error voucher_id : [%d]", voucher.getId());
+        System.out.println(e);
+        continue;
       }
-    } else {
-      fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
-      for (Voucher voucher : fecthVoucher) {
-        try {
-          String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
-          voucher.setCityName(city);
-          voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
-          voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
-          voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
-        } catch (Exception e) {
-          System.out.printf("Error voucher_id : [%d]", voucher.getId());
-          System.out.println(e);
-          continue;
-        }
-        voucherData.add(voucher);
-      }
+      System.out.println("total-data :"+voucherData.size());
+      voucherData.add(voucher);
     }
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), voucherData.size());
