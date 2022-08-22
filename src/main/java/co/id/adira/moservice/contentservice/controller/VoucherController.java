@@ -120,7 +120,7 @@ public class VoucherController {
 		List<String> utmIn = null;
 		if (utm != null) {
 			utmIn = new ArrayList<>();
-			if (utm.equals("adiraku-utm")) {
+			if (utm.equals("adiraku-utm") || utm.equals("adiraku") || utm.equals("adirakupayment")) {
 				utmIn.add("adiraku");
 				utmIn.add("adirakupayment");
 			} else {
@@ -136,6 +136,7 @@ public class VoucherController {
 
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
     
+    System.out.println("utm-data :"+utm);
     fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
     for (Voucher voucher : fecthVoucher) {
       try {
@@ -150,7 +151,7 @@ public class VoucherController {
         voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
         voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
         voucher.setStatusVoucherPayment(statusPaymentUtil.voucherStatusPayment(voucher));
-        
+
       } catch (Exception e) {
         System.out.printf("Error voucher_id : [%d]", voucher.getId());
         System.out.println(e);
