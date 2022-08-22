@@ -56,7 +56,7 @@ public class StatusPaymentUtil {
       statusPayment = "Belum Digunakan";
     }
     if (voucher.getPaymentStatus().equals("FREE") && voucher.getTransactionStatusId() == 3 && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 ) {
-      voucher.setStatusVoucherPayment("Sudah Digunakan");
+      statusPayment = "Sudah Digunakan";
     }
 
 		return statusPayment;
