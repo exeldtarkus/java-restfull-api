@@ -158,10 +158,10 @@ public class VoucherController {
           }
           if (voucher.getPromo().getAvailableUntil().compareTo(currentDate) < 0) {
             if (voucher.getPromo().getAvailableUntil().compareTo(todayPlus7) > 0) {
-              System.out.printf("Voucher [%d] Sudah kadaluarsa Lebih dari 7 Hari\n", voucher.getId());
+              System.out.printf("Voucher [%d] Sudah kedaluwarsa Lebih dari 7 Hari\n", voucher.getId());
               continue;
             }
-            voucher.setStatusVoucherPayment("kadaluarsa");
+            voucher.setStatusVoucherPayment("kedaluwarsa");
           }
           if (voucher.getPaymentStatus().equals("FAILED")) {
             if (voucher.getRedeemDate() != null && voucher.getRedeemDate().compareTo(todayPlus7) > 0) {
