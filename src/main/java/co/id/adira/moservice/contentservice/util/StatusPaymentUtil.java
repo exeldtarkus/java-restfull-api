@@ -31,7 +31,7 @@ public class StatusPaymentUtil {
     }
     if (voucher.getTransactionStatusId() == 3 && voucher.getPaymentStatus().equals("PAID") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 ) {
       plus7Date = dateUtil.datePlus(voucher.getUpdated(), 7);
-      if (voucher.getUpdated() != null && plus7Date.compareTo(currentDate) > 0) {
+      if (voucher.getUpdated() != null && plus7Date.compareTo(currentDate) < 0) {
         System.out.printf("Voucher [%d] Sudah digunakan | [voucher updated (%s) | (%s) hari ini] lebih dari 7 Hari Setelah Proses Pembelian\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
         statusPayment = "VoucherDateCompare>7day";
       } else {
@@ -40,16 +40,18 @@ public class StatusPaymentUtil {
     }
     if (voucher.getPromo().getAvailableUntil().compareTo(currentDate) < 0) {
       plus7Date = dateUtil.datePlus(voucher.getPromo().getAvailableUntil(), 7);
-      if (plus7Date.compareTo(currentDate) > 0) {
+      if (plus7Date.compareTo(currentDate) < 0) {
         System.out.printf("Voucher [%d] Sudah Kedaluwarsa | [voucher AvailableUntil (%s) | (%s) hari ini] Lebih dari 7 Hari\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
+        statusPayment = "VoucherDateCompare>7day";
       } else {
         statusPayment = "Kedaluwarsa";
       }
     }
     if (voucher.getPaymentStatus().equals("FAILED")) {
       plus7Date = dateUtil.datePlus(voucher.getRedeemDate(), 7);
-      if (voucher.getRedeemDate() != null && plus7Date.compareTo(currentDate) > 0) {
+      if (voucher.getRedeemDate() != null && plus7Date.compareTo(currentDate) < 0) {
         System.out.printf("Voucher [%d] Gagal Pembayaran | [voucher RedeemDate (%s) | (%s) hari ini] Sudah Lewat dari 7 Hari\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
+        statusPayment = "VoucherDateCompare>7day";
       } else {
         statusPayment = "Dibatalkan";
       }
@@ -61,7 +63,7 @@ public class StatusPaymentUtil {
     }
     if (voucher.getPaymentStatus().equals("FREE") && voucher.getTransactionStatusId() == 3 && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 ) {
       plus7Date = dateUtil.datePlus(voucher.getUpdated(), 7);
-      if (voucher.getUpdated() != null && plus7Date.compareTo(currentDate) > 0) {
+      if (voucher.getUpdated() != null && plus7Date.compareTo(currentDate) < 0) {
         System.out.printf("Voucher [%d] Sudah digunakan | [voucher updated (%s) | (%s) hari ini] lebih dari 7 Hari Setelah Proses Pembelian\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
         statusPayment = "VoucherDateCompare>7day";
       } else {
