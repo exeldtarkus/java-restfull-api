@@ -17,7 +17,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	@Query(value = 
         " SELECT *, b.bengkel_name, b.bengkel_address FROM content.tr_promo_user v,                                     "
 			+ " bengkel.mst_bengkel b, content.mst_promo c, bengkel.mst_contact d                                             "
-			+ " WHERE v.user_id = :userId AND v.use_date IS NULL                                                              "
+			+ " WHERE v.user_id = :userId                                                                                     "
 			+ " AND v.bengkel_id = b.bengkel_id                                                                               "
 			+ " AND v.bengkel_id = d.bengkel_id                                                                               "
 			+ " AND v.promo_id = c.id                                                                                         "
@@ -25,7 +25,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			+ " AND (:utmNotIn is null or v.utm NOT IN (:utmNotIn) )                                                          "
 			+ " AND CASE                                                                                                      "
 			+ "      WHEN (:utm = 'adiraku-utm' OR :utm = 'adiraku' OR :utm = 'adirakupayment') THEN v.promo_id IS NOT NULL   "
-			+ "      ELSE c.available_until > :currentDate AND c.available_from < :currentDate                                "
+			+ "      ELSE c.available_until > :currentDate AND c.available_from < :currentDate AND v.use_date IS NULL         "
 			+ "     END                                                                                                       "
 			+ " ORDER BY :#{#pageable}                                                                                        "
   , nativeQuery = true)
