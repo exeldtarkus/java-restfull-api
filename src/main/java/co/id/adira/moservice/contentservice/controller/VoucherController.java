@@ -9,13 +9,17 @@ import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandle
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoDataResponseJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.UpdateVoucherPaymentStatusJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
 import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.model.content.VoucherPlain;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
+import co.id.adira.moservice.contentservice.repository.content.VoucherCustomRepository;
 import co.id.adira.moservice.contentservice.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,13 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import co.id.adira.moservice.contentservice.interceptor.UserIdInterceptor;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
@@ -46,6 +44,7 @@ import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
 import co.id.adira.moservice.event.dto.EmailEventDto;
 import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.regex.Pattern;
 
 @RestController
@@ -57,6 +56,9 @@ public class VoucherController {
 
 	@Autowired
 	private VoucherRepository voucherRepository;
+
+	@Autowired
+	private VoucherCustomRepository voucherCustomRepository;
 
 	@Autowired
 	private PromoRepository promoRepository;
@@ -81,6 +83,9 @@ public class VoucherController {
 
 	@Autowired
 	private DateUtil dateUtil;
+
+	@Value("${server.auth.secret_key}")
+	private String key;
 
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
@@ -288,6 +293,34 @@ public class VoucherController {
 		if (email == null)
 			return false;
 		return pat.matcher(email).matches();
+	}
+
+	@PutMapping(path = "/vouchers/{id}")
+	public ResponseEntity<Object> updateVoucherStatus(
+			@PathVariable Long id,
+			@RequestBody UpdateVoucherPaymentStatusJson updateVoucherPaymentStatusJson,
+			@RequestHeader(name = "X-TOKEN", required = true) final String authToken
+	) {
+		if (!authToken.equals(key)) {
+			return BaseResponse.jsonResponse(HttpStatus.UNAUTHORIZED, false, HttpStatus.UNAUTHORIZED.toString(), null);
+		}
+
+		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findById(id);
+
+		if (!voucherOptional.isPresent()) {
+			return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Voucher not found");
+		}
+
+		VoucherPlain voucher = voucherOptional.get();
+
+		voucher.setPaymentStatus(updateVoucherPaymentStatusJson.getPayment_status());
+		voucherCustomRepository.save(voucher);
+
+		if (voucher.getUtm().equals("adirakupayment")) {
+			System.out.println("Send notif to adiraku");
+		}
+
+		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
 	}
 
 }
