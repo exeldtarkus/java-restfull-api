@@ -238,9 +238,9 @@ public class VoucherController {
 			paymentSendInvoiceJson.setCustomer_id(redeemPromoJson.getUserId());
 
 			PaymentSendInvoiceItemJson paymentSendInvoiceItemJson = new PaymentSendInvoiceItemJson();
-			paymentSendInvoiceItemJson.setAmount(totalPrice);
+			paymentSendInvoiceItemJson.setAmount(price.longValue());
 			paymentSendInvoiceItemJson.setQty(1L);
-			paymentSendInvoiceItemJson.setTitle(promo.getName());
+			paymentSendInvoiceItemJson.setTitle(promo.getTitle());
 			paymentSendInvoiceItemJson.setPrice(price.longValue());
 
 			List<PaymentSendInvoiceItemJson> items = new ArrayList<>();
