@@ -148,15 +148,14 @@ public class VoucherController {
 		Long paymentAmount = redeemPromoJson.getPaymentAmount();
 		String paymentId = null;
 
+		// Get Temporary ID
+
 		VoucherPlain voucherPlain = new VoucherPlain();
 		voucherPlain.setBengkelId(redeemPromoJson.getBengkelId());
 		voucherPlain.setCarId(redeemPromoJson.getCarId());
 		voucherPlain.setUtm(redeemPromoJson.getUtm());
 		voucherPlain.setPaymentStatus("FREE");
 		VoucherPlain voucherPlain2 = voucherCustomRepository.saveAndFlush(voucherPlain);
-
-		System.out.println("voucherPlain2");
-		System.out.println(voucherPlain2.getId());
 
 		voucher.setBengkel_name(redeemPromoJson.getBengkel_name());
 		voucher.setUserId(redeemPromoJson.getUserId());
@@ -166,7 +165,6 @@ public class VoucherController {
 		}
 
 		Promo promo = promoOptional.get();
-
 		voucher.setPromo(promo);
 
 		log.info("::: GENERATE QRCODE :::");
@@ -207,6 +205,7 @@ public class VoucherController {
 			paymentSendInvoiceJson.setAmount(totalPrice);
 			paymentSendInvoiceJson.setBengkel_id(redeemPromoJson.getBengkelId());
 			paymentSendInvoiceJson.setPromo_id(promoId);
+			paymentSendInvoiceJson.setVoucher_id(voucherPlain2.getId());
 			paymentSendInvoiceJson.setCustomer_id(redeemPromoJson.getUserId());
 
 			PaymentSendInvoiceItemJson paymentSendInvoiceItemJson = new PaymentSendInvoiceItemJson();
@@ -264,6 +263,8 @@ public class VoucherController {
 		}
 
 		this.sendNotifRedeem(qrcode.getId());
+
+		// Set response data
 
 		RedeemPromoDataResponseJson redeemPromoDataResponseJson = new RedeemPromoDataResponseJson();
 		redeemPromoDataResponseJson.setData(qrcode.getData());
