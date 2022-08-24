@@ -33,7 +33,7 @@ public class StatusPaymentUtil {
       }
     }
 
-    if (voucher.getPaymentStatus().equals("FAILED") || voucher.getPaymentExpiredAt().compareTo(currentDate) < 0) {
+    if (voucher.getPaymentStatus().equals("FAILED")) {
       plus7Date = dateUtil.datePlus(voucher.getRedeemDate(), 7);
       if (voucher.getRedeemDate() != null && currentDate.compareTo(plus7Date) > 0) {
         System.out.printf("Voucher [%d] Gagal Pembayaran | [voucher RedeemDate (%s) | (%s) hari ini] Sudah Lewat dari 7 Hari\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
@@ -43,8 +43,13 @@ public class StatusPaymentUtil {
       }
     }
 
-    if (voucher.getTransactionStatusId() == 2 && voucher.getPaymentStatus().equals("PENDING") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 && voucher.getPaymentExpiredAt().compareTo(currentDate) > 0) {
-      statusPayment = "Menunggu Pembayaran";
+    if (voucher.getTransactionStatusId() == 2 && voucher.getPaymentStatus().equals("PENDING") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0) {
+      if (voucher.getPaymentExpiredAt().compareTo(currentDate) > 0) {
+        statusPayment = "Menunggu Pembayaran";
+      } else {
+        // handle case : menambahkan status dibatalkan karena ketika waktu voucher pembayran va (expired_at) sudah habis status pending belum terubah
+        statusPayment = "Dibatalkan";
+      }
     }
 
     if (voucher.getTransactionStatusId() == 2 && voucher.getPaymentStatus().equals("PAID") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 ) {
