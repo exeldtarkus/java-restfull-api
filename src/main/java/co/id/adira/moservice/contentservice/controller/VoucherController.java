@@ -180,25 +180,17 @@ public class VoucherController {
 
 	@GetMapping(path = "/vouchers/{id}")
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
+		Long userId = userIdInterceptor.getUserId();
 
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findByIdAndUserId(id, userId);
 
-    List<Voucher> vouchers = voucherRepository.findVoucherByVoucherId(id);
-    try {
-      for (Voucher voucher : vouchers) {
-        String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
-        voucher.setCityName(city);
-        voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
-        voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
-        voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
-        voucher.setStatusVoucherPayment(statusPaymentUtil.voucherStatusPayment(voucher));
-      }
-    } catch (Exception e) {
-      System.out.printf("Error voucher_id : [%d]", id);
-      System.out.println(e);
-    }
+		if (!voucherOptional.isPresent()) {
+			return BaseResponse.jsonResponse(HttpStatus.NOT_FOUND, true, HttpStatus.NOT_FOUND.toString(), "Voucher not found");
+		}
 
-		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), vouchers);
+		VoucherPlain voucher = voucherOptional.get();
+
+		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
 	}
 
 	@PostMapping(path = "/vouchers/redeem", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -2,12 +2,14 @@ package co.id.adira.moservice.contentservice.repository.content;
 
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
+import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.model.content.VoucherPlain;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
+import java.util.Optional;
 
 public interface VoucherCustomRepository extends JpaRepository<VoucherPlain, Long> {
 
@@ -49,5 +51,6 @@ public interface VoucherCustomRepository extends JpaRepository<VoucherPlain, Lon
             Date paymentExpiredAt,
             Long id
     );
+    Optional<VoucherPlain> findByIdAndUserId(Long id, Long userId);
 
 }
