@@ -13,5 +13,7 @@ public class RedeemPromoJson {
     private String utm;
     private String paymentMethodId;
     private RedeemPromoPromoJson promo;
+    private String mobileNo;
+    private String adirakuAccountId;
 
 }

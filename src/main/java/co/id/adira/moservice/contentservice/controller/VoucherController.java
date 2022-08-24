@@ -389,7 +389,7 @@ public class VoucherController {
 		voucher.setPaymentStatus(updateVoucherPaymentStatusJson.getPayment_status());
 		voucherCustomRepository.save(voucher);
 
-		if (voucher.getUtm().equals("adirakupayment")) {
+		if (voucher.getUtm().equals("adirakupayment") || voucher.getUtm().equals("adiraku")) {
 			System.out.println("Send notif to adiraku");
 		}
 
