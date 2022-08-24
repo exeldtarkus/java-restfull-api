@@ -37,6 +37,21 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			@Param("utmNotIn") List<String> utmNotIn,
 			@Param("pageable") Pageable pageable);
 
+
+  @Query(value = 
+        " SELECT  *                           "
+			+ " FROM    content.tr_promo_user   v   "
+			+ "         , bengkel.mst_bengkel   b   "
+			+ "         , content.mst_promo     c   "
+			+ "         , bengkel.mst_contact   d   "
+			+ " WHERE   v.promo_id = c.id           "
+			+ " AND     v.bengkel_id = b.bengkel_id "
+			+ " AND     v.bengkel_id = d.bengkel_id "
+			+ " AND     v.id = :voucherId           "
+  , nativeQuery = true)
+	List<Voucher> findVoucherByVoucherId(
+			@Param("voucherId") Long voucherId);
+
 	@Modifying
 	@Query(value =
 			"insert into "
