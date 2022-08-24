@@ -3,7 +3,7 @@ package co.id.adira.moservice.contentservice.json.adiraku.activity;
 import lombok.Data;
 
 @Data
-public class AdirakuMsActivityCreateActivityJson {
+public class AdirakuMsActivityCreateActivityProspectJson {
 
 	private String group;
 	private String subGroup;
@@ -11,6 +11,6 @@ public class AdirakuMsActivityCreateActivityJson {
 	private String content;
 	private String linkTo;
 	private AdirakuMsActivityCreateActivityPassParamJson passParam;
-	private String accountId;
+	private String mobile_no;
 
 }
