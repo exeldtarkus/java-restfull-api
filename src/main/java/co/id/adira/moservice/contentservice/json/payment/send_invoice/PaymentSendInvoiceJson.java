@@ -9,6 +9,7 @@ public class PaymentSendInvoiceJson {
     private String payment_method_id;
     private Long amount;
     private Long promo_id;
+    private Long voucher_id;
     private Long bengkel_id;
     private Long customer_id;
     private List<PaymentSendInvoiceItemJson> items;

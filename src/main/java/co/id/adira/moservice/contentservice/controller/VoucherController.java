@@ -184,22 +184,31 @@ public class VoucherController {
 	public ResponseEntity<Object> generateQRCodeWithLogo(@RequestBody RedeemPromoJson redeemPromoJson) throws ParseException {
 
 		Voucher voucher = new Voucher();
-		voucher.setUserId(redeemPromoJson.getUserId());
 		voucher.setBengkelId(redeemPromoJson.getBengkelId());
 		voucher.setCarId(redeemPromoJson.getCarId());
-		voucher.setBengkel_name(redeemPromoJson.getBengkel_name());
 		voucher.setUtm(redeemPromoJson.getUtm());
 		Long promoId = redeemPromoJson.getPromo().getId();
 		Optional<Promo> promoOptional = promoRepository.findById(promoId);
 		Long paymentAmount = redeemPromoJson.getPaymentAmount();
 		String paymentId = null;
 
+		// Get Temporary ID
+
+		VoucherPlain voucherPlain = new VoucherPlain();
+		voucherPlain.setBengkelId(redeemPromoJson.getBengkelId());
+		voucherPlain.setCarId(redeemPromoJson.getCarId());
+		voucherPlain.setUtm(redeemPromoJson.getUtm());
+		voucherPlain.setPaymentStatus("FREE");
+		VoucherPlain voucherPlain2 = voucherCustomRepository.saveAndFlush(voucherPlain);
+
+		voucher.setBengkel_name(redeemPromoJson.getBengkel_name());
+		voucher.setUserId(redeemPromoJson.getUserId());
+
 		if (!promoOptional.isPresent()) {
 			return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Promo not found");
 		}
 
 		Promo promo = promoOptional.get();
-
 		voucher.setPromo(promo);
 
 		log.info("::: GENERATE QRCODE :::");
@@ -240,6 +249,7 @@ public class VoucherController {
 			paymentSendInvoiceJson.setAmount(totalPrice);
 			paymentSendInvoiceJson.setBengkel_id(redeemPromoJson.getBengkelId());
 			paymentSendInvoiceJson.setPromo_id(promoId);
+			paymentSendInvoiceJson.setVoucher_id(voucherPlain2.getId());
 			paymentSendInvoiceJson.setCustomer_id(redeemPromoJson.getUserId());
 
 			PaymentSendInvoiceItemJson paymentSendInvoiceItemJson = new PaymentSendInvoiceItemJson();
@@ -265,7 +275,11 @@ public class VoucherController {
 			paymentId = paymentSendInvoiceDataResponseJson.getId();
 		}
 
-		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(voucher, promo);
+		QRCode qrcode = redeemService.generateQRCodeAndSaveVoucher(
+				voucher,
+				voucherPlain2,
+				promo
+		);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     	qrcode.setQrcodePath(cloudinaryPath + qrcode.getQrcodePath2());
@@ -294,11 +308,14 @@ public class VoucherController {
 
 		this.sendNotifRedeem(qrcode.getId());
 
+		// Set response data
+
 		RedeemPromoDataResponseJson redeemPromoDataResponseJson = new RedeemPromoDataResponseJson();
 		redeemPromoDataResponseJson.setData(qrcode.getData());
 		RedeemPromoPromoJson redeemPromoPromoJson = new RedeemPromoPromoJson();
 		redeemPromoPromoJson.setAvailableUntil(mysqlDatetimeFormat.format(promo.getAvailableUntil()));
-		redeemPromoPromoJson.setId(qrcode.getId());
+		redeemPromoPromoJson.setId(promo.getId());
+		redeemPromoDataResponseJson.setId(voucherPlain2.getId());
 		redeemPromoDataResponseJson.setPromo(redeemPromoPromoJson);
 		redeemPromoDataResponseJson.setPromoId(promo.getId());
 		redeemPromoDataResponseJson.setBase64QRCode(qrcode.getBase64QRCode());
