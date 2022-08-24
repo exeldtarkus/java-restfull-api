@@ -1,6 +1,5 @@
 package co.id.adira.moservice.contentservice.model.content;
 
-
 import lombok.Data;
 
 import javax.persistence.*;
@@ -65,4 +64,10 @@ public class VoucherPlain implements Serializable {
 
 	@Column(name = "payment_expired_at")
 	private Date paymentExpiredAt;
+
+	@Column(name = "mobile_no")
+	private String mobileNo;
+
+	@Column(name = "adiraku_account_id")
+	private String adirakuAccountId;
 }
