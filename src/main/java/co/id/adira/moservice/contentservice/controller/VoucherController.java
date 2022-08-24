@@ -182,6 +182,7 @@ public class VoucherController {
         voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
         voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
         voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
+        voucher.setStatusVoucherPayment(statusPaymentUtil.voucherStatusPayment(voucher));
       }
     } catch (Exception e) {
       System.out.printf("Error voucher_id : [%d]", id);
