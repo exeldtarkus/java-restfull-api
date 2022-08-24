@@ -14,4 +14,12 @@ public class DateUtil {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 
+  public Date datePlus(Date d1, int totalDate) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(d1);
+    calendar.add(Calendar.DATE, totalDate);
+    Date todayPlus = calendar.getTime();
+		return todayPlus;
+	}
+
 }

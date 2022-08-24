@@ -3,6 +3,7 @@ package co.id.adira.moservice.contentservice.controller;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.*;
 
 import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
@@ -18,6 +19,7 @@ import co.id.adira.moservice.contentservice.model.content.VoucherPlain;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherCustomRepository;
 import co.id.adira.moservice.contentservice.util.DateUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -41,6 +43,7 @@ import co.id.adira.moservice.contentservice.repository.content.VoucherRepository
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
+import co.id.adira.moservice.contentservice.util.StatusPaymentUtil;
 import co.id.adira.moservice.event.dto.EmailEventDto;
 import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +87,9 @@ public class VoucherController {
 	@Autowired
 	private DateUtil dateUtil;
 
+	@Autowired
+	private StatusPaymentUtil statusPaymentUtil;
+
 	@Value("${server.auth.secret_key}")
 	private String key;
 
@@ -95,8 +101,14 @@ public class VoucherController {
 			@RequestParam(name = "utm_not_in", required = false) List<String> utmNotInParam,
 			@RequestParam(name = "user_id", required = false) final Long userId) {
 
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		String utm = null;
+
+    List<Voucher> fecthVoucher = new ArrayList<>();
+    List<Voucher> voucherData = new ArrayList<>();
+    
+		Date currentDate = new Date();
+
 		if (!utmParam.equals("")) {
 			utm = utmParam;
 		}
@@ -106,27 +118,53 @@ public class VoucherController {
 			utmNotIn = utmNotInParam;
 		}
 
+		List<String> utmIn = null;
+		if (utm != null) {
+			utmIn = new ArrayList<>();
+			if (utm.equals("adiraku-utm") || utm.equals("adiraku") || utm.equals("adirakupayment")) {
+				utmIn.add("adiraku");
+				utmIn.add("adirakupayment");
+			} else {
+				utmIn.add(utm);
+			}
+		}
+
 		boolean isValidUser = userIdInterceptor.isValidUserId(userId.toString());
 		if (!isValidUser) {
-			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false, 
+			return BaseResponse.jsonResponse(HttpStatus.FORBIDDEN, false,
 					"unknown user", null);
 		}
-		
-		Date currentDate = new Date();
+
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-		List<Voucher> vouchers = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmNotIn, pageable);
+    
+    System.out.println("utm-data :"+utm);
+    fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
+    for (Voucher voucher : fecthVoucher) {
+      try {
+        String city = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
+        String voucherStatusPayment = statusPaymentUtil.voucherStatusPayment(voucher);
 
-		for (Voucher voucher : vouchers) {
-			String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
-			voucher.setCityName(city);
-      voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
-      voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
-      voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
-		}
+        if (voucherStatusPayment.equals("VoucherDateCompare>7day")) {
+          continue;
+        }
+        voucher.setCityName(city);
+        voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
+        voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
+        voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
+        voucher.setStatusVoucherPayment(statusPaymentUtil.voucherStatusPayment(voucher));
 
-		Integer start = Math.min(Math.max(size * (page - 1), 0), vouchers.size());
-		Integer end = Math.min(Math.max(size * page, start), vouchers.size());
-		Page<Voucher> pages = new PageImpl<Voucher>(vouchers.subList(start, end), pageable, vouchers.size());
+      } catch (Exception e) {
+        System.out.printf("Error voucher_id : [%d]", voucher.getId());
+        System.out.println(e);
+        continue;
+      }
+      System.out.println("total-data :"+voucherData.size());
+      voucherData.add(voucher);
+    }
+
+		Integer start = Math.min(Math.max(size * (page - 1), 0), voucherData.size());
+		Integer end = Math.min(Math.max(size * page, start), voucherData.size());
+		Page<Voucher> pages = new PageImpl<Voucher>(voucherData.subList(start, end), pageable, voucherData.size());
 
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), pages);
 	}
