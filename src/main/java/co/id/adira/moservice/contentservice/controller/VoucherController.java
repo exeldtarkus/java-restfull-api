@@ -6,8 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.*;
 
+import co.id.adira.moservice.contentservice.handler.adiraku.activity.AdirakuActivityCreateActivityHandler;
 import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
 import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityJson;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityPassParamJson;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityProspectJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoDataResponseJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
@@ -55,7 +58,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequestMapping("/api")
 public class VoucherController {
-	
+
 	private static final String REDEEM_HBS = "redeem.hbs";
 
 	@Autowired
@@ -72,7 +75,7 @@ public class VoucherController {
 
 	@Autowired
 	private RedeemService redeemService;
-	
+
 	@Autowired
 	private UserIdInterceptor userIdInterceptor;
 
@@ -94,6 +97,9 @@ public class VoucherController {
 	@Value("${server.auth.secret_key}")
 	private String key;
 
+	@Autowired
+	private AdirakuActivityCreateActivityHandler adirakuActivityCreateActivityHandler;
+
 	@GetMapping(path = "/vouchers")
 	public ResponseEntity<Object> getVouchers(
 			@RequestParam(required = false, defaultValue = "1") final Integer page,
@@ -107,7 +113,7 @@ public class VoucherController {
 
     List<Voucher> fecthVoucher = new ArrayList<>();
     List<Voucher> voucherData = new ArrayList<>();
-    
+
 		Date currentDate = new Date();
 
 		if (!utmParam.equals("")) {
@@ -137,7 +143,7 @@ public class VoucherController {
 		}
 
 		Pageable pageable = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "redeem_date"));
-    
+
     System.out.println("utm-data :"+utm);
     fecthVoucher = voucherRepository.findAllUnusedVoucherAndMore(userId, currentDate, utm, utmIn, utmNotIn, pageable);
     for (Voucher voucher : fecthVoucher) {
@@ -174,7 +180,7 @@ public class VoucherController {
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
 
     String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
-    
+
     List<Voucher> vouchers = voucherRepository.findVoucherByVoucherId(id);
     try {
       for (Voucher voucher : vouchers) {
@@ -189,7 +195,7 @@ public class VoucherController {
       System.out.printf("Error voucher_id : [%d]", id);
       System.out.println(e);
     }
-    
+
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), vouchers);
 	}
 
@@ -375,41 +381,76 @@ public class VoucherController {
 		return pat.matcher(email).matches();
 	}
 
-	@PutMapping(path = "/vouchers/{id}")
-	public ResponseEntity<Object> updateVoucherStatus(
-			@PathVariable Long id,
-			@RequestBody UpdateVoucherPaymentStatusJson updateVoucherPaymentStatusJson,
-			@RequestHeader(name = "X-TOKEN", required = true) final String authToken
-	) {
-		if (!authToken.equals(key)) {
-			return BaseResponse.jsonResponse(HttpStatus.UNAUTHORIZED, false, HttpStatus.UNAUTHORIZED.toString(), null);
-		}
+    @PutMapping(path = "/vouchers/{id}")
+    public ResponseEntity<Object> updateVoucherStatus(
+            @PathVariable Long id,
+            @RequestBody UpdateVoucherPaymentStatusJson updateVoucherPaymentStatusJson,
+            @RequestHeader(name = "X-TOKEN", required = true) final String authToken
+    ) {
+        if (!authToken.equals(key)) {
+            return BaseResponse.jsonResponse(HttpStatus.UNAUTHORIZED, false, HttpStatus.UNAUTHORIZED.toString(), null);
+        }
 
-		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findById(id);
+        Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findById(id);
 
-		if (!voucherOptional.isPresent()) {
-			return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Voucher not found");
-		}
+        if (!voucherOptional.isPresent()) {
+            return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Voucher not found");
+        }
 
-		VoucherPlain voucher = voucherOptional.get();
+        VoucherPlain voucher = voucherOptional.get();
 
-		voucher.setPaymentStatus(updateVoucherPaymentStatusJson.getPayment_status());
-		voucherCustomRepository.save(voucher);
+        voucher.setPaymentStatus(updateVoucherPaymentStatusJson.getPayment_status());
+        voucherCustomRepository.save(voucher);
 
-		if (voucher.getUtm().equals("adirakupayment") || voucher.getUtm().equals("adiraku")) {
-			AdirakuMsActivityCreateActivityJson adirakuMsActivityCreateActivityJson = new AdirakuMsActivityCreateActivityJson();
-			adirakuMsActivityCreateActivityJson.setGroup("Pembelian Promo Moservice");
-			adirakuMsActivityCreateActivityJson.setSubGroup("Pembelian Promo Moservice");
-			adirakuMsActivityCreateActivityJson.setTitle("Pembayaran Berhasil");
-			adirakuMsActivityCreateActivityJson.setContent("Selamat! Pembayaran voucher [nama voucher] berhasil. Segera bawa kendaraanmu ke bengkel untuk diservis.");
-			if (!voucher.getAdirakuAccountId().isEmpty()) {
-				adirakuMsActivityCreateActivityJson.setMobile_no(voucher.getMobileNo());
-			} else {
-				adirakuMsActivityCreateActivityJson.setAccountId(voucher.getAdirakuAccountId());
-			}
-		}
+        if (voucher.getUtm().equals("adirakupayment") || voucher.getUtm().equals("adiraku")) {
+            System.out.println("Send notification to adiraku");
 
-		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
-	}
+			Promo promo = voucher.getPromo();
+
+			String group = "Pembelian Promo Moservice";
+			String subGroup = "Pembelian Promo Moservice";
+			String title = "Pembayaran Berhasil";
+			String content = "Selamat! Pembayaran voucher " + promo.getTitle() + " berhasil. Segera bawa kendaraanmu ke bengkel untuk diservis.";
+
+			AdirakuMsActivityCreateActivityPassParamJson passParam = new AdirakuMsActivityCreateActivityPassParamJson();
+			passParam.setVoucherId(voucher.getId());
+			System.out.println("voucher.getAdirakuAccountId().isEmpty()");
+			System.out.println(voucher.getAdirakuAccountId().isEmpty());
+
+			// nasabah
+            if (!voucher.getAdirakuAccountId().isEmpty()) {
+				System.out.println("Send Notif Nasabah");
+				AdirakuMsActivityCreateActivityJson nasabahPayload = new AdirakuMsActivityCreateActivityJson();
+				nasabahPayload.setGroup(group);
+				nasabahPayload.setSubGroup(subGroup);
+				nasabahPayload.setTitle(title);
+				nasabahPayload.setContent(content);
+                nasabahPayload.setAccountId(voucher.getAdirakuAccountId());
+				nasabahPayload.setLinkTo("None");
+				nasabahPayload.setPassParam(passParam);
+				adirakuActivityCreateActivityHandler.createActivity(
+						nasabahPayload,
+						null
+				);
+            } else {
+				System.out.println("Send Notif Prospect");
+				AdirakuMsActivityCreateActivityProspectJson prospectPayload = new AdirakuMsActivityCreateActivityProspectJson();
+				prospectPayload.setGroup(group);
+				prospectPayload.setSubGroup(subGroup);
+				prospectPayload.setTitle(title);
+				prospectPayload.setContent(content);
+				prospectPayload.setMobile_no(voucher.getMobileNo());
+				prospectPayload.setLinkTo("None");
+				prospectPayload.setPassParam(passParam);
+				adirakuActivityCreateActivityHandler.createActivity(
+						null,
+						prospectPayload
+				);
+            }
+
+        }
+
+        return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
+    }
 
 }

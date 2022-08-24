@@ -1,6 +1,7 @@
 package co.id.adira.moservice.contentservice.handler.adiraku.activity;
 
 import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityJson;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityProspectJson;
 import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityResponseJson;
 import co.id.adira.moservice.contentservice.service.AdirakuActivityService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class AdirakuActivityCreateActivityHandler {
 
     public AdirakuMsActivityCreateActivityResponseJson createActivity(
             AdirakuMsActivityCreateActivityJson payload,
-            String type
+            AdirakuMsActivityCreateActivityProspectJson payloadProspect
     ) {
         AdirakuMsActivityCreateActivityResponseJson result = null;
 
@@ -47,10 +48,10 @@ public class AdirakuActivityCreateActivityHandler {
 
         Call<AdirakuMsActivityCreateActivityResponseJson> call = null;
 
-        if (type.equals("nasabah")) {
+        if (payload != null) {
             call = adirakuActivityService.createActivity(payload);
         } else {
-            call = adirakuActivityService.createActivityProspect(payload);
+            call = adirakuActivityService.createActivityProspect(payloadProspect);
         }
 
         try {
