@@ -34,8 +34,8 @@ public class StatusPaymentUtil {
     }
 
     if (voucher.getPaymentStatus().equals("FAILED")) {
-      plus7Date = dateUtil.datePlus(voucher.getRedeemDate(), 7);
-      if (voucher.getRedeemDate() != null && currentDate.compareTo(plus7Date) > 0) {
+      plus7Date = dateUtil.datePlus(voucher.getPaymentExpiredAt(), 7);
+      if (voucher.getPaymentExpiredAt() != null && currentDate.compareTo(plus7Date) > 0) {
         System.out.printf("Voucher [%d] Gagal Pembayaran | [voucher RedeemDate (%s) | (%s) hari ini] Sudah Lewat dari 7 Hari\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
         statusPayment = "VoucherDateCompare>7day";
       } else {
