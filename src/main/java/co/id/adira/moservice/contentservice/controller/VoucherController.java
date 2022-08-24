@@ -133,7 +133,24 @@ public class VoucherController {
 
 	@GetMapping(path = "/vouchers/{id}")
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
-		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), id);
+
+    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+    
+    List<Voucher> vouchers = voucherRepository.findVoucherByVoucherId(id);
+    try {
+      for (Voucher voucher : vouchers) {
+        String city   = cityRepository.findCityNameByBengkelId(voucher.getBengkelId());
+        voucher.setCityName(city);
+        voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
+        voucher.getPromo().setImagePath(cloudinaryPath + voucher.getPromo().getImagePath2());
+        voucher.getPromo().setImagePathMobile(cloudinaryPath + voucher.getPromo().getImagePath2());
+      }
+    } catch (Exception e) {
+      System.out.printf("Error voucher_id : [%d]", id);
+      System.out.println(e);
+    }
+    
+		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), vouchers);
 	}
 
 	@PostMapping(path = "/vouchers/redeem", consumes = MediaType.APPLICATION_JSON_VALUE)
