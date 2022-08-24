@@ -10,6 +10,8 @@ import java.time.ZoneOffset;
 import java.util.Date;
 
 import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.model.content.VoucherPlain;
+import co.id.adira.moservice.contentservice.repository.content.VoucherCustomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -39,7 +41,7 @@ public class RedeemService {
 	private String moserviceBaseUrlMoserviceApps;
 	
 	@Autowired
-	private VoucherRepository voucherRepository;
+	private VoucherCustomRepository voucherCustomRepository;
 	
 	@Autowired
 	private QRCodeRepository qrCodeRepository;
@@ -53,6 +55,7 @@ public class RedeemService {
 	@Transactional(readOnly = false)
 	public QRCode generateQRCodeAndSaveVoucher(
 			Voucher voucher,
+			VoucherPlain voucherPlain,
 			Promo promo
 	) {
 		// OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -91,7 +94,7 @@ public class RedeemService {
 		qrcode.setBengkelId(voucher.getBengkelId());
 
 		qrCodeRepository.save(qrcode);
-		voucherRepository.insertVoucher(
+		voucherCustomRepository.updateVoucher(
 				voucher.getBengkelId(),
 				voucher.getBookingId(),
 				voucher.getCarId(),
@@ -106,7 +109,8 @@ public class RedeemService {
 				transactionStatusId,
 				voucher.getPaymentStatus(),
 				voucher.getPaymentId(),
-				voucher.getPaymentExpiredAt()
+				voucher.getPaymentExpiredAt(),
+				voucherPlain.getId()
 		);
 
 		return qrcode;
