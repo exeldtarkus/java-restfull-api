@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.*;
 
 import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoDataResponseJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
@@ -211,6 +212,12 @@ public class VoucherController {
 		voucherPlain.setCarId(redeemPromoJson.getCarId());
 		voucherPlain.setUtm(redeemPromoJson.getUtm());
 		voucherPlain.setPaymentStatus("FREE");
+		if (!redeemPromoJson.getAdirakuAccountId().isEmpty()) {
+			voucherPlain.setAdirakuAccountId(redeemPromoJson.getAdirakuAccountId());
+		}
+		if (!redeemPromoJson.getMobileNo().isEmpty()) {
+			voucherPlain.setMobileNo(redeemPromoJson.getMobileNo());
+		}
 		VoucherPlain voucherPlain2 = voucherCustomRepository.saveAndFlush(voucherPlain);
 
 		voucher.setBengkel_name(redeemPromoJson.getBengkel_name());
@@ -390,7 +397,16 @@ public class VoucherController {
 		voucherCustomRepository.save(voucher);
 
 		if (voucher.getUtm().equals("adirakupayment") || voucher.getUtm().equals("adiraku")) {
-			System.out.println("Send notif to adiraku");
+			AdirakuMsActivityCreateActivityJson adirakuMsActivityCreateActivityJson = new AdirakuMsActivityCreateActivityJson();
+			adirakuMsActivityCreateActivityJson.setGroup("Pembelian Promo Moservice");
+			adirakuMsActivityCreateActivityJson.setSubGroup("Pembelian Promo Moservice");
+			adirakuMsActivityCreateActivityJson.setTitle("Pembayaran Berhasil");
+			adirakuMsActivityCreateActivityJson.setContent("Selamat! Pembayaran voucher [nama voucher] berhasil. Segera bawa kendaraanmu ke bengkel untuk diservis.");
+			if (!voucher.getAdirakuAccountId().isEmpty()) {
+				adirakuMsActivityCreateActivityJson.setMobile_no(voucher.getMobileNo());
+			} else {
+				adirakuMsActivityCreateActivityJson.setAccountId(voucher.getAdirakuAccountId());
+			}
 		}
 
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
