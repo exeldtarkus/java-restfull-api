@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class AdirakuMsActivityCreateActivityPassParamJson {
 
-	private Long voucherId;
+	private Long id;
+	private String type;
 
 }
