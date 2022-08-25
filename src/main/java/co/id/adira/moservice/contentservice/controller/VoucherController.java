@@ -212,12 +212,10 @@ public class VoucherController {
 		voucherPlain.setCarId(redeemPromoJson.getCarId());
 		voucherPlain.setUtm(redeemPromoJson.getUtm());
 		voucherPlain.setPaymentStatus("FREE");
-		if (!redeemPromoJson.getAdirakuAccountId().isEmpty()) {
-			voucherPlain.setAdirakuAccountId(redeemPromoJson.getAdirakuAccountId());
-		}
-		if (!redeemPromoJson.getMobileNo().isEmpty()) {
-			voucherPlain.setMobileNo(redeemPromoJson.getMobileNo());
-		}
+
+		voucherPlain.setAdirakuAccountId(redeemPromoJson.getAdirakuAccountId());
+		voucherPlain.setMobileNo(redeemPromoJson.getMobileNo());
+
 		VoucherPlain voucherPlain2 = voucherCustomRepository.saveAndFlush(voucherPlain);
 
 		voucher.setBengkel_name(redeemPromoJson.getBengkel_name());
@@ -405,11 +403,11 @@ public class VoucherController {
 			String subGroup = "Pembelian Promo Moservice";
 			String title = "Pembayaran Berhasil";
 			String content = "Selamat! Pembayaran voucher " + promo.getTitle() + " berhasil. Segera bawa kendaraanmu ke bengkel untuk diservis.";
+			String linkTo = "MoserviceDetailVoucher";
 
 			AdirakuMsActivityCreateActivityPassParamJson passParam = new AdirakuMsActivityCreateActivityPassParamJson();
-			passParam.setVoucherId(voucher.getId());
-			System.out.println("voucher.getAdirakuAccountId().isEmpty()");
-			System.out.println(voucher.getAdirakuAccountId().isEmpty());
+			passParam.setId(voucher.getId());
+			passParam.setType("my-voucher");
 
 			// nasabah
             if (!voucher.getAdirakuAccountId().isEmpty()) {
@@ -420,7 +418,7 @@ public class VoucherController {
 				nasabahPayload.setTitle(title);
 				nasabahPayload.setContent(content);
                 nasabahPayload.setAccountId(voucher.getAdirakuAccountId());
-				nasabahPayload.setLinkTo("None");
+				nasabahPayload.setLinkTo(linkTo);
 				nasabahPayload.setPassParam(passParam);
 				adirakuActivityCreateActivityHandler.createActivity(
 						nasabahPayload,
@@ -434,7 +432,7 @@ public class VoucherController {
 				prospectPayload.setTitle(title);
 				prospectPayload.setContent(content);
 				prospectPayload.setMobile_no(voucher.getMobileNo());
-				prospectPayload.setLinkTo("None");
+				prospectPayload.setLinkTo(linkTo);
 				prospectPayload.setPassParam(passParam);
 				adirakuActivityCreateActivityHandler.createActivity(
 						null,
