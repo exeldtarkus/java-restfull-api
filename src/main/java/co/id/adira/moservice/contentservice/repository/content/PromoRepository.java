@@ -124,6 +124,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "a.service_fee, "
 			+ "a.disc_amount, "
 			+ "a.tag_promo, "
+			+ "a.vehicle_type_id, "
 			+ "f.id, "
 			+ "f.promo_id, "
 			+ "f.bengkel_id, "
