@@ -33,9 +33,9 @@ public class StatusPaymentUtil {
       }
     }
 
-    if (voucher.getPaymentStatus().equals("FAILED") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0) {
+    if (voucher.getPaymentStatus().equals("FAILED") && voucher.getPromo().getAvailableUntil().compareTo(currentDate) > 0 && voucher.getPaymentExpiredAt() != null) {
       plus7Date = dateUtil.datePlus(voucher.getPaymentExpiredAt(), 7);
-      if (voucher.getPaymentExpiredAt() != null && currentDate.compareTo(plus7Date) > 0) {
+      if (currentDate.compareTo(plus7Date) > 0) {
         System.out.printf("Voucher [%d] Gagal Pembayaran | [voucher RedeemDate (%s) | (%s) hari ini] Sudah Lewat dari 7 Hari\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
         statusPayment = "VoucherDateCompare>7day";
       } else {
