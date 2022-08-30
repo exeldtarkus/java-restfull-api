@@ -23,7 +23,7 @@ public class StatusPaymentUtil {
     Date plus7Date ;
 
     // Voucher BERBAYAR STATUS mapping
-    if (voucher.getPromo().getAvailableUntil().compareTo(currentDate) <= 0) {
+    if (dateUtil.datePlus(voucher.getPromo().getAvailableUntil(), 1).compareTo(currentDate) < 0) {
       plus7Date = dateUtil.datePlus(voucher.getPromo().getAvailableUntil(), 7);
       if (currentDate.compareTo(plus7Date) > 0) {
         System.out.printf("Voucher [%d] Sudah Kedaluwarsa | [voucher AvailableUntil (%s) | (%s) hari ini] Lebih dari 7 Hari\n", voucher.getId(), plus7Date.toString(), currentDate.toString());
