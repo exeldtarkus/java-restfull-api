@@ -240,11 +240,15 @@ public class VoucherController {
 		SimpleDateFormat mysqlDatetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		if (price.longValue() > 0) {
+			if (paymentAmount == null) {
+				return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Payment amount is null");
+			}
+
 			Date promoAvailableUntil = promo.getAvailableUntil();
 			Date now = new Date();
 			long differenceDays = dateUtil.getDifferenceDays(now, promoAvailableUntil);
 
-			if (differenceDays < 0) {
+			if (differenceDays <= 0) {
 				return BaseResponse.jsonResponse(
 						HttpStatus.BAD_REQUEST,
 						true,
