@@ -246,7 +246,7 @@ public class VoucherController {
 			Date now = new Date();
 			long differenceDays = dateUtil.getDifferenceDays(now, promoAvailableUntil);
 
-			if (differenceDays < 0) {
+			if (differenceDays <= 0) {
 				return BaseResponse.jsonResponse(
 						HttpStatus.BAD_REQUEST,
 						true,
