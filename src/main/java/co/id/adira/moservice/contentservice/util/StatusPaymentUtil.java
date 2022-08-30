@@ -22,12 +22,12 @@ public class StatusPaymentUtil {
     Date availableUntil = voucher.getPromo().getAvailableUntil();
     long availableUntilDiffDays = dateUtil.getDifferenceDays(currentDate, availableUntil);
     Boolean isVoucherExpired = availableUntilDiffDays < 0;
-    long sevenDaysDiff ;
+    long check7DaysDiff ;
     
     if (isVoucherExpired) {
       statusPayment = "Kedaluwarsa";
-      sevenDaysDiff = dateUtil.getDifferenceDays(currentDate, availableUntil);
-      if (sevenDaysDiff < (-7)) {
+      check7DaysDiff = dateUtil.getDifferenceDays(currentDate, availableUntil);
+      if (check7DaysDiff < (-7)) {
         statusPayment = "VoucherDateCompare>7day";
       }
     } else {
@@ -35,8 +35,8 @@ public class StatusPaymentUtil {
         case "PAID":
             if (voucher.getUseDate() != null) {
               statusPayment = "Sudah Digunakan";
-              sevenDaysDiff = dateUtil.getDifferenceDays(currentDate, voucher.getUseDate());
-              if (sevenDaysDiff < (-7)) {
+              check7DaysDiff = dateUtil.getDifferenceDays(currentDate, voucher.getUseDate());
+              if (check7DaysDiff < (-7)) {
                 statusPayment = "VoucherDateCompare>7day";
               }
             } else {
@@ -48,16 +48,16 @@ public class StatusPaymentUtil {
             break;
         case "FAILED":
             statusPayment = "Dibatalkan";
-            sevenDaysDiff = dateUtil.getDifferenceDays(currentDate, voucher.getPaymentExpiredAt());
-            if (sevenDaysDiff < (-7)) {
+            check7DaysDiff = dateUtil.getDifferenceDays(currentDate, voucher.getPaymentExpiredAt());
+            if (check7DaysDiff < (-7)) {
               statusPayment = "VoucherDateCompare>7day";
             }
             break;
         case "FREE":
             if (voucher.getUseDate() != null) {
               statusPayment = "Sudah Digunakan";
-              sevenDaysDiff = dateUtil.getDifferenceDays(currentDate, voucher.getUseDate());
-              if (sevenDaysDiff < (-7)) {
+              check7DaysDiff = dateUtil.getDifferenceDays(currentDate, voucher.getUseDate());
+              if (check7DaysDiff < (-7)) {
                 statusPayment = "VoucherDateCompare>7day";
               }
             } else {
