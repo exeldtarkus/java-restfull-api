@@ -123,6 +123,9 @@ public class Promo implements Serializable {
 	@Column(name = "service_fee")
 	private BigDecimal serviceFee;
 
+	@Column(name = "vehicle_type_id")
+	private Integer vehicleType;
+
 	public Long getId() {
 		return id;
 	}
@@ -375,6 +378,14 @@ public class Promo implements Serializable {
 
 	public void setImagePath2(String imagePath2) {
 		this.imagePath2 = imagePath2;
+	}
+
+	public Integer getVehicleType() {
+		return vehicleType;
+	}
+
+	public void setVehicleType(Integer vehicleType) {
+		this.vehicleType = vehicleType;
 	}
 
 	public BigDecimal getPrice() {
