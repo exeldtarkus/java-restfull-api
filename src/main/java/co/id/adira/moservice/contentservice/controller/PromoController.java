@@ -1,6 +1,8 @@
 package co.id.adira.moservice.contentservice.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import co.id.adira.moservice.contentservice.dto.bengkel.ProvinceCityDTO;
 import co.id.adira.moservice.contentservice.model.bengkel.Bengkel;
@@ -18,14 +20,9 @@ import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -36,10 +33,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @SuppressWarnings("unchecked")
 @RestController
@@ -91,9 +84,25 @@ public class PromoController {
 			@RequestParam(required = false, name = "lat") Double latitude,
 			@RequestParam(required = false, name = "lng") Double longitude,
 			@RequestParam(required = false, name = "eid") Long eventId,
-      @RequestParam(required = false, name = "vehicleTypes", defaultValue = "1") String vehicleTypes
+      		@RequestParam(required = false, name = "vehicleTypes", defaultValue = "1") String vehicleTypes,
+			@RequestHeader(name = "App-Version", required = false) final String appVersion
 	) {
-		
+
+		Boolean freeOnly = null;
+		if (!StringUtils.isEmpty(origin) && !StringUtils.isEmpty(appVersion)) {
+			if (
+					(origin.equals("adiraku")) ||
+					(origin.equals("adirakunasabah"))
+			) {
+				ComparableVersion adiraku280C = new ComparableVersion("2.8.0");
+				String[] appVersionSplitted = appVersion.split("-");
+				ComparableVersion appVersionC = new ComparableVersion(appVersionSplitted[0]);
+				if (appVersionC.compareTo(adiraku280C) <= 0) {
+					freeOnly = true;
+				}
+			}
+		}
+
 		Date currentDate = new Date();
 		String serviceIdsList = null;
     String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
@@ -154,10 +163,10 @@ public class PromoController {
 				promos = (List<Promo>) promoRepository.findAllByZoneIdAndMore(2L, currentDate, pageable);
 				break;
 			case "adiraku": 
-				promos = (List<Promo>) promoRepository.findAllAdirakuProspect(currentDate,latitude,longitude, pageable, service_type, serviceIdsList, vehicleTypes);
+				promos = (List<Promo>) promoRepository.findAllAdirakuProspect(currentDate,latitude,longitude, pageable, service_type, serviceIdsList, vehicleTypes, freeOnly);
 				break;
 			case "adirakunasabah": 
-				promos = (List<Promo>) promoRepository.findAllAdirakuNasabah(currentDate,latitude,longitude, pageable, service_type, serviceIdsList, vehicleTypes);
+				promos = (List<Promo>) promoRepository.findAllAdirakuNasabah(currentDate,latitude,longitude, pageable, service_type, serviceIdsList, vehicleTypes, freeOnly);
 				break;
 			default:
 				if (bengkel_id != null) {
