@@ -242,7 +242,7 @@ public class VoucherController {
 				return BaseResponse.jsonResponse(HttpStatus.BAD_REQUEST, true, HttpStatus.BAD_REQUEST.toString(), "Payment amount is null");
 			}
 
-			Date promoAvailableUntil = promo.getAvailableUntil();
+			Date promoAvailableUntil = dateUtil.datePlus(promo.getAvailableUntil(), 1);
 			Date now = new Date();
 			long differenceDays = dateUtil.getDifferenceDays(now, promoAvailableUntil);
 
