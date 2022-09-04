@@ -412,7 +412,7 @@ public class VoucherController {
 			passParam.setType("my-voucher");
 
 			// nasabah
-            if (!voucher.getAdirakuAccountId().isEmpty()) {
+      if (voucher.getAdirakuAccountId() != null && voucher.getPaymentStatus().equals("PAID")) {
 				System.out.println("Send Notif Nasabah");
 				AdirakuMsActivityCreateActivityJson nasabahPayload = new AdirakuMsActivityCreateActivityJson();
 				nasabahPayload.setGroup(group);
