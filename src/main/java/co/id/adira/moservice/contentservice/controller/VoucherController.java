@@ -182,6 +182,7 @@ public class VoucherController {
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
 		Long userId = userIdInterceptor.getUserId();
 
+    paymentServiceHandler.checkStatusPayment(id);
 		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findByIdAndUserId(id, userId);
 
 		if (!voucherOptional.isPresent()) {
