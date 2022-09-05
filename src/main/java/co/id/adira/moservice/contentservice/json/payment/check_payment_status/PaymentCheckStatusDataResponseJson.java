@@ -1,5 +1,7 @@
 package co.id.adira.moservice.contentservice.json.payment.check_payment_status;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -19,5 +21,7 @@ public class PaymentCheckStatusDataResponseJson {
     private String updated_at;
     private String paid_at;
     private String fail_at;
+    private PaymentCheckStatusMethodJson method;
+    private List<PaymentCheckStatusItemsJson> items;
 
 }

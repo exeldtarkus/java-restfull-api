@@ -27,9 +27,9 @@ public interface MoservicePaymentService {
             @Body PaymentSendInvoiceJson json
     );
 
-    @GET("/api/payments/espay/check-status/{voucher_id}")
+    @GET("/api/payments/{payment_uuid}")
     Call<PaymentCheckStatusPaymentResponseJson> checkStatusPaymentEspay(
-            @Path("voucher_id") Long voucher_id,
+            @Path("payment_uuid") String payment_uuid,
             @Header("Authorization") String authorization
     );
 
