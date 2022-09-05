@@ -190,8 +190,8 @@ public class VoucherController {
 		}
 
 		VoucherPlain voucher = voucherOptional.get();
-    if (voucherOptional.get().getPaymentId() != null) {
-      PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucherOptional.get().getPaymentId());
+    if (voucher.getPaymentId() != null) {
+      PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucher.getPaymentId());
       voucher.setPaymentStatus(checkVoucherStatus.getStatus());
       voucherCustomRepository.save(voucher);
     }
