@@ -4,25 +4,11 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.*;
-
-import co.id.adira.moservice.contentservice.handler.adiraku.activity.AdirakuActivityCreateActivityHandler;
-import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
-import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityJson;
-import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityPassParamJson;
-import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityProspectJson;
-import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoDataResponseJson;
-import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
-import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
-import co.id.adira.moservice.contentservice.json.content.redeem_promo.UpdateVoucherPaymentStatusJson;
-import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
-import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
-import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
-import co.id.adira.moservice.contentservice.model.content.Promo;
-import co.id.adira.moservice.contentservice.model.content.VoucherPlain;
-import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
-import co.id.adira.moservice.contentservice.repository.content.VoucherCustomRepository;
-import co.id.adira.moservice.contentservice.util.DateUtil;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,22 +23,45 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import co.id.adira.moservice.contentservice.handler.adiraku.activity.AdirakuActivityCreateActivityHandler;
+import co.id.adira.moservice.contentservice.handler.payment.PaymentServiceHandler;
 import co.id.adira.moservice.contentservice.interceptor.UserIdInterceptor;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityJson;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityPassParamJson;
+import co.id.adira.moservice.contentservice.json.adiraku.activity.AdirakuMsActivityCreateActivityProspectJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoDataResponseJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
+import co.id.adira.moservice.contentservice.json.content.redeem_promo.UpdateVoucherPaymentStatusJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
+import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
+import co.id.adira.moservice.contentservice.model.content.VoucherPlain;
 import co.id.adira.moservice.contentservice.repository.bengkel.CityRepository;
+import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
+import co.id.adira.moservice.contentservice.repository.content.VoucherCustomRepository;
 import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import co.id.adira.moservice.contentservice.service.RedeemService;
 import co.id.adira.moservice.contentservice.util.BaseResponse;
 import co.id.adira.moservice.contentservice.util.CloudinaryUtil;
+import co.id.adira.moservice.contentservice.util.DateUtil;
 import co.id.adira.moservice.contentservice.util.StatusPaymentUtil;
 import co.id.adira.moservice.event.dto.EmailEventDto;
 import co.id.adira.moservice.model.User;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.regex.Pattern;
 
 @RestController
 @Slf4j
@@ -180,6 +189,7 @@ public class VoucherController {
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
 		Long userId = userIdInterceptor.getUserId();
 
+    paymentServiceHandler.checkStatusPayment(id);
 		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findByIdAndUserId(id, userId);
 
 		if (!voucherOptional.isPresent()) {
