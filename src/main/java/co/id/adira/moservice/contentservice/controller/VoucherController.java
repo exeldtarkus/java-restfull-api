@@ -15,6 +15,7 @@ import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemProm
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.UpdateVoucherPaymentStatusJson;
+import co.id.adira.moservice.contentservice.json.payment.check_payment_status.PaymentCheckStatusDataResponseJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
@@ -180,7 +181,6 @@ public class VoucherController {
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
 		Long userId = userIdInterceptor.getUserId();
 
-    paymentServiceHandler.checkStatusPayment(id);
 		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findByIdAndUserId(id, userId);
 
 		if (!voucherOptional.isPresent()) {
@@ -188,7 +188,11 @@ public class VoucherController {
 		}
 
 		VoucherPlain voucher = voucherOptional.get();
-
+    if (voucherOptional.get().getPaymentId() != null) {
+      PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucherOptional.get().getPaymentId());
+      voucher.setPaymentStatus(checkVoucherStatus.getStatus());
+      voucherCustomRepository.save(voucher);
+    }
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
 	}
 

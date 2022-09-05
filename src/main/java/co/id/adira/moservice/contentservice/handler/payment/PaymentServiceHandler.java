@@ -69,7 +69,7 @@ public class PaymentServiceHandler {
         return null;
     }
 
-    public PaymentCheckStatusDataResponseJson checkStatusPayment(Long voucher_id) {
+    public PaymentCheckStatusDataResponseJson checkStatusPayment(String payment_uuid) {
       
       OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -86,7 +86,7 @@ public class PaymentServiceHandler {
 
       MoservicePaymentService moservicePaymentService = retrofit.create(MoservicePaymentService.class);
       Call<PaymentCheckStatusPaymentResponseJson> call = moservicePaymentService.checkStatusPaymentEspay(
-              voucher_id
+              payment_uuid
               ,"Bearer " + apiToken
       );
 
