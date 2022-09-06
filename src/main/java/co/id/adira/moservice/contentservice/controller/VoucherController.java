@@ -190,11 +190,11 @@ public class VoucherController {
 		}
 
 		VoucherPlain voucher = voucherOptional.get();
-    if (voucher.getPaymentId() != null) {
-      PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucher.getPaymentId());
-      voucher.setPaymentStatus(checkVoucherStatus.getStatus());
-      voucherCustomRepository.save(voucher);
-    }
+		if (voucher.getPaymentId() != null) {
+			PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucher.getPaymentId());
+			voucher.setPaymentStatus(checkVoucherStatus.getStatus());
+			voucherCustomRepository.save(voucher);
+		}
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
 	}
 
