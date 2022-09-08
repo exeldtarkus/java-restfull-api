@@ -179,6 +179,7 @@ public class VoucherController {
 
 	@GetMapping(path = "/vouchers/{id}")
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		Long userId = userIdInterceptor.getUserId();
 
 		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findByIdAndUserId(id, userId);
@@ -188,6 +189,7 @@ public class VoucherController {
 		}
 
 		VoucherPlain voucher = voucherOptional.get();
+        voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
 		if (voucher.getPaymentId() != null) {
 			PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucher.getPaymentId());
 			voucher.setPaymentStatus(checkVoucherStatus.getStatus());
