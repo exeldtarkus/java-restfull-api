@@ -70,4 +70,8 @@ public class VoucherPlain implements Serializable {
 
 	@Column(name = "adiraku_account_id")
 	private String adirakuAccountId;
+
+	@ManyToOne
+	@JoinColumn(name = "qrcode_id")
+	private QRCode qr;
 }

@@ -380,19 +380,19 @@ public class Promo implements Serializable {
 		this.imagePath2 = imagePath2;
 	}
 
-	public BigDecimal getPrice() {
-		return price;
-	}
-
-	public void setPrice(BigDecimal price) {
-		this.price = price;
-	}
-
 	public Integer getVehicleType() {
 		return vehicleType;
 	}
 
 	public void setVehicleType(Integer vehicleType) {
 		this.vehicleType = vehicleType;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 }
