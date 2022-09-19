@@ -165,6 +165,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.zone_id IN (0,2,4,6,9,10,13,14) "
 			+ "AND a.available_until >= DATE(:currentDate) "
 			+ "AND a.is_reviewed = 1 "
+			+ "AND a.vehicle_type_id = :vehicleTypes "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(
 			@Param("q") String q,
@@ -176,8 +177,9 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("cid") Long cid,
 			@Param("pageable") Pageable pageable,
 			@Param("latitude") Double latitude,
-			@Param("longitude") Double longitude
-	);
+			@Param("longitude") Double longitude,
+      @Param("vehicleTypes") String vehicleTypes
+  );
 
 	@Query(value = "SELECT a.id, "
 			+ "a.name, "
