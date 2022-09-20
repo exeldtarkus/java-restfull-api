@@ -73,6 +73,7 @@ public class RedeemService {
 		data.append("&bengkel_id=").append(voucher.getBengkelId());
 		// data.append("&redeem_date=").append(sdf.format(date));
 		data.append("&redeem_date=").append(now);
+		data.append("&voucher_id=").append(voucherPlain.getId());
 
 		// [LOCAL TESTING PATH]
 		// -----------------------------------------------------------------------
