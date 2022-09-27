@@ -91,5 +91,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			String paymentId,
 			Date paymentExpiredAt
 	);
+
+	List<Voucher> findByUserId(Long userId);
 	
 }
