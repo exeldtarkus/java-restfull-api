@@ -8,9 +8,11 @@ import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneN
 import co.id.adira.moservice.contentservice.model.content.BlastPromo;
 import co.id.adira.moservice.contentservice.model.content.BlastPromoDetail;
 import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.repository.content.BlastPromoDetailRepository;
 import co.id.adira.moservice.contentservice.repository.content.BlastPromoRepository;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
+import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -50,6 +52,9 @@ public class BlastPromoEventProcessor {
 
     @Autowired
     private PromoRepository promoRepository;
+		
+		@Autowired
+		private VoucherRepository voucherRepository;
 
     @KafkaListener(topics = {"moservice-blast-promo"})
     public void processs(@Payload String payload) throws Exception {
@@ -81,6 +86,9 @@ public class BlastPromoEventProcessor {
             GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.getTokenByPhoneNumber(row.getPhoneNumber());
             String token = getTokenResponse.getData().getAccess_token();
             Long userId = getTokenResponse.getData().getUser_id();
+
+						List<Voucher> findIdUserOnTransaction = voucherRepository.findByUserId(userId);
+						
 
             if (defaultBrandId == null) {
                 defaultBrandId = mobilServiceHandler.getBrandId(token, null);
