@@ -53,5 +53,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	void insertVoucher(Long bengkelId, 
 			Long bookingId, Long carId, Date created, Promo promo, 
 			QRCode qr, Date redeemDate, Date updated, Date useDate, Long userId, String Utm, Long transactionStatusId);
+
+	List<Voucher> findByUserId(Long userId);
 	
 }
