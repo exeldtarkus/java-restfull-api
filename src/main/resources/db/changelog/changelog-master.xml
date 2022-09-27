@@ -19,4 +19,5 @@
     <include  file="classpath:db/changelog/sprints/sprint83/sprint83_master.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint86/sprint86_master.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint87/sprint87_master.xml"/>
+    <include  file="classpath:db/changelog/sprints/sprint89/sprint89_master.xml"/>
 </databaseChangeLog>

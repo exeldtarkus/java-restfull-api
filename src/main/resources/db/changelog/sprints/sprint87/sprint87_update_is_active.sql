@@ -23,8 +23,9 @@ UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '1' WHERE (`tipe_servis_id` 
 UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '23');
 UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '24');
 UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '25');
-UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '1' WHERE (`tipe_servis_id` = '26');
-UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '27');
+UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '26');
+UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '1' WHERE (`tipe_servis_id` = '27');
 UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '28');
-UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '30');
-UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '31');
+UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '29');
+UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '1' WHERE (`tipe_servis_id` = '33');
+UPDATE `servis`.`ref_tipe_servis` SET `is_active` = '0' WHERE (`tipe_servis_id` = '34');
