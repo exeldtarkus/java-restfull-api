@@ -3,6 +3,7 @@ package co.id.adira.moservice.contentservice.event.processor;
 import co.id.adira.moservice.contentservice.handler.content.ContentServiceHandler;
 import co.id.adira.moservice.contentservice.handler.mobil.MobilServiceHandler;
 import co.id.adira.moservice.contentservice.handler.user.UserServiceHandler;
+import co.id.adira.moservice.contentservice.dto.content.TrPromoUserDTO;
 import co.id.adira.moservice.contentservice.handler.auth.AuthServiceHandler;
 import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneNumberResponseJson;
 import co.id.adira.moservice.contentservice.model.content.BlastPromo;
@@ -53,8 +54,8 @@ public class BlastPromoEventProcessor {
     @Autowired
     private PromoRepository promoRepository;
 		
-		@Autowired
-		private VoucherRepository voucherRepository;
+	@Autowired
+	private VoucherRepository voucherRepository;
 
     @KafkaListener(topics = {"moservice-blast-promo"})
     public void processs(@Payload String payload) throws Exception {
@@ -87,8 +88,13 @@ public class BlastPromoEventProcessor {
             String token = getTokenResponse.getData().getAccess_token();
             Long userId = getTokenResponse.getData().getUser_id();
 
-						List<Voucher> findIdUserOnTransaction = voucherRepository.findByUserId(userId);
-						
+			if (blastPromo.getUserUnique() == 1) {
+				List<TrPromoUserDTO> findIdUserOnTransaction = voucherRepository.findByUserIdAndPromoId(userId, blastPromo.getPromoId());
+				if (findIdUserOnTransaction.size() > 0) {
+					log.info("::: UserID {} Already use PromoId {} :::",userId, blastPromo.getPromoId());
+					continue;
+				}
+			}
 
             if (defaultBrandId == null) {
                 defaultBrandId = mobilServiceHandler.getBrandId(token, null);

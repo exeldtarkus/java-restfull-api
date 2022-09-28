@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import co.id.adira.moservice.contentservice.dto.content.TrPromoUserDTO;
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
@@ -92,6 +93,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			Date paymentExpiredAt
 	);
 
-	List<Voucher> findByUserId(Long userId);
+	List<TrPromoUserDTO> findByUserIdAndPromoId(Long userId, Long promoId);
+	
 	
 }
