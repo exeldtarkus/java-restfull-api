@@ -97,7 +97,7 @@ public class PromoController {
 				ComparableVersion adiraku280C = new ComparableVersion("2.8.0");
 				String[] appVersionSplitted = appVersion.split("-");
 				ComparableVersion appVersionC = new ComparableVersion(appVersionSplitted[0]);
-				if (appVersionC.compareTo(adiraku280C) <= 0) {
+				if (appVersionC.compareTo(adiraku280C) < 0) {
 					freeOnly = true;
 				}
 			}
