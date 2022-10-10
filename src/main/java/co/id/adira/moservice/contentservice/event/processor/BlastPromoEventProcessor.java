@@ -3,14 +3,17 @@ package co.id.adira.moservice.contentservice.event.processor;
 import co.id.adira.moservice.contentservice.handler.content.ContentServiceHandler;
 import co.id.adira.moservice.contentservice.handler.mobil.MobilServiceHandler;
 import co.id.adira.moservice.contentservice.handler.user.UserServiceHandler;
+import co.id.adira.moservice.contentservice.dto.content.TrPromoUserDTO;
 import co.id.adira.moservice.contentservice.handler.auth.AuthServiceHandler;
 import co.id.adira.moservice.contentservice.json.auth.get_token.GetTokenByPhoneNumberResponseJson;
 import co.id.adira.moservice.contentservice.model.content.BlastPromo;
 import co.id.adira.moservice.contentservice.model.content.BlastPromoDetail;
 import co.id.adira.moservice.contentservice.model.content.Promo;
+import co.id.adira.moservice.contentservice.model.content.Voucher;
 import co.id.adira.moservice.contentservice.repository.content.BlastPromoDetailRepository;
 import co.id.adira.moservice.contentservice.repository.content.BlastPromoRepository;
 import co.id.adira.moservice.contentservice.repository.content.PromoRepository;
+import co.id.adira.moservice.contentservice.repository.content.VoucherRepository;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -50,6 +53,9 @@ public class BlastPromoEventProcessor {
 
     @Autowired
     private PromoRepository promoRepository;
+		
+	@Autowired
+	private VoucherRepository voucherRepository;
 
     @KafkaListener(topics = {"moservice-blast-promo"})
     public void processs(@Payload String payload) throws Exception {
@@ -81,6 +87,14 @@ public class BlastPromoEventProcessor {
             GetTokenByPhoneNumberResponseJson getTokenResponse = authServiceHandler.getTokenByPhoneNumber(row.getPhoneNumber());
             String token = getTokenResponse.getData().getAccess_token();
             Long userId = getTokenResponse.getData().getUser_id();
+
+			if (blastPromo.getUserUnique() == 1) {
+				List<TrPromoUserDTO> findIdUserOnTransaction = voucherRepository.findByUserIdAndPromoId(userId, blastPromo.getPromoId());
+				if (findIdUserOnTransaction.size() > 0) {
+					log.info("::: UserID {} Already use PromoId {} :::",userId, blastPromo.getPromoId());
+					continue;
+				}
+			}
 
             if (defaultBrandId == null) {
                 defaultBrandId = mobilServiceHandler.getBrandId(token, null);

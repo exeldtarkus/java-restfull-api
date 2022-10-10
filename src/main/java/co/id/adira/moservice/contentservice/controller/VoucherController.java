@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.id.adira.moservice.contentservice.dto.content.TrPromoUserDTO;
 import co.id.adira.moservice.contentservice.interceptor.UserIdInterceptor;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;

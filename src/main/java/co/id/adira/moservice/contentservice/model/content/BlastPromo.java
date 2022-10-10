@@ -23,6 +23,9 @@ public class BlastPromo implements Serializable {
 	@Column(name = "bengkel_id")
 	private Long bengkelId;
 
+	@Column(name = "user_unique")
+	private Long userUnique;
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="tr_blast_promo_id")
 	@OrderColumn(name="id")

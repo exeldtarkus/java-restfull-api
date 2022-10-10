@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import co.id.adira.moservice.contentservice.dto.content.TrPromoUserDTO;
 import co.id.adira.moservice.contentservice.model.content.Promo;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
@@ -53,5 +54,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	void insertVoucher(Long bengkelId, 
 			Long bookingId, Long carId, Date created, Promo promo, 
 			QRCode qr, Date redeemDate, Date updated, Date useDate, Long userId, String Utm, Long transactionStatusId);
+
+	List<TrPromoUserDTO> findByUserIdAndPromoId(Long userId, Long promoId);
+	
 	
 }
