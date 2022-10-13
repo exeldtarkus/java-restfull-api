@@ -136,8 +136,8 @@ public class BlastPromoEventProcessor {
                 throw new Exception("Redeem fail!");
             }
 
-            row.setTrPromoUserId(trPromoUserId);
-            blastPromoDetailRepository.save(row);
+            // row.setTrPromoUserId(trPromoUserId);
+            // blastPromoDetailRepository.save(row);
 
             System.out.println("Tr promo user id :: " + trPromoUserId);
             //ini bukan TR promo user tapi mst_qr_code id
