@@ -15,6 +15,7 @@ import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemProm
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.UpdateVoucherPaymentStatusJson;
+import co.id.adira.moservice.contentservice.json.payment.check_payment_status.PaymentCheckStatusDataResponseJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
@@ -179,6 +180,7 @@ public class VoucherController {
 
 	@GetMapping(path = "/vouchers/{id}")
 	public ResponseEntity<Object> getVoucherById(@PathVariable Long id) {
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 		Long userId = userIdInterceptor.getUserId();
 
 		Optional<VoucherPlain> voucherOptional = voucherCustomRepository.findByIdAndUserId(id, userId);
@@ -188,7 +190,12 @@ public class VoucherController {
 		}
 
 		VoucherPlain voucher = voucherOptional.get();
-
+		voucher.getQr().setQrcodePath(cloudinaryPath + voucher.getQr().getQrcodePath2());
+		if (voucher.getPaymentId() != null) {
+			PaymentCheckStatusDataResponseJson checkVoucherStatus = paymentServiceHandler.checkStatusPayment(voucher.getPaymentId());
+			voucher.setPaymentStatus(checkVoucherStatus.getStatus());
+			voucherCustomRepository.save(voucher);
+		}
 		return BaseResponse.jsonResponse(HttpStatus.OK, false, HttpStatus.OK.toString(), voucher);
 	}
 
@@ -413,7 +420,7 @@ public class VoucherController {
 			passParam.setType("my-voucher");
 
 			// nasabah
-            if (!voucher.getAdirakuAccountId().isEmpty()) {
+      if (voucher.getAdirakuAccountId() != null && voucher.getPaymentStatus().equals("PAID")) {
 				System.out.println("Send Notif Nasabah");
 				AdirakuMsActivityCreateActivityJson nasabahPayload = new AdirakuMsActivityCreateActivityJson();
 				nasabahPayload.setGroup(group);
