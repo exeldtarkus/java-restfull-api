@@ -125,6 +125,9 @@ public class Promo implements Serializable {
 
 	@Column(name = "vehicle_type_id")
 	private Integer vehicleType;
+	
+	@Column(name = "price")
+	private BigDecimal price;
 
 	public Long getId() {
 		return id;
@@ -387,7 +390,7 @@ public class Promo implements Serializable {
 	public void setVehicleType(Integer vehicleType) {
 		this.vehicleType = vehicleType;
 	}
-
+	
 	public BigDecimal getPrice() {
 		return price;
 	}
