@@ -91,6 +91,9 @@ public class Promo implements Serializable {
 	@Column(name = "target_id")
 	private Long targetId;
 
+	@Column(name = "price")
+	private BigDecimal price;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = PromoBengkelMapping.class)
 	@JoinColumn(name = "promo_id", insertable = false, updatable = false)
 	// @JsonManagedReference
@@ -383,5 +386,13 @@ public class Promo implements Serializable {
 
 	public void setVehicleType(Integer vehicleType) {
 		this.vehicleType = vehicleType;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 }

@@ -37,10 +37,15 @@ public class ResourcesServerConfig extends ResourceServerConfigurerAdapter {
 	public void configure(final HttpSecurity http) throws Exception {
 		// @formatter:off
 		http.authorizeRequests()
+				.antMatchers(HttpMethod.PUT, "/api/vouchers/*").permitAll();
+
+		http
+			.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/api/promo").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/promo/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/pilihan-lain").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/banners").permitAll()
+			.antMatchers(HttpMethod.GET, "/api/vouchers/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/vouchers/redeem").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/qrcode/download").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/videos").permitAll()

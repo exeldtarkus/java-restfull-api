@@ -36,4 +36,24 @@ public class UserIdInterceptor {
 		return true;
 	}
 
+	public Long getUserId() {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object details = authentication.getDetails();
+
+		if (details instanceof OAuth2AuthenticationDetails) {
+
+			OAuth2AuthenticationDetails oAuth2AuthenticationDetails = (OAuth2AuthenticationDetails) details;
+			OAuth2AccessToken accessToken = tokenStore.readAccessToken(oAuth2AuthenticationDetails.getTokenValue());
+
+			Map<String, Object> additionalInfo = accessToken.getAdditionalInformation();
+			Integer userId = (Integer) additionalInfo.get("user_id");
+			Long userIdLong = Long.valueOf(userId);
+			return userIdLong;
+
+		}
+
+		return null;
+	}
+
 }
