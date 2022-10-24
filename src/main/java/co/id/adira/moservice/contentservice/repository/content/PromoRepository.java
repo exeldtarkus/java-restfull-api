@@ -303,6 +303,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "JOIN bengkel.ref_city e ON d.city_id = e.city_id "
 			+ "JOIN content.map_promo_bengkel f ON a.id = f.promo_id "
 			+ "JOIN bengkel.mst_bengkel g ON f.bengkel_id = g.bengkel_id " + "WHERE g.bengkel_id = :bengkelId "
+			+ "AND a.zone_id IN (0,1,5,6,11,12,13,14)"
 			+ "AND a.is_active = true "
 			+ "AND a.available_until >= DATE(:currentDate) "
 			+ "AND a.is_reviewed = 1 "
