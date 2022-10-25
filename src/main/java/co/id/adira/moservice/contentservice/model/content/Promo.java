@@ -387,7 +387,7 @@ public class Promo implements Serializable {
 	public void setVehicleType(Integer vehicleType) {
 		this.vehicleType = vehicleType;
 	}
-
+	
 	public BigDecimal getPrice() {
 		return price;
 	}
