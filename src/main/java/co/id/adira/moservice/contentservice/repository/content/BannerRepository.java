@@ -9,10 +9,14 @@ import org.springframework.data.repository.query.Param;
 
 public interface BannerRepository extends CrudRepository<Banner, Long> {
   @Query(value = 
-        " SELECT * FROM mst_banner a "
-			+ " WHERE  a.using_on = 1 AND a.is_active = 1 AND a.is_deleted = 0 "
-			+ " GROUP  BY a.id ORDER BY a.position Asc "
-			+ " LIMIT  8"
+  			"   SELECT * FROM mst_banner a                                     "
+			+ " WHERE  a.using_on = :using_on                                  "
+			+ " AND    a.is_active = 1                                         "
+			+ " AND    a.is_deleted = 0                                        "
+			+ " GROUP  BY a.id ORDER BY a.position Asc                         "
+			+ " LIMIT  8                                                       "
     , nativeQuery = true)
-	List<Banner> findBanner();
+	List<Banner> findBanner(
+		@Param("using_on") String using_on
+	);
 }
