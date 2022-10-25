@@ -16,7 +16,10 @@
     <include  file="classpath:db/changelog/sprints/sprint74/sprint74_master.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint75/sprint75_master.xml"/>
     <include  file="classpath:db/changelog/sprints/sprint76/sprint76_master.xml"/>
-    <include  file="classpath:db/changelog/sprints/sprint83/sprint83_master.xml"/>
+    <!-- <include  file="classpath:db/changelog/sprints/sprint82/sprint82_master.xml"/> -->
+	<!--    <include  file="classpath:db/changelog/sprints/sprint83/sprint83_master.xml"/>-->
+    <include  file="classpath:db/changelog/sprints/sprint86/sprint86_master.xml"/>
     <!-- <include  file="classpath:db/changelog/sprints/sprint87/sprint87_master.xml"/> -->
     <include  file="classpath:db/changelog/sprints/sprint89/sprint89_master.xml"/>
+    <include  file="classpath:db/changelog/sprints/sprint91/sprint91_master.xml"/>
 </databaseChangeLog>

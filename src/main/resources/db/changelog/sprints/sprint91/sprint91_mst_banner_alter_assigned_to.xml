@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet  author="bagusbk"  id="sprint87_alter_ref_tipe_servis">
-       <sqlFile path="classpath:db/changelog/sprints/sprint87/sprint87_alter_ref_tipe_servis.sql"/>
+    <changeSet  author="Exel" id="sprint91_mst_banner_alter_assigned_to.sql">
+       <sqlFile path="classpath:db/changelog/sprints/sprint91/sprint91_mst_banner_alter_assigned_to.sql"/>
     </changeSet>
 </databaseChangeLog>

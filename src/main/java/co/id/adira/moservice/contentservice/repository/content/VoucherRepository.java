@@ -15,7 +15,7 @@ import co.id.adira.moservice.contentservice.model.content.Voucher;
 
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	
-	@Query(value = 
+	@Query(value =
         " SELECT *, b.bengkel_name, b.bengkel_address FROM content.tr_promo_user v,                                     "
 			+ " bengkel.mst_bengkel b, content.mst_promo c, bengkel.mst_contact d                                             "
 			+ " WHERE v.user_id = :userId                                                                                     "
@@ -39,7 +39,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 			@Param("pageable") Pageable pageable);
 
 
-  @Query(value = 
+  @Query(value =
         " SELECT  *                           "
 			+ " FROM    content.tr_promo_user   v   "
 			+ "         , bengkel.mst_bengkel   b   "
@@ -94,6 +94,5 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 	);
 
 	List<TrPromoUserDTO> findByUserIdAndPromoId(Long userId, Long promoId);
-	
 	
 }
