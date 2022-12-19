@@ -46,12 +46,12 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdirakuProspect(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
 			@Param("longitude") Double longitude
-      , @Param("pageable") Pageable pageable
-      , @Param("service_type") List<Long> service_type
-      , @Param("serviceIdsList") String serviceIdsList
-      , @Param("vehicleTypes") String vehicleTypes);
+			, @Param("pageable") Pageable pageable
+			, @Param("service_type") List<Long> service_type
+			, @Param("serviceIdsList") String serviceIdsList
+			, @Param("vehicleTypes") List<Long> vehicleTypes);
 
-			@Query(value = "SELECT * FROM mst_promo p "
+	@Query(value = "SELECT * FROM mst_promo p "
 			+ "JOIN ( "
 			+ "	SELECT mb.bengkel_id bengkel_id, "
 			+ "		   mpb.promo_id promo_id, "
@@ -79,10 +79,10 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "GROUP BY p.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAdirakuNasabah(@Param("currentDate") Date currentDate, @Param("latitude") Double latitude, 
 			@Param("longitude") Double longitude
-      , @Param("pageable") Pageable pageable
-      , @Param("service_type") List<Long> service_type
-      , @Param("serviceIdsList") String serviceIdsList
-      , @Param("vehicleTypes") String vehicleTypes);
+			, @Param("pageable") Pageable pageable
+			, @Param("service_type") List<Long> service_type
+			, @Param("serviceIdsList") String serviceIdsList
+			, @Param("vehicleTypes") List<Long> vehicleTypes);
 	
 	@Query(value = "SELECT *, GROUP_CONCAT(DISTINCT e.city_name) as cities, null AS bengkelNames " + "FROM mst_promo p "
 			+ "JOIN content.map_promo_area d ON p.id = d.promo_id "
@@ -166,7 +166,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			+ "AND a.zone_id IN (0,2,4,6,9,10,13,14) "
 			+ "AND a.available_until >= DATE(:currentDate) "
 			+ "AND a.is_reviewed = 1 "
-			+ "AND a.vehicle_type_id = :vehicleTypes "
+			+ "AND a.vehicle_type_id IN (:vehicleTypes) "
 			+ "AND a.available_from <= DATE(:currentDate) GROUP BY a.id ORDER BY :#{#pageable}", nativeQuery = true)
 	List<Promo> findAllAndMore(
 			@Param("q") String q,
@@ -179,7 +179,7 @@ public interface PromoRepository extends JpaRepository<Promo, Long> {
 			@Param("pageable") Pageable pageable,
 			@Param("latitude") Double latitude,
 			@Param("longitude") Double longitude,
-      @Param("vehicleTypes") String vehicleTypes
+			@Param("vehicleTypes") List<Long> vehicleTypes
   );
 
 	@Query(value = "SELECT a.id, "

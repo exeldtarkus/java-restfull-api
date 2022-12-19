@@ -73,8 +73,8 @@ public class PromoController {
 	private Boolean ArrayIncludes(String[] arr, String i) {
 		return Arrays.stream(arr).anyMatch(i::equals);
 	}
-
-  private String setCloudinaryPath = "https://res.cloudinary.com/adiramoservice/fl_attachment/v1/";
+	
+	private String setCloudinaryPath = "https://res.cloudinary.com/adiramoservice/fl_attachment/v1/";
 
 	@GetMapping(path = "/promo")
 	public ResponseEntity<Object> getPromos(
@@ -91,12 +91,12 @@ public class PromoController {
 			@RequestParam(required = false, name = "lat") Double latitude,
 			@RequestParam(required = false, name = "lng") Double longitude,
 			@RequestParam(required = false, name = "eid") Long eventId,
-      @RequestParam(required = false, name = "vehicleTypes", defaultValue = "1") String vehicleTypes
+			@RequestParam(required = false, name = "vehicleTypes", defaultValue = "1") List<Long> vehicleTypes
 	) {
 		
 		Date currentDate = new Date();
 		String serviceIdsList = null;
-    String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
+		String cloudinaryPath = cloudinaryUtil.getCloudinaryUrlPath() + cloudinaryUtil.getCloudinaryMainFolder();
 
 		if (null == service_type) {
 			List<ServiceType> serviceType = serviceTypeRepository.findAll();
@@ -104,7 +104,7 @@ public class PromoController {
 		} else {
 			serviceIdsList = service_type.get(0).toString();
 		}
-    // Get all promo type if promo_type is null
+		// Get all promo type if promo_type is null
 		List<Integer> promoTypeList = new ArrayList<Integer>();
 		if (promo_type == null) {
 			promoTypeList.add(0);
@@ -204,7 +204,7 @@ public class PromoController {
 								pageable,
 								latitude,
 								longitude,
-                vehicleTypes
+								vehicleTypes
 						);
 					}
 				}
@@ -212,12 +212,17 @@ public class PromoController {
 		}
 		// = new ArrayList<ProvinceCityDTO>();
 		for (Promo promo : promos) {
-      if (origin.equals("adiraku") || origin.equals("adirakunasabah")) {
-        promo.setImagePath(cloudinaryPath + promo.getImagePath2());
-        promo.setImagePathMobile(cloudinaryPath + promo.getImagePath2());
-      }
+			if (origin.equals("adiraku") || origin.equals("adirakunasabah")) {
+				promo.setImagePath(cloudinaryPath + promo.getImagePath2());
+				promo.setImagePathMobile(cloudinaryPath + promo.getImagePath2());
+			}
 			List<ProvinceCityDTO> cities   = cityRepository.findAllCitiesByPromoId(promo.getId());
 			promo.setProvinceCities(cities);
+
+			Pageable pageableBengkels = PageRequest.of((page-1), size, new Sort(Sort.Direction.ASC, "km"));
+			List<Long> bengkelIds = promo.getBengkels().stream().map(PromoBengkelMapping::getBengkelId).collect(Collectors.toList());
+			List<Bengkel> listBengkel = bengkelRepository.findAllBengkelsByBengkelId(bengkelIds, pageableBengkels, latitude, longitude);
+			promo.setLstBengkel(listBengkel);
 		}
 
 		Integer start = Math.min(Math.max(size * (page - 1), 0), promos.size());
@@ -279,9 +284,9 @@ public class PromoController {
 		Date currentDate = new Date();
 		Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id);
 		// Optional<Promo> promo = (Optional<Promo>) promoRepository.findByIdAndMore(id, currentDate);
-
-    promo.get().setImagePath(cloudinaryPath + promo.get().getImagePath2());
-    promo.get().setImagePathMobile(cloudinaryPath + promo.get().getImagePath2());
+		
+		promo.get().setImagePath(cloudinaryPath + promo.get().getImagePath2());
+		promo.get().setImagePathMobile(cloudinaryPath + promo.get().getImagePath2());
 
 		if (promo.isPresent()) {
 

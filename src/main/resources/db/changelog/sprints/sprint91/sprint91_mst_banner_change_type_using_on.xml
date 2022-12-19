@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <include file="classpath:db/changelog/sprints/sprint91/sprint91_mst_banner_alter_assigned_to.xml"/>
-    <include file="classpath:db/changelog/sprints/sprint91/sprint91_mst_banner_change_type_using_on.xml"/>
+    <changeSet  author="Exel" id="sprint91_mst_banner_change_type_using_on.sql">
+       <sqlFile path="classpath:db/changelog/sprints/sprint91/sprint91_mst_banner_change_type_using_on.sql"/>
+    </changeSet>
 </databaseChangeLog>
