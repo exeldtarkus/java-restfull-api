@@ -57,7 +57,7 @@ public class BlastPromoEventProcessor {
 	@Autowired
 	private VoucherRepository voucherRepository;
 
-    @KafkaListener(topics = {"moservice-blast-promo"})
+    @KafkaListener(topics = {"moservice-blast-promo-2"})
     public void processs(@Payload String payload) throws Exception {
         System.out.println("############################################################");
         System.out.println("Receive Payload Blast Promo :: " + payload);
