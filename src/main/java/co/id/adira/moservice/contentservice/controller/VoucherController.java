@@ -291,7 +291,7 @@ public class VoucherController {
 			items.add(paymentSendInvoiceItemJson);
 			paymentSendInvoiceJson.setItems(items);
 
-			if (!redeemPromoJson.getCashback().getAdirakuCashbackRefId().isEmpty()) {
+			if (redeemPromoJson.getCashback() != null) {
 				PaymentSendInvoiceCashbackJson paymentSendInvoiceCashbackJson = new PaymentSendInvoiceCashbackJson();
 				paymentSendInvoiceCashbackJson.setAdiraku_cashback_ref_id(redeemPromoJson.getCashback().getAdirakuCashbackRefId());
 				paymentSendInvoiceCashbackJson.setAdiraku_cashback_code_program(redeemPromoJson.getCashback().getAdirakuCashbackCodeProgram());
