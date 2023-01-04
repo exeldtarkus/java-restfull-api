@@ -2,6 +2,8 @@ package co.id.adira.moservice.contentservice.json.content.redeem_promo;
 
 import lombok.Data;
 
+
+
 @Data
 public class RedeemPromoJson {
 
@@ -15,5 +17,7 @@ public class RedeemPromoJson {
     private RedeemPromoPromoJson promo;
     private String mobileNo;
     private String adirakuAccountId;
+    private String adirakuAccountOid;
+	private RedeemPromoCashbackJson cashback;
 
 }

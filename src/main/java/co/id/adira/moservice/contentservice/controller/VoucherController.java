@@ -16,6 +16,7 @@ import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemProm
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.RedeemPromoPromoJson;
 import co.id.adira.moservice.contentservice.json.content.redeem_promo.UpdateVoucherPaymentStatusJson;
 import co.id.adira.moservice.contentservice.json.payment.check_payment_status.PaymentCheckStatusDataResponseJson;
+import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceCashbackJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceDataResponseJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceItemJson;
 import co.id.adira.moservice.contentservice.json.payment.send_invoice.PaymentSendInvoiceJson;
@@ -40,7 +41,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import co.id.adira.moservice.contentservice.dto.content.TrPromoUserDTO;
 import co.id.adira.moservice.contentservice.interceptor.UserIdInterceptor;
 import co.id.adira.moservice.contentservice.model.content.QRCode;
 import co.id.adira.moservice.contentservice.model.content.Voucher;
@@ -278,6 +278,8 @@ public class VoucherController {
 			paymentSendInvoiceJson.setPromo_id(promoId);
 			paymentSendInvoiceJson.setVoucher_id(voucherPlain2.getId());
 			paymentSendInvoiceJson.setCustomer_id(redeemPromoJson.getUserId());
+			paymentSendInvoiceJson.setAdiraku_account_id(redeemPromoJson.getAdirakuAccountId());
+			paymentSendInvoiceJson.setAdiraku_account_oid(redeemPromoJson.getAdirakuAccountOid());
 
 			PaymentSendInvoiceItemJson paymentSendInvoiceItemJson = new PaymentSendInvoiceItemJson();
 			paymentSendInvoiceItemJson.setAmount(price.longValue());
@@ -288,6 +290,15 @@ public class VoucherController {
 			List<PaymentSendInvoiceItemJson> items = new ArrayList<>();
 			items.add(paymentSendInvoiceItemJson);
 			paymentSendInvoiceJson.setItems(items);
+
+			if (!redeemPromoJson.getCashback().getAdirakuCashbackRefId().isEmpty()) {
+				PaymentSendInvoiceCashbackJson paymentSendInvoiceCashbackJson = new PaymentSendInvoiceCashbackJson();
+				paymentSendInvoiceCashbackJson.setAdiraku_cashback_ref_id(redeemPromoJson.getCashback().getAdirakuCashbackRefId());
+				paymentSendInvoiceCashbackJson.setAdiraku_cashback_code_program(redeemPromoJson.getCashback().getAdirakuCashbackCodeProgram());
+				paymentSendInvoiceCashbackJson.setAdiraku_cashback_amount(redeemPromoJson.getCashback().getAdirakuCashbackAmount());
+
+				paymentSendInvoiceJson.setCashback(paymentSendInvoiceCashbackJson);
+			}
 
 			PaymentSendInvoiceDataResponseJson paymentSendInvoiceDataResponseJson = paymentServiceHandler.sendInvoice(paymentSendInvoiceJson);
 

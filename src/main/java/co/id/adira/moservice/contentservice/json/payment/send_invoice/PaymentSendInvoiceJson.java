@@ -12,5 +12,8 @@ public class PaymentSendInvoiceJson {
     private Long voucher_id;
     private Long bengkel_id;
     private Long customer_id;
+    private String adiraku_account_id;
+    private String adiraku_account_oid;
     private List<PaymentSendInvoiceItemJson> items;
+    private PaymentSendInvoiceCashbackJson cashback;
 }
