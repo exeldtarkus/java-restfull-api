@@ -21,6 +21,14 @@ public class PaymentCheckStatusDataResponseJson {
     private String updated_at;
     private String paid_at;
     private String fail_at;
+    private String adiraku_account_id;
+    private String adiraku_account_oid;
+    private String adiraku_cashback_ref_id;
+    private String adiraku_cashback_code_program;
+    private String adiraku_cashback_amount;
+    private String adiraku_cashback_record_trx_status;
+    private String adiraku_cashback_disburse_status;
+    private String adiraku_cashback_notif_status;
     private PaymentCheckStatusMethodJson method;
     private List<PaymentCheckStatusItemsJson> items;
 
